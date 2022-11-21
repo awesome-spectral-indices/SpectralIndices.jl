@@ -1,6 +1,6 @@
 """
 ```julia
-_get_indices(online=false)
+_get_indices(online::Bool = false)
 ```
 Retrieves the JSON of indices.
 
@@ -14,7 +14,7 @@ Returns
 dict
     Indices.
 """
-function _get_indices(online=false)
+function _get_indices(online::Bool = false)
     if online
         indices_loc = Downloads.download(
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json", string(pwd(),  )
@@ -29,7 +29,7 @@ end
 
 """
 ```julia
-_load_json(file="spectral-indices-dict.json")
+_load_json(file::String = "spectral-indices-dict.json")
 ```
 Loads the specified JSON file from the data folder.
 Parameters
@@ -41,7 +41,33 @@ Returns
 object
     JSON file.
 """
-function _load_json(file="spectral-indices-dict.json")
-    filename = joinpath(dirname(@__FILE__), "..", "data", "spectral-indices-dict.json")
-    JSON.parsefile(filename)
+function _load_json(filename::String = "spectral-indices-dict.json")
+    fileloc = joinpath(dirname(@__FILE__), "..", "data", filename)
+    if isfile(fileloc)
+        return JSON.parsefile(fileloc)
+    else
+        error("The JSON file is not in the SpectralIndices/data folder")
+    end
+end
+
+"""
+```
+_check_params(index, params, indices)
+```
+Checks if the parameters dictionary contains all required bands for the index
+computation.
+Parameters
+----------
+index : str
+    Index to check.
+params : dict
+    Parameters dictionary to check.
+indices : dict
+    Indices dictionary to check.
+Returns
+-------
+None
+"""
+function _check_params(index, params, indices)
+
 end
