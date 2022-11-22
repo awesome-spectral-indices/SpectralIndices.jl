@@ -17,7 +17,7 @@ dict
 function _get_indices(online::Bool = false)
     if online
         indices_loc = Downloads.download(
-            "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json", string(pwd(),  )
+            "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json", string(pwd(),  "spectral-indices-dict.json")
             )
         indices = JSON.parsefile(indices_loc)
     else
