@@ -68,6 +68,31 @@ Returns
 -------
 None
 """
-function _check_params(index, params, indices)
+function _check_params(
+    index::String,
+    params::Dict,
+    indices::Dict
+)
+    @show indices[index]
+    for band in indices[index].bands
+        if !(band in keys(params))
+            throw(ArgumentError("'$band' is missing in the parameters for $index computation!"))
+        end
+    end
+end
 
+function parse_eval_dict(ex::AbstractString, locals::Dict)
+    ex = Meta.parse(ex)
+    assignments = Expr[]
+    
+    for (key, val) in locals
+        push!(assignments, :($(Symbol(key)) = $val))
+    end
+    
+    eval(quote
+        let
+            $(assignments...)
+            $ex
+        end
+    end)
 end

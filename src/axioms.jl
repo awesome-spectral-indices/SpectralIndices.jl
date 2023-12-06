@@ -1,3 +1,18 @@
+#=
+struct SpectralIndices{T <: Dict{String, AbstractSpectralIndex}, O}
+    indices::T
+    origin::O
+end
+=#
+
+function spectral_indices(indices_dict::Dict{String, Any}; origin="SpectralIndices")
+    indices = Dict{String, AbstractSpectralIndex}()
+    for (key, value) in indices_dict
+        indices[key] = SpectralIndex(value)
+    end
+    return indices
+end
+
 struct SpectralIndex{B,S} <: AbstractSpectralIndex
     short_name::String
     long_name::String
@@ -16,7 +31,7 @@ function SpectralIndex(index::Dict)
     bands = index["bands"]
     application_domain = index["application_domain"]
     reference = index["reference"]
-    formula = index["formula"]
+    formula = filter(x -> !isspace(x), index["formula"])
     date_of_addition = Date(index["date_of_addition"], dateformat"y-m-d")
     contributor = index["contributor"]
     platforms = index["platforms"]
@@ -30,5 +45,27 @@ function Base.show(io::IO, index::SpectralIndex)
     println(io, "Application domain: ", index.application_domain)
     println(io, "Bands/Parameters: ", index.bands)
     println(io, "Formula: ", index.formula)
-    println(io, "reference: ", index.reference)
+    println(io, "Reference: ", index.reference)
+end
+
+#function compute(si::AbstractSpectralIndex, params=nothing; kwargs...)
+#    params == nothing ? parameters = kwargs : parameters = params
+#    return compute_index(si.short_name; parameters...)
+#end
+
+function compute(self::SpectralIndex, params::Dict{String, Any}=Dict(); kwargs...)
+    if isempty(params)
+        parameters = kwargs
+    else
+        parameters = params
+    end
+
+    return computeIndex(self.short_name; parameters...)
+end
+
+function _create_indices(
+    online::Bool = false
+)
+    indices = _get_indices(online)
+    return spectral_indices(indices)
 end
