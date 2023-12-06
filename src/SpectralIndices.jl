@@ -5,6 +5,8 @@ using Downloads
 using JSON
 
 export SpectralIndex, indices, compute, compute_index
+export PlatformBand, Band, bands
+export Constant, constants
 
 function compute_index(
     index::Union{String, Vector{String}},
@@ -67,6 +69,7 @@ end
 
 
 abstract type AbstractSpectralIndex end
+abstract type AbstractPlatformBand end
 
 include("utils.jl")
 include("axioms.jl")
