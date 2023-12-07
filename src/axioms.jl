@@ -14,13 +14,14 @@ function spectral_indices(indices_dict::Dict{String, Any}; origin="SpectralIndic
 end
 
 ## SpectralIndex
-struct SpectralIndex{S<:String,B,D<:Date,P} <: AbstractSpectralIndex
+struct SpectralIndex{S<:String,I,B,D<:Date,P} <: AbstractSpectralIndex
     short_name::S
     long_name::S
     bands::B
     application_domain::S
     reference::S
     formula::S
+    inner_formula::I
     date_of_addition::D
     contributor::S
     platforms::P
@@ -88,13 +89,18 @@ function SpectralIndex(index::Dict)
     bands = index["bands"]
     application_domain = index["application_domain"]
     reference = index["reference"]
+
     formula = filter(x -> !isspace(x), index["formula"])
+    formula = replace(formula, r"\*\*" => "^")
     date_of_addition = Date(index["date_of_addition"], dateformat"y-m-d")
     contributor = index["contributor"]
     platforms = index["platforms"]
 
+    parsed_formula = Meta.parse(formula)
+    inner_formula = _build_function(short_name, parsed_formula, Symbol.(bands)...)
+
     SpectralIndex(short_name, long_name, bands, application_domain, reference,
-                  formula, date_of_addition, contributor, platforms)
+                  formula, inner_formula, date_of_addition, contributor, platforms)
 end
 
 function Base.show(io::IO, index::SpectralIndex)

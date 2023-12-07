@@ -91,7 +91,6 @@ function _check_params(
     params::Dict,
     indices::Dict
 )
-    @show indices[index]
     for band in indices[index].bands
         if !(band in keys(params))
             throw(ArgumentError("'$band' is missing in the parameters for $index computation!"))
@@ -140,3 +139,32 @@ function parse_eval_dict(ex::AbstractString, locals::Dict)
         end
     end)
 end
+
+function _build_function(name::String, expr::Expr, args::Symbol...)
+    function_name = Symbol(name, args...)
+    inner_function_expr = quote
+        function $function_name($(args...))
+            $expr
+        end
+    end
+
+    eval(inner_function_expr)
+
+    return eval(function_name)
+end
+
+
+
+#=
+
+
+expr = :((N - R) / (N + R))
+_build_function(expr, :N, :R)
+
+# Now you can use the created function
+result = my_function(0.643, 0.175)
+results = my_function(N=0.643, R=0.175)
+results = my_function(R=0.643, N=0.175)
+
+result = my_function.(fill(0.643, 10), fill(0.175, 10))
+=#
