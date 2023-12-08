@@ -14,12 +14,10 @@ SpectralIndices.jl is a Julia package for working with spectral indices commonly
 - Compatibility with multiple remote sensing platforms and sensors.
 
 ## Installation
-
-You can install SpectralIndices.jl using the Julia package manager (not yet). Open the Julia REPL and run:
-
+SpectralIndices.jl is not yet register in the general registry, please install it using the following:
 ```julia
 using Pkg
-Pkg.add("SpectralIndices")
+Pkg.add("https://github.com/awesome-spectral-indices/SpectralIndices.jl")
 ```
 
 ## Usage
