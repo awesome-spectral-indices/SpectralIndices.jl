@@ -87,15 +87,23 @@ _check_params(index_name, parameters, indices)
 ```
 """
 function _check_params(
-    index::String,
+    index,
     params::Dict,
-    indices::Dict
 )
-    for band in indices[index].bands
+    for band in index.bands
         if !(band in keys(params))
             throw(ArgumentError("'$band' is missing in the parameters for $index computation!"))
         end
     end
+end
+
+function _order_params(index, params)
+    new_params = []
+    for (bidx,band) in enumerate(index.bands)
+        push!(new_params, params[band])
+    end
+
+    return new_params
 end
 
 """
@@ -152,19 +160,3 @@ function _build_function(name::String, expr::Expr, args::Symbol...)
 
     return eval(function_name)
 end
-
-
-
-#=
-
-
-expr = :((N - R) / (N + R))
-_build_function(expr, :N, :R)
-
-# Now you can use the created function
-result = my_function(0.643, 0.175)
-results = my_function(N=0.643, R=0.175)
-results = my_function(R=0.643, N=0.175)
-
-result = my_function.(fill(0.643, 10), fill(0.175, 10))
-=#

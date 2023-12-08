@@ -14,14 +14,13 @@ function spectral_indices(indices_dict::Dict{String, Any}; origin="SpectralIndic
 end
 
 ## SpectralIndex
-struct SpectralIndex{S<:String,I,B,D<:Date,P} <: AbstractSpectralIndex
+struct SpectralIndex{S<:String,B,D<:Date,P} <: AbstractSpectralIndex
     short_name::S
     long_name::S
     bands::B
     application_domain::S
     reference::S
     formula::S
-    inner_formula::I
     date_of_addition::D
     contributor::S
     platforms::P
@@ -96,12 +95,20 @@ function SpectralIndex(index::Dict)
     contributor = index["contributor"]
     platforms = index["platforms"]
 
-    parsed_formula = Meta.parse(formula)
-    inner_formula = _build_function(short_name, parsed_formula, Symbol.(bands)...)
-
     SpectralIndex(short_name, long_name, bands, application_domain, reference,
-                  formula, inner_formula, date_of_addition, contributor, platforms)
+                  formula, date_of_addition, contributor, platforms)
 end
+
+function (si::SpectralIndex)(args::Number...)
+    parsed_formula = Meta.parse(si.formula)
+    expr = _build_function(si.short_name, parsed_formula, Symbol.(si.bands)...)
+    result = Base.invokelatest(expr, args...) ## to deal with for performance
+    return result
+end
+
+#function (si::SpectralIndex)(args::AbstractArray...)
+#    return si.(args...)
+#end
 
 function Base.show(io::IO, index::SpectralIndex)
     println(io, index.short_name, ": ", index.long_name)
@@ -123,7 +130,7 @@ function compute(self::SpectralIndex, params::Dict{String, Any}=Dict(); kwargs..
         parameters = params
     end
 
-    return computeIndex(self.short_name; parameters...)
+    return compute_index(self.short_name; parameters...)
 end
 
 function _create_indices(

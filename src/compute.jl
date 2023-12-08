@@ -5,6 +5,8 @@ function compute_index(
     kwargs...
 )
 
+    #isempty(params) ? params = kwargs
+
     if isempty(params)
         params = Dict(String(k)=>v for (k,v) in pairs(kwargs))
     end
@@ -12,15 +14,20 @@ function compute_index(
     indices = _create_indices(online)
     names = keys(indices)
     @assert index in names "$index is not a valid Spectral Index!"
-    _check_params(index, params, indices)
-    result = _compute_index(params, indices[index])
-    #result = parse_eval_dict(indices[index].formula, params)
+    _check_params(indices[index], params)
+    params = _order_params(indices[index], params)
+    result = _compute_index(indices[index], params...)
 
     return result
 end
 
-function _compute_index(params::Dict{String, Number}, index)
-    result = parse_eval_dict(index.formula, params)
+function _compute_index(index, params::Number...)
+    result = index(params...)
+    return result
+end
+
+function _compute_index(index, params::AbstractArray...)
+    result = index.(params...)
     return result
 end
 
