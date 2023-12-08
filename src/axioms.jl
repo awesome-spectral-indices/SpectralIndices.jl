@@ -118,19 +118,48 @@ function Base.show(io::IO, index::SpectralIndex)
     println(io, "Reference: ", index.reference)
 end
 
-#function compute(si::AbstractSpectralIndex, params=nothing; kwargs...)
-#    params == nothing ? parameters = kwargs : parameters = params
-#    return compute_index(si.short_name; parameters...)
-#end
+"""
+    compute(si::SpectralIndex, params::Dict=Dict(); kwargs...) -> Any
 
-function compute(self::SpectralIndex, params::Dict{String, Any}=Dict(); kwargs...)
+Computes a Spectral Index based on the provided `SpectralIndex` instance,
+parameters, and optional keyword arguments.
+
+# Parameters
+- `si`: An instance of `SpectralIndex` which includes the name and details
+  of the spectral index to be computed.
+- `params`: (Optional) Dictionary of parameters used as inputs for the
+  computation. If not provided, parameters can be passed using keyword arguments.
+- `kwargs`: Additional parameters used as inputs for the computation,
+  provided as keyword pairs. These are used if `params` is empty.
+
+# Returns
+- The computed Spectral Index, the type of return value depends on
+  the input parameters and the specific spectral index being computed.
+
+# Examples
+```jldoctest
+julia> compute(NDVI, N = 0.643, R = 0.175)
+0.5721271393643031
+```
+```jldoctest
+julia> compute(NDVI, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
+0.572127  0.572127  0.572127  0.572127  0.572127
+0.572127  0.572127  0.572127  0.572127  0.572127
+0.572127  0.572127  0.572127  0.572127  0.572127
+0.572127  0.572127  0.572127  0.572127  0.572127
+0.572127  0.572127  0.572127  0.572127  0.572127
+```
+"""
+function compute(
+    si::SpectralIndex,
+    params::Dict=Dict();
+    kwargs...
+)
     if isempty(params)
-        parameters = kwargs
+        return compute_index(si.short_name; kwargs...)
     else
-        parameters = params
+        return compute_index(si.short_name, params=params)
     end
-
-    return compute_index(self.short_name; parameters...)
 end
 
 function _create_indices(
