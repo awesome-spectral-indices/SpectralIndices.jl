@@ -38,13 +38,12 @@ multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.17
 ### Using `compute`
 ```julia
 # Define a SpectralIndex instance
-NDVI_index = SpectralIndex("NDVI", ["N", "R"])
 
 # Compute using the instance with keyword arguments
-result = compute(NDVI_index, N = 0.643, R = 0.175)
+result = compute(NDVI, N = 0.643, R = 0.175) #NDVI is autmatically in namespace with the import of SpectraIndices.jl
 
 # Compute with array inputs
-array_result = compute(NDVI_index, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
+array_result = compute(NDVI, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
 ```
 
 ### Direct computation
