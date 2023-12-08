@@ -10,11 +10,12 @@ SpectralIndices.jl is a Julia package for working with spectral indices commonly
 
 - Compute a wide range of spectral indices.
 - Support for various data types, including arrays, DataFrames, YAXArrays objects, and more. (Coming soon)
+- Flexible parameter input options.
 - Compatibility with multiple remote sensing platforms and sensors.
 
 ## Installation
 
-You can install SpectralIndices.jl using the Julia package manager. Open the Julia REPL and run:
+You can install SpectralIndices.jl using the Julia package manager (not yet). Open the Julia REPL and run:
 
 ```julia
 using Pkg
@@ -23,19 +24,35 @@ Pkg.add("SpectralIndices")
 
 ## Usage
 
-Here's a basic example of how to compute a spectral index using SpectralIndices.jl:
+You can compute spectral indices either by specifying the index and its parameters or using predefined SpectralIndex instances.
 
+### Using `compute_index`
 ```julia
 using SpectralIndices
 
-# Define your input data (e.g., reflectance values)
-N = [0.643, 0.725, 0.819]
-R = [0.175, 0.212, 0.307]
+# Compute NDVI with direct parameter input
+result = compute_index("NDVI", N = 0.643, R = 0.175)
 
-# Compute NDVI
-ndvi_result = compute_index("NDVI", N=N, R=R)
+# Compute multiple indices with array inputs
+multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
+```
 
-println("Computed NDVI: ", ndvi_result)
+### Using `compute`
+```julia
+# Define a SpectralIndex instance
+NDVI_index = SpectralIndex("NDVI", ["N", "R"])
+
+# Compute using the instance with keyword arguments
+result = compute(NDVI_index, N = 0.643, R = 0.175)
+
+# Compute with array inputs
+array_result = compute(NDVI_index, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
+```
+
+### Direct computation
+SpectralIndices.jl also allows for direct computation using function calls:
+```julia
+result = NDVI(0.643, 0.175)
 ```
 
 For more advanced usage and detailed documentation, please refer to the documentation.
