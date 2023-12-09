@@ -4,12 +4,15 @@
 Load a specified JSON file from the data folder.
 
 # Arguments
-- `file::String = "spectral-indices-dict.json"`: The name of the JSON file to be loaded.
+
+  - `file::String = "spectral-indices-dict.json"`: The name of the JSON file to be loaded.
 
 # Returns
-- `object`: The parsed JSON content from the specified file.
+
+  - `object`: The parsed JSON content from the specified file.
 
 # Examples
+
 ```julia
 # Load the default JSON file
 data = _load_json()
@@ -18,7 +21,7 @@ data = _load_json()
 data = _load_json("my-custom-indices.json")
 ```
 """
-function _load_json(filename::String = "spectral-indices-dict.json")
+function _load_json(filename::String="spectral-indices-dict.json")
     fileloc = joinpath(dirname(@__FILE__), "..", "data", filename)
     if isfile(fileloc)
         return JSON.parsefile(fileloc)
@@ -33,12 +36,15 @@ end
 Retrieve the JSON data of spectral indices.
 
 # Arguments
-- `online::Bool = false`: Whether to retrieve the most recent list of indices directly from the GitHub repository (online) or from the local copy (offline).
+
+  - `online::Bool = false`: Whether to retrieve the most recent list of indices directly from the GitHub repository (online) or from the local copy (offline).
 
 # Returns
-- `dict`: A dictionary containing the spectral indices data.
+
+  - `dict`: A dictionary containing the spectral indices data.
 
 # Examples
+
 ```julia
 # Retrieve the spectral indices from the local copy (offline)
 indices = _get_indices()
@@ -46,12 +52,14 @@ indices = _get_indices()
 # Retrieve the most recent spectral indices from the online repository
 indices = _get_indices(true)
 '''
+```
 """
-function _get_indices(online::Bool = false)
+function _get_indices(online::Bool=false)
     if online
         indices_loc = Downloads.download(
-            "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json", string(pwd(),  "spectral-indices-dict.json")
-            )
+            "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
+            string(pwd(), "spectral-indices-dict.json"),
+        )
         indices = JSON.parsefile(indices_loc)
     else
         indices = _load_json()
@@ -60,22 +68,23 @@ function _get_indices(online::Bool = false)
     return indices["SpectralIndices"]
 end
 
-
-
 """
     _check_params(index::String, params::Dict, indices::Dict)
 
 Check if the parameters dictionary contains all required bands for spectral index computation.
 
 # Arguments
-- `index::String`: The name of the spectral index to check.
-- `params::Dict`: The parameters dictionary to check for required bands.
-- `indices::Dict`: The dictionary containing information about spectral indices.
+
+  - `index::String`: The name of the spectral index to check.
+  - `params::Dict`: The parameters dictionary to check for required bands.
+  - `indices::Dict`: The dictionary containing information about spectral indices.
 
 # Returns
-- `None`
+
+  - `None`
 
 # Examples
+
 ```julia
 # Check parameters for the NDVI index
 index_name = "NDVI"
@@ -86,20 +95,21 @@ indices = _get_indices()
 _check_params(index_name, parameters, indices)
 ```
 """
-function _check_params(
-    index,
-    params::Dict,
-)
+function _check_params(index, params::Dict)
     for band in index.bands
         if !(band in keys(params))
-            throw(ArgumentError("'$band' is missing in the parameters for $index computation!"))
+            throw(
+                ArgumentError(
+                    "'$band' is missing in the parameters for $index computation!"
+                ),
+            )
         end
     end
 end
 
 function _order_params(index, params)
     new_params = []
-    for (bidx,band) in enumerate(index.bands)
+    for (bidx, band) in enumerate(index.bands)
         push!(new_params, params[band])
     end
 
@@ -112,13 +122,16 @@ end
 Parse and evaluate a Julia expression `ex` with local variable assignments from the `locals` dictionary.
 
 # Arguments
-- `ex::AbstractString`: The expression to be parsed and evaluated.
-- `locals::Dict{String, Any}`: A dictionary of local variables, where keys are variable names (as strings) and values are their corresponding values.
+
+  - `ex::AbstractString`: The expression to be parsed and evaluated.
+  - `locals::Dict{String, Any}`: A dictionary of local variables, where keys are variable names (as strings) and values are their corresponding values.
 
 # Returns
-- `Any`: The result of evaluating the parsed expression.
+
+  - `Any`: The result of evaluating the parsed expression.
 
 # Examples
+
 ```julia
 # Define a dictionary of local variables
 local_variables = Dict("x" => 2, "y" => 3)
@@ -135,24 +148,26 @@ result = parse_eval_dict(expression, local_variables)
 function parse_eval_dict(ex::AbstractString, locals::Dict)
     ex = Meta.parse(ex)
     assignments = Expr[]
-    
+
     for (key, val) in locals
         push!(assignments, :($(Symbol(key)) = $val))
     end
-    
-    eval(quote
-        let
-            $(assignments...)
-            $ex
-        end
-    end)
+
+    return eval(
+        quote
+            let
+                $(assignments...)
+                $ex
+            end
+        end,
+    )
 end
 
 function _build_function(name::String, expr::Expr, args::Symbol...)
     function_name = Symbol(name, args...)
     inner_function_expr = quote
         function $function_name($(args...))
-            $expr
+            return $expr
         end
     end
 

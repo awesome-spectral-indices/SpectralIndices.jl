@@ -5,8 +5,8 @@ struct SpectralIndices{T <: Dict{String, AbstractSpectralIndex}, O}
 end
 =#
 
-function spectral_indices(indices_dict::Dict{String, Any}; origin="SpectralIndices")
-    indices = Dict{String, AbstractSpectralIndex}()
+function spectral_indices(indices_dict::Dict{String,Any}; origin="SpectralIndices")
+    indices = Dict{String,AbstractSpectralIndex}()
     for (key, value) in indices_dict
         indices[key] = SpectralIndex(value)
     end
@@ -34,22 +34,27 @@ Awesome Spectral Indices list. Attributes of the Spectral Index can be accessed
 and the index itself can be computed.
 
 # Arguments
-- `index::Dict{String, Any}`: A dictionary with the following keys:
-    - `"short_name"`: Short name of the spectral index.
-    - `"long_name"`: Long name or description of the spectral index.
-    - `"bands"`: List of bands or wavelengths used in the index calculation.
-    - `"application_domain"`: Application domain or use case of the spectral index.
-    - `"reference"`: Reference or source of the spectral index formula.
-    - `"formula"`: Mathematical formula of the spectral index.
-    - `"date_of_addition"`: Date when the spectral index was added (in "yyyy-mm-dd" format).
-    - `"contributor"`: Contributor or source of the spectral index information.
-    - `"platforms"`: Platforms or sensors for which the index is applicable.
+
+  - `index::Dict{String, Any}`: A dictionary with the following keys:
+
+      + `"short_name"`: Short name of the spectral index.
+      + `"long_name"`: Long name or description of the spectral index.
+      + `"bands"`: List of bands or wavelengths used in the index calculation.
+      + `"application_domain"`: Application domain or use case of the spectral index.
+      + `"reference"`: Reference or source of the spectral index formula.
+      + `"formula"`: Mathematical formula of the spectral index.
+      + `"date_of_addition"`: Date when the spectral index was added (in "yyyy-mm-dd" format).
+      + `"contributor"`: Contributor or source of the spectral index information.
+      + `"platforms"`: Platforms or sensors for which the index is applicable.
 
 # Returns
+
 A `SpectralIndex` object containing the specified index information.
 
 # Examples
+
 ```julia
+julia> indices["NIRv"]
 index_dict = Dict(
     "short_name" => "NDVI",
     "long_name" => "Normalized Difference Vegetation Index",
@@ -66,8 +71,8 @@ index = SpectralIndex(index_dict)
 '''
 Or, accessing directly the provided Dict of spectral indices:
 '''julia
-julia> indices["NIRv"]
 ```
+
 ```
 NIRv: Near-Infrared Reflectance of Vegetation
 Application domain: vegetation
@@ -75,11 +80,16 @@ Bands/Parameters: Any["N", "R"]
 Formula: ((N-R)/(N+R))*N
 Reference: https://doi.org/10.1126/sciadv.1602244
 ```
+
 '''julia
 julia> indices["NIRv"].contributor
+
 ```
 ```
+
 "https://github.com/davemlz"
+
+```
 ```
 """
 function SpectralIndex(index::Dict)
@@ -95,8 +105,17 @@ function SpectralIndex(index::Dict)
     contributor = index["contributor"]
     platforms = index["platforms"]
 
-    SpectralIndex(short_name, long_name, bands, application_domain, reference,
-                  formula, date_of_addition, contributor, platforms)
+    return SpectralIndex(
+        short_name,
+        long_name,
+        bands,
+        application_domain,
+        reference,
+        formula,
+        date_of_addition,
+        contributor,
+        platforms,
+    )
 end
 
 function (si::SpectralIndex)(args::Number...)
@@ -115,7 +134,7 @@ function Base.show(io::IO, index::SpectralIndex)
     println(io, "Application domain: ", index.application_domain)
     println(io, "Bands/Parameters: ", index.bands)
     println(io, "Formula: ", index.formula)
-    println(io, "Reference: ", index.reference)
+    return println(io, "Reference: ", index.reference)
 end
 
 """
@@ -125,24 +144,28 @@ Computes a Spectral Index based on the provided `SpectralIndex` instance,
 parameters, and optional keyword arguments.
 
 # Parameters
-- `si`: An instance of `SpectralIndex` which includes the name and details
-  of the spectral index to be computed.
-- `params`: (Optional) Dictionary of parameters used as inputs for the
-  computation. If not provided, parameters can be passed using keyword arguments.
-- `kwargs`: Additional parameters used as inputs for the computation,
-  provided as keyword pairs. These are used if `params` is empty.
+
+  - `si`: An instance of `SpectralIndex` which includes the name and details
+    of the spectral index to be computed.
+  - `params`: (Optional) Dictionary of parameters used as inputs for the
+    computation. If not provided, parameters can be passed using keyword arguments.
+  - `kwargs`: Additional parameters used as inputs for the computation,
+    provided as keyword pairs. These are used if `params` is empty.
 
 # Returns
-- The computed Spectral Index, the type of return value depends on
-  the input parameters and the specific spectral index being computed.
+
+  - The computed Spectral Index, the type of return value depends on
+    the input parameters and the specific spectral index being computed.
 
 # Examples
+
 ```jldoctest
-julia> compute(NDVI, N = 0.643, R = 0.175)
+julia> compute(NDVI; N=0.643, R=0.175)
 0.5721271393643031
 ```
+
 ```jldoctest
-julia> compute(NDVI, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
+julia> compute(NDVI; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)))
 0.572127  0.572127  0.572127  0.572127  0.572127
 0.572127  0.572127  0.572127  0.572127  0.572127
 0.572127  0.572127  0.572127  0.572127  0.572127
@@ -150,21 +173,15 @@ julia> compute(NDVI, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
 0.572127  0.572127  0.572127  0.572127  0.572127
 ```
 """
-function compute(
-    si::SpectralIndex,
-    params::Dict=Dict();
-    kwargs...
-)
+function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
     if isempty(params)
         return compute_index(si.short_name; kwargs...)
     else
-        return compute_index(si.short_name, params=params)
+        return compute_index(si.short_name; params=params)
     end
 end
 
-function _create_indices(
-    online::Bool = false
-)
+function _create_indices(online::Bool=false)
     indices = _get_indices(online)
     return spectral_indices(indices)
 end
@@ -184,41 +201,51 @@ This struct provides information about a specific band for a specific sensor or
 platform.
 
 # Arguments
-- `platform_band::Dict{String, Any}`: A dictionary with the following keys:
-    - `"platform"`: Name of the platform or sensor.
-    - `"band"`: Band number or name for the specific platform.
-    - `"name"`: Description or name of the band for the specific platform.
-    - `"wavelength"`: Center wavelength of the band (in nm) for the specific platform.
-    - `"bandwidth"`: Bandwidth of the band (in nm) for the specific platform.
+
+  - `platform_band::Dict{String, Any}`: A dictionary with the following keys:
+
+      + `"platform"`: Name of the platform or sensor.
+      + `"band"`: Band number or name for the specific platform.
+      + `"name"`: Description or name of the band for the specific platform.
+      + `"wavelength"`: Center wavelength of the band (in nm) for the specific platform.
+      + `"bandwidth"`: Bandwidth of the band (in nm) for the specific platform.
 
 # Returns
+
 A `PlatformBand` object containing the specified band information.
 
 # Examples
+
 ```julia
 platform_band_dict = Dict(
     "platform" => "Sentinel-2A",
     "band" => "B2",
     "name" => "Blue",
     "wavelength" => 492.4,
-    "bandwidth" => 66.0
+    "bandwidth" => 66.0,
 )
 
 platform_band = PlatformBand(platform_band_dict)
 ```
+
 Or, accessing directly the provided Dict of platforms:
 '''julia
 julia> bands["B"].platforms["sentinel2a"]
+
 ```
 ```
+
 PlatformBand(Platform: Sentinel-2A, Band: Blue)
-* Band: B2
-* Center Wavelength (nm): 492.4
-* Bandwidth (nm): 66.0
+
+  - Band: B2
+  - Center Wavelength (nm): 492.4
+  - Bandwidth (nm): 66.0
+
 ```
 ```julia
 julia> bands["B"].platforms["sentinel2a"].wavelength
 ```
+
 ```
 492.4
 ```
@@ -232,25 +259,28 @@ function PlatformBand(platform_band::Dict)
     return PlatformBand(platform, band, name, wavelength, bandwidth)
 end
 
-Base.show(io::IO, pb::PlatformBand) = begin
+function Base.show(io::IO, pb::PlatformBand)
     println(io, "PlatformBand(Platform: $(pb.platform), Band: $(pb.name))")
     println(io, "* Band: $(pb.band)")
     println(io, "* Center Wavelength (nm): $(pb.wavelength)")
-    println(io, "* Bandwidth (nm): $(pb.bandwidth)")
+    return println(io, "* Bandwidth (nm): $(pb.bandwidth)")
 end
 
 Base.show(io::IO, mime::MIME{Symbol("text/plain")}, pb::PlatformBand) = Base.show(io, pb)
 
 function Base.show(io::IO, mime::MIME{Symbol("text/html")}, pb::PlatformBand)
     println(io, "<div style=\"background-color:#F9F9F9; padding:10px;\">")
-    println(io, "<strong>Platform:</strong> $(pb.platform), <strong>Band:</strong> $(pb.name)<br>")
+    println(
+        io,
+        "<strong>Platform:</strong> $(pb.platform), <strong>Band:</strong> $(pb.name)<br>",
+    )
     println(io, "<strong>Band:</strong> $(pb.band)<br>")
     println(io, "<strong>Center Wavelength (nm):</strong> $(pb.wavelength)<br>")
     println(io, "<strong>Bandwidth (nm):</strong> $(pb.bandwidth)<br>")
-    println(io, "</div>")
+    return println(io, "</div>")
 end
 
-struct Band{S<:String,F<:Number,P<:Dict{String, PlatformBand}}
+struct Band{S<:String,F<:Number,P<:Dict{String,PlatformBand}}
     short_name::S
     long_name::S
     common_name::S
@@ -265,19 +295,24 @@ end
 Constructs a `Band` object to interact with specific bands in the list of required bands for Spectral Indices in the Awesome Spectral Indices list.
 
 # Arguments
-- `band::Dict{String, Any}`: A dictionary containing band information with the following keys:
-    - `"short_name"`: Short name of the band.
-    - `"long_name"`: Description or name of the band.
-    - `"common_name"`: Common name of the band according to the Electro-Optical Extension Specification for STAC.
-    - `"min_wavelength"`: Minimum wavelength of the spectral range of the band (in nm).
-    - `"max_wavelength"`: Maximum wavelength of the spectral range of the band (in nm).
-    - `"platforms"`: A dictionary of platform information associated with this band.
+
+  - `band::Dict{String, Any}`: A dictionary containing band information with the following keys:
+
+      + `"short_name"`: Short name of the band.
+      + `"long_name"`: Description or name of the band.
+      + `"common_name"`: Common name of the band according to the Electro-Optical Extension Specification for STAC.
+      + `"min_wavelength"`: Minimum wavelength of the spectral range of the band (in nm).
+      + `"max_wavelength"`: Maximum wavelength of the spectral range of the band (in nm).
+      + `"platforms"`: A dictionary of platform information associated with this band.
 
 # Returns
+
 A `Band` object representing the specified band.
 
 # Examples
+
 ```julia
+julia> bands["B"]
 band_dict = Dict{String, Any}(
     "short_name" => "B",
     "long_name" => "Blue",
@@ -295,32 +330,28 @@ band = Band(band_dict)
 '''
 Or, using the provided bands
 ```julia
-```
-julia> bands["B"]
-```
+
+julia> bands["B"].long_name
 Band(B: Blue)
-```
 ```julia
 ```
-julia> bands["B"].long_name
-```
-"Blue"
-```
 """
-function Band(band::Dict{String, Any})
+function Band(band::Dict{String,Any})
     short_name = band["short_name"]
     long_name = band["long_name"]
     common_name = band["common_name"]
     min_wavelength = band["min_wavelength"]
     max_wavelength = band["max_wavelength"]
-    
-    platforms = Dict{String, PlatformBand}()
-    
+
+    platforms = Dict{String,PlatformBand}()
+
     for (platform, platform_info) in band["platforms"]
         platforms[platform] = PlatformBand(platform_info)
     end
 
-    return Band(short_name, long_name, common_name, min_wavelength, max_wavelength, platforms)
+    return Band(
+        short_name, long_name, common_name, min_wavelength, max_wavelength, platforms
+    )
 end
 
 Base.show(io::IO, b::Band) = begin
@@ -329,18 +360,18 @@ end
 
 Base.show(io::IO, mime::MIME{Symbol("text/plain")}, b::Band) = Base.show(io, b)
 
-Base.show(io::IO, mime::MIME{Symbol("text/html")}, b::Band) = begin
+function Base.show(io::IO, mime::MIME{Symbol("text/html")}, b::Band)
     println(io, "<div style=\"background-color:#F9F9F9; padding:10px;\">")
     println(io, "<strong>Band:</strong> $(b.short_name): $(b.long_name)<br>")
     println(io, "<strong>Common Name:</strong> $(b.common_name)<br>")
     println(io, "<strong>Min Wavelength (nm):</strong> $(b.min_wavelength)<br>")
     println(io, "<strong>Max Wavelength (nm):</strong> $(b.max_wavelength)<br>")
-    println(io, "</div>")
+    return println(io, "</div>")
 end
 
 function _create_bands()
     bands_dict = _load_json("bands.json")
-    bands_class = Dict{String, Band}()
+    bands_class = Dict{String,Band}()
 
     for (key, value) in bands_dict
         bands_class[key] = Band(value)
@@ -360,7 +391,7 @@ struct Constant{S<:String,D,V}
     value::V
 end
 
-function Constant(constant::Dict{String, Any})
+function Constant(constant::Dict{String,Any})
     description = constant["description"]
     short_name = constant["short_name"]
     default = constant["default"]
@@ -368,11 +399,15 @@ function Constant(constant::Dict{String, Any})
     return Constant(description, description, short_name, short_name, default, default)
 end
 
-Base.show(io::IO, c::Constant) = print(io, "Constant($(c.short_name): $(c.long_name))\n  * Default value: $(c.default)")
+function Base.show(io::IO, c::Constant)
+    return print(
+        io, "Constant($(c.short_name): $(c.long_name))\n  * Default value: $(c.default)"
+    )
+end
 
 function _create_constants()
     constants = _load_json("constants.json")
-    constants_class = Dict{String, Constant}()
+    constants_class = Dict{String,Constant}()
 
     for (key, value) in constants
         constants_class[key] = Constant(value)

@@ -1,6 +1,7 @@
 # SpectralIndices.jl
 
 [![Julia](https://img.shields.io/badge/julia-v1.6.2+-blue.svg)](https://julialang.org/)
+[![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 
 ## Overview
 
