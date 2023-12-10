@@ -14,6 +14,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="https://github.com/awesome-spectral-indices/SpectralIndices.jl.git",
+    repo="github.com/awesome-spectral-indices/SpectralIndices.jl.git",
     push_preview=true,
 )
