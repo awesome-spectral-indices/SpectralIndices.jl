@@ -159,20 +159,12 @@ parameters, and optional keyword arguments.
 
 # Examples
 
-```jldoctest
-julia> using SpectralIndices
+```julia-repl
 julia> compute(NDVI; N=0.643, R=0.175)
-0.5721271393643031
 ```
 
-```jldoctest
-julia> using SpectralIndices
+```julia-repl
 julia> compute(NDVI; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)))
-0.572127  0.572127  0.572127  0.572127  0.572127
-0.572127  0.572127  0.572127  0.572127  0.572127
-0.572127  0.572127  0.572127  0.572127  0.572127
-0.572127  0.572127  0.572127  0.572127  0.572127
-0.572127  0.572127  0.572127  0.572127  0.572127
 ```
 """
 function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)

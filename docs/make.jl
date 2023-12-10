@@ -7,7 +7,7 @@ makedocs(;
     modules=[SpectralIndices],
     sitename="SpectralIndices.jl",
     clean=true,
-    doctest=false,
+    doctest=true,
     linkcheck=true,
     warnonly=[:missing_docs],
     pages=pages,
