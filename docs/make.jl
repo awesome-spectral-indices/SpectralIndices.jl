@@ -1,3 +1,4 @@
+using SpectralIndices
 using Documenter
 
 include("pages.jl")
