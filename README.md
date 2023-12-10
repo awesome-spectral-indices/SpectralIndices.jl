@@ -4,6 +4,7 @@
     <img width="400px" src="docs/src/assets/logo.png"/>
 </p>
 
+[![docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://awesome-spectral-indices.github.io/SpectralIndices.jl/dev/)
 [![CI](https://github.com/awesome-spectral-indices/SpectralIndices.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/awesome-spectral-indices/SpectralIndices.jl/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/gh/awesome-spectral-indices/SpectralIndices.jl/graph/badge.svg?token=0IRRDAZM0U)](https://codecov.io/gh/awesome-spectral-indices/SpectralIndices.jl)
 [![Julia](https://img.shields.io/badge/julia-v1.6.2+-blue.svg)](https://julialang.org/)
