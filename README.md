@@ -1,7 +1,7 @@
 # SpectralIndices.jl
 
 <p align="center">
-    <img width="400px" src="assets/logo.png"/>
+    <img width="400px" src="docs/src/assets/logo.png"/>
 </p>
 
 [![CI](https://github.com/awesome-spectral-indices/SpectralIndices.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/awesome-spectral-indices/SpectralIndices.jl/actions/workflows/CI.yml)
