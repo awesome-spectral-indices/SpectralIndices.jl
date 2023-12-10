@@ -53,43 +53,12 @@ A `SpectralIndex` object containing the specified index information.
 
 # Examples
 
-```julia
+```julia-repl
 julia> indices["NIRv"]
-index_dict = Dict(
-    "short_name" => "NDVI",
-    "long_name" => "Normalized Difference Vegetation Index",
-    "bands" => ["Red", "NIR"],
-    "application_domain" => "Vegetation monitoring",
-    "reference" => "Rouse et al. (1973)",
-    "formula" => "(NIR - Red) / (NIR + Red)",
-    "date_of_addition" => "2022-01-15",
-    "contributor" => "John Doe",
-    "platforms" => ["Landsat 8", "Sentinel-2A"]
-)
-
-index = SpectralIndex(index_dict)
-'''
+```
 Or, accessing directly the provided Dict of spectral indices:
-'''julia
-```
-
-```
-NIRv: Near-Infrared Reflectance of Vegetation
-Application domain: vegetation
-Bands/Parameters: Any["N", "R"]
-Formula: ((N-R)/(N+R))*N
-Reference: https://doi.org/10.1126/sciadv.1602244
-```
-
-'''julia
-julia> indices["NIRv"].contributor
-
-```
-```
-
-"https://github.com/davemlz"
-
-```
+```julia-repl
+NIRv
 ```
 """
 function SpectralIndex(index::Dict)
@@ -210,7 +179,7 @@ A `PlatformBand` object containing the specified band information.
 
 # Examples
 
-```julia
+```julia-repl
 platform_band_dict = Dict(
     "platform" => "Sentinel-2A",
     "band" => "B2",
@@ -223,25 +192,12 @@ platform_band = PlatformBand(platform_band_dict)
 ```
 
 Or, accessing directly the provided Dict of platforms:
-'''julia
+```julia-repl
 julia> bands["B"].platforms["sentinel2a"]
-
-```
 ```
 
-PlatformBand(Platform: Sentinel-2A, Band: Blue)
-
-  - Band: B2
-  - Center Wavelength (nm): 492.4
-  - Bandwidth (nm): 66.0
-
-```
-```julia
+```julia-repl
 julia> bands["B"].platforms["sentinel2a"].wavelength
-```
-
-```
-492.4
 ```
 """
 function PlatformBand(platform_band::Dict)
@@ -305,7 +261,7 @@ A `Band` object representing the specified band.
 
 # Examples
 
-```julia
+```julia-repl
 julia> bands["B"]
 band_dict = Dict{String, Any}(
     "short_name" => "B",
@@ -321,14 +277,12 @@ band_dict = Dict{String, Any}(
 )
 
 band = Band(band_dict)
-'''
+````
 Or, using the provided bands
-```julia
-
+```julia-repl
 julia> bands["B"].long_name
-Band(B: Blue)
-```julia
 ```
+
 """
 function Band(band::Dict{String,Any})
     short_name = band["short_name"]
