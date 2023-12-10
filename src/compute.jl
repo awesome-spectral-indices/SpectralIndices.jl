@@ -22,11 +22,13 @@ based on the provided index name, parameters, and optional keyword arguments.
 # Examples
 
 ```jldoctest
+julia> using SpectralIndices
 julia> compute_index("NDVI"; N=0.643, R=0.175)
  0.572127
 ```
 
 ```jldoctest
+julia> using SpectralIndices
 julia> compute_index("NDVI"; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)))
  0.572127  0.572127  0.572127  0.572127  0.572127
  0.572127  0.572127  0.572127  0.572127  0.572127
@@ -36,6 +38,7 @@ julia> compute_index("NDVI"; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)))
 ```
 
 ```jldoctest
+julia> using SpectralIndices
 julia> compute_index("NDVI"; N=fill(0.643, 5), R=fill(0.175, 5))
 0.5721271393643031
 0.5721271393643031
@@ -45,18 +48,21 @@ julia> compute_index("NDVI"; N=fill(0.643, 5), R=fill(0.175, 5))
 ```
 
 ```jldoctest
+julia> using SpectralIndices
 julia> compute_index(["NDVI", "SAVI"]; N=fill(0.643, 5), R=fill(0.175, 5), L=fill(0.5, 5))
 [0.5721271393643031, 0.5721271393643031, 0.5721271393643031, 0.5721271393643031, 0.5721271393643031]
 [0.5326251896813354, 0.5326251896813354, 0.5326251896813354, 0.5326251896813354, 0.5326251896813354]
 ```
 
 ```jldoctest
+julia> using SpectralIndices
 julia> compute_index(["NDVI", "SAVI"]; N=0.643, R=0.175, L=0.5)
 0.5721271393643031
 0.5326251896813354
 ```
 
 ```jldoctest
+julia> using SpectralIndices
 julia> compute_index(
            ["NDVI", "SAVI"]; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)), L=fill(0.5, (5, 5))
        )
