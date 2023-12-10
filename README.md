@@ -1,5 +1,7 @@
 # SpectralIndices.jl
 
+[![CI](https://github.com/awesome-spectral-indices/SpectralIndices.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/awesome-spectral-indices/SpectralIndices.jl/actions/workflows/CI.yml)
+[![codecov](https://codecov.io/gh/awesome-spectral-indices/SpectralIndices.jl/graph/badge.svg?token=0IRRDAZM0U)](https://codecov.io/gh/awesome-spectral-indices/SpectralIndices.jl)
 [![Julia](https://img.shields.io/badge/julia-v1.6.2+-blue.svg)](https://julialang.org/)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 

@@ -11,6 +11,7 @@ JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 [compat]
 Downloads = "1"
 JSON = "0.21"
+julia = "1.6"
 
 [extras]
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
