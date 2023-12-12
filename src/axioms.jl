@@ -55,8 +55,11 @@ A `SpectralIndex` object containing the specified index information.
 
 ```julia-repl
 julia> indices["NIRv"]
+
 ```
+
 Or, accessing directly the provided Dict of spectral indices:
+
 ```julia-repl
 NIRv
 ```
@@ -130,10 +133,12 @@ parameters, and optional keyword arguments.
 
 ```julia-repl
 julia> compute(NDVI; N=0.643, R=0.175)
+
 ```
 
 ```julia-repl
 julia> compute(NDVI; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)))
+
 ```
 """
 function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
@@ -192,12 +197,15 @@ platform_band = PlatformBand(platform_band_dict)
 ```
 
 Or, accessing directly the provided Dict of platforms:
+
 ```julia-repl
 julia> bands["B"].platforms["sentinel2a"]
+
 ```
 
 ```julia-repl
 julia> bands["B"].platforms["sentinel2a"].wavelength
+
 ```
 """
 function PlatformBand(platform_band::Dict)
@@ -277,12 +285,14 @@ band_dict = Dict{String, Any}(
 )
 
 band = Band(band_dict)
-````
-Or, using the provided bands
-```julia-repl
-julia> bands["B"].long_name
 ```
 
+Or, using the provided bands
+
+```julia-repl
+julia> bands["B"].long_name
+
+```
 """
 function Band(band::Dict{String,Any})
     short_name = band["short_name"]
