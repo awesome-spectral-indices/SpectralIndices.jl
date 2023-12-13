@@ -41,6 +41,13 @@ result = compute_index("NDVI", N = 0.643, R = 0.175)
 
 # Compute multiple indices with array inputs
 multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
+
+# use Dataframes
+df = DataFrame(N = [0.643, 0.560], R = [0.175, 0.225])
+result_df_single = compute_index("NDVI", df)
+# Multiple inputs in a dataframe
+df = DataFrame(N = [0.643, 0.560], R = [0.175, 0.225], L = [0.5, 0.5])
+result_df_multiple = compute_index(["NDVI", "SAVI"], df)
 ```
 
 ### Using `compute`

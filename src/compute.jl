@@ -96,6 +96,31 @@ function compute_index(
     return results
 end
 
+function compute_index(index::String, params::DataFrame, online::Bool=false; kwargs...)
+    # Convert DataFrame to a dictionary for each row and compute the index
+    results = [
+        compute_index(index, Dict(zip(names(params), row)), online; kwargs...) for
+        row in eachrow(params)
+    ]
+
+    # Return the results as a DataFrame with the column named after the index
+    return DataFrame(Symbol(index) => results)
+end
+
+function compute_index(
+    index::Vector{String}, params::DataFrame, online::Bool=false; kwargs...
+)
+    # Similar conversion and computation for a vector of indices
+    result_dfs = DataFrame()
+    for idx in index
+        result_df = compute_index(idx, params, online; kwargs...)
+        result_dfs[!, Symbol(idx)] = result_df[!, 1]
+    end
+
+    # Return the combined DataFrame with columns named after each index
+    return result_dfs
+end
+
 function _compute_index(index, params::Number...)
     result = index(params...)
     return result

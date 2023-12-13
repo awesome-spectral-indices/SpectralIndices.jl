@@ -3,6 +3,7 @@ module SpectralIndices
 using Dates
 using Downloads
 using JSON
+using DataFrames
 #using Symbolics
 
 abstract type AbstractSpectralIndex end
