@@ -1,7 +1,7 @@
 name = "SpectralIndices"
 uuid = "df0093a1-273d-40bc-819a-796ec3476907"
 authors = ["MartinuzziFrancesco <martinuzzi.francesco@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
