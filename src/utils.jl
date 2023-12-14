@@ -107,7 +107,26 @@ function _check_params(index, params::Dict)
     end
 end
 
+function _check_params(index, params::YAXArray)
+
+    for band in index.bands
+        if !(band in params.Variables)
+            throw(ArgumentError("'$band' is missing in the parameters for $index computation!"))
+        end
+    end
+end
+
 function _order_params(index, params)
+    new_params = []
+    for (bidx, band) in enumerate(index.bands)
+        push!(new_params, params[band])
+    end
+
+    return new_params
+end
+
+## TODO
+function _order_params(index, params::YAXArray)
     new_params = []
     for (bidx, band) in enumerate(index.bands)
         push!(new_params, params[band])

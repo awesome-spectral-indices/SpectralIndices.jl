@@ -54,14 +54,17 @@ julia> compute_index(
 ```
 """
 function compute_index(index::String, params::Dict=Dict(), online::Bool=false; kwargs...)
+
+    indices = _create_indices(online)
+    names = keys(indices)
+    for idx in index
+        @assert idx in names "$index is not a valid Spectral Index!"
+    end
+
     if isempty(params)
         params = Dict(String(k) => v for (k, v) in pairs(kwargs))
     end
 
-    indices = _create_indices(online)
-    names = keys(indices)
-
-    @assert index in names "$index is not a valid Spectral Index!"
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
     result = _compute_index(indices[index], params...)
@@ -72,22 +75,24 @@ end
 function compute_index(
     index::Vector{String},
     params::Dict=Dict(),
-    online::Bool=false,
-    return_origin::Bool=true,
-    coordinate::String="index";
+    online::Bool=false;
     kwargs...,
 )
+
+    indices = _create_indices(online)
+    names = keys(indices)
+    for idx in index
+        @assert idx in names "$index is not a valid Spectral Index!"
+    end
+    #@assert all(i in names for i in index) "$index contains invalid Spectral Indices!"
+
     if isempty(params)
         params = Dict(String(k) => v for (k, v) in pairs(kwargs))
     end
 
-    indices = _create_indices(online)
-    names = keys(indices)
-
     results = []
 
     for (nidx, idx) in enumerate(index)
-        @assert idx in names "$idx is not a valid Spectral Index!"
         _check_params(indices[idx], params)
         local_params = _order_params(indices[idx], params)
         push!(results, _compute_index(indices[idx], local_params...))
@@ -121,12 +126,19 @@ function compute_index(
     return result_dfs
 end
 
+# extend to YAXArrays
+
 function _compute_index(index, params::Number...)
     result = index(params...)
     return result
 end
 
 function _compute_index(index, params::AbstractArray...)
+    result = index.(params...)
+    return result
+end
+
+function _compute_index(index, params::YAXArray...)
     result = index.(params...)
     return result
 end

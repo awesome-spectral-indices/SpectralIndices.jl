@@ -4,6 +4,7 @@ using Dates
 using Downloads
 using JSON
 using DataFrames
+using YAXArrays
 #using Symbolics
 
 abstract type AbstractSpectralIndex end
