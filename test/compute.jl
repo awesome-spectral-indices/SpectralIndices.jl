@@ -1,5 +1,6 @@
 using SpectralIndices
 using DataFrames
+using YAXArrays
 
 expected_ndvi_value_f64 = 0.5721271393643031
 expected_savi_value_f64 = 0.5326251896813354
@@ -32,3 +33,27 @@ result_multiple = compute_index(["NDVI", "SAVI"], df_multiple)
 @test size(result_multiple, 1) == 2
 @test size(result_multiple, 2) == 2
 @test names(result_multiple) == ["NDVI", "SAVI"]
+
+# test Yaxarrays
+axes = (Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10))
+N_data = fill(0.643, (5, 5, 10))
+R_data = fill(0.175, (5, 5, 10))
+L_data = fill(0.5, (5, 5, 10))
+
+nds = YAXArray((Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)),N_data)
+rds = YAXArray((Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)),R_data)
+
+lds = YAXArray(
+    (Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)),
+    L_data
+)
+
+nr_ds = concatenatecubes([nds, rds], Dim{:Variables}(["N", "R"]))
+# single index
+# as params
+result_yaxa_single = compute_index("NDVI", nr_ds)
+@test size(result_yaxa_single) == size(rds) == size(nds)
+# as kwargs
+result_yaxa_single2 = compute_index("NDVI"; N=nds, R=rds)
+@test size(result_yaxa_single2) == size(rds) == size(nds)
+@test result_yaxa_single == result_yaxa_single2

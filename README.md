@@ -6,7 +6,7 @@
 
 | **Documentation** | **Build Status** | **Julia** |
 |:-----------------:|:----------------:|:---------:|
-| [![docs](docs-img)](docs-url) | [![CI](ci-img)](ci-url) [![codecov](cc-img)](cc-url) | [![Julia](julia-img)](julia-url) [![Code Style: Blue](style-img)](style-url) |
+| [![docs][docs-img]][docs-url] | [![CI][ci-img]][ci-url] [![codecov][cc-img]][cc-url] | [![Julia][julia-img]][julia-url] [![Code Style: Blue][style-img]][style-url] |
 
 [docs-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-url]: https://awesome-spectral-indices.github.io/SpectralIndices.jl/dev/
@@ -30,7 +30,10 @@ SpectralIndices.jl is a Julia package for working with spectral indices commonly
 ## Features
 
 - Compute a wide range of spectral indices.
-- Support for various data types, including arrays, DataFrames, YAXArrays objects, and more. (Coming soon)
+- Support for various data types, including but not limited to
+  - [x] Arrays
+  - [x] DataFrames
+  - [x] YAXArrays
 - Flexible parameter input options.
 - Compatibility with multiple remote sensing platforms and sensors.
 
@@ -53,6 +56,7 @@ You can compute spectral indices either by specifying the index and its paramete
 ### Using `compute_index`
 ```julia
 using SpectralIndices
+using DataFrames
 
 # Compute NDVI with direct parameter input
 result = compute_index("NDVI", N = 0.643, R = 0.175)
@@ -93,7 +97,7 @@ Contributions to SpectralIndices.jl are welcome! If you would like to contribute
 
 ## License
 
-SpectralIndices.jl is licensed under the MIT License. See LICENSE for more information.
+SpectralIndices.jl is licensed under the MIT License. See [LICENSE](https://github.com/awesome-spectral-indices/SpectralIndices.jl/blob/main/LICENSE) for more information.
 
 ## Acknowledgments
 

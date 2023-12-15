@@ -125,11 +125,10 @@ function _order_params(index, params)
     return new_params
 end
 
-## TODO
 function _order_params(index, params::YAXArray)
     new_params = []
     for (bidx, band) in enumerate(index.bands)
-        push!(new_params, params[band])
+        push!(new_params, params[Variable = At(band)])
     end
 
     return new_params

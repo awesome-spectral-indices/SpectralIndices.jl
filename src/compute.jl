@@ -57,9 +57,12 @@ function compute_index(index::String, params::Dict=Dict(), online::Bool=false; k
 
     indices = _create_indices(online)
     names = keys(indices)
-    for idx in index
-        @assert idx in names "$index is not a valid Spectral Index!"
-    end
+    #for idx in index
+    #    @assert idx in names "$index is not a valid Spectral Index!"
+    #end
+
+    @assert index in names "$index is not a valid Spectral Index!"
+
 
     if isempty(params)
         params = Dict(String(k) => v for (k, v) in pairs(kwargs))
@@ -127,6 +130,31 @@ function compute_index(
 end
 
 # extend to YAXArrays
+function compute_index(index::String, params::YAXArray, online::Bool=false; kwargs...)
+    indices = _create_indices(online)
+    names = keys(indices)
+    #for idx in index
+    #    @assert idx in names "$index is not a valid Spectral Index!"
+    #end
+
+    @assert index in names "$index is not a valid Spectral Index!"
+
+    if isempty(params)
+        params_yaxa = []
+        names_yaxa = []
+        for (key, value) in kwargs
+            push!(params_yaxa, value)
+            push!(names_yaxa, key)
+        end
+        params = concatenatecubes(names_yaxa, Dim{:Variables}(params_yaxa))
+    end
+
+    _check_params(indices[index], params)
+    params = _order_params(indices[index], params)
+    result = _compute_index(indices[index], params...)
+
+    return result
+end
 
 function _compute_index(index, params::Number...)
     result = index(params...)
