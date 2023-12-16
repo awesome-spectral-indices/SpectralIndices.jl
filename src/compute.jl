@@ -53,15 +53,30 @@ julia> compute_index(
 
 ```
 """
-function compute_index(index::String, params::Dict=Dict(), online::Bool=false; kwargs...)
-    if isempty(params)
-        params = Dict(String(k) => v for (k, v) in pairs(kwargs))
-    end
+function compute_index(
+    index::String,
+    params=nothing,
+    online::Bool=false;
+    kwargs...
+)
 
     indices = _create_indices(online)
     names = keys(indices)
-
     @assert index in names "$index is not a valid Spectral Index!"
+
+    if params == nothing
+        params = _create_params(kwargs...)
+    end
+
+    results = compute_index(index, params)
+    return results
+end
+
+function compute_index(
+    index::String,
+    params::Dict
+)
+    indices = _create_indices()
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
     result = _compute_index(indices[index], params...)
@@ -70,24 +85,62 @@ function compute_index(index::String, params::Dict=Dict(), online::Bool=false; k
 end
 
 function compute_index(
+    index::String,
+    params::DataFrame
+)
+    # Convert DataFrame to a dictionary for each row and compute the index
+    results = [
+        compute_index(index, Dict(zip(names(params), row))) for
+        row in eachrow(params)
+    ]
+
+    # Return the results as a DataFrame with the column named after the index
+    return DataFrame(Symbol(index) => results)
+end
+
+## TODO: simplify even further
+# this is same function contente as dispatch on Dict
+function compute_index(index::String, params::YAXArray)
+    indices = _create_indices()
+    _check_params(indices[index], params)
+    params = _order_params(indices[index], params)
+    result = _compute_index(indices[index], params...)
+    return result
+end
+
+function compute_index(
     index::Vector{String},
-    params::Dict=Dict(),
-    online::Bool=false,
-    return_origin::Bool=true,
-    coordinate::String="index";
+    params=nothing,
+    online::Bool=false;
     kwargs...,
 )
-    if isempty(params)
-        params = Dict(String(k) => v for (k, v) in pairs(kwargs))
-    end
 
     indices = _create_indices(online)
     names = keys(indices)
+    for idx in index
+        @assert idx in names "$index is not a valid Spectral Index!"
+    end
 
+    if params == nothing
+        params = _create_params(kwargs...)
+    end
+
+    results = compute_index(index, params)
+
+    return results
+end
+
+# TODO: return results in a matrix columnswise
+#multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
+function compute_index(
+    index::Vector{String},
+    params::Dict
+)
+
+    indices = _create_indices()
     results = []
 
     for (nidx, idx) in enumerate(index)
-        @assert idx in names "$idx is not a valid Spectral Index!"
         _check_params(indices[idx], params)
         local_params = _order_params(indices[idx], params)
         push!(results, _compute_index(indices[idx], local_params...))
@@ -96,24 +149,14 @@ function compute_index(
     return results
 end
 
-function compute_index(index::String, params::DataFrame, online::Bool=false; kwargs...)
-    # Convert DataFrame to a dictionary for each row and compute the index
-    results = [
-        compute_index(index, Dict(zip(names(params), row)), online; kwargs...) for
-        row in eachrow(params)
-    ]
-
-    # Return the results as a DataFrame with the column named after the index
-    return DataFrame(Symbol(index) => results)
-end
-
 function compute_index(
-    index::Vector{String}, params::DataFrame, online::Bool=false; kwargs...
+    index::Vector{String},
+    params::DataFrame
 )
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()
     for idx in index
-        result_df = compute_index(idx, params, online; kwargs...)
+        result_df = compute_index(idx, params)
         result_dfs[!, Symbol(idx)] = result_df[!, 1]
     end
 
@@ -121,12 +164,22 @@ function compute_index(
     return result_dfs
 end
 
-function _compute_index(index, params::Number...)
-    result = index(params...)
+
+function compute_index(
+    index::Vector{String},
+    params::YAXArray
+)
+
+    results = []
+    for (nidx, idx) in enumerate(index)
+        res_tmp = compute_index(idx, params)
+        push!(results, res_tmp)
+    end
+    result = concatenatecubes(results, Dim{:Variables}(index))
+
     return result
 end
 
-function _compute_index(index, params::AbstractArray...)
-    result = index.(params...)
-    return result
-end
+_compute_index(idx::AbstractSpectralIndex, prms::Number...) = idx(prms...)
+_compute_index(idx::AbstractSpectralIndex, prms::AbstractArray...) = idx.(prms...)
+_compute_index(idx::AbstractSpectralIndex, prms::YAXArray...) = idx.(prms...)
