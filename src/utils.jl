@@ -193,3 +193,27 @@ function _build_function(name::String, expr::Expr, args::Symbol...)
 
     return eval(function_name)
 end
+
+
+function _create_params(kw_args...)
+    params = Dict(String(k) => v for (k, v) in kw_args)
+    return params
+end
+
+function _create_params(kw_args::Pair{Symbol, DataFrame}...)
+    dfs = [pair.second for pair in kw_args]
+    params = hcat(dfs...)
+    return params
+end
+
+function _create_params(kw_args::Pair{Symbol, <:YAXArray}...)
+    params_yaxa = []
+    names_yaxa = []
+    for (key, value) in kw_args
+        push!(params_yaxa, value)
+        push!(names_yaxa, String(key))
+    end
+
+    params = concatenatecubes(params_yaxa, Dim{:Variables}(names_yaxa))
+    return params
+end
