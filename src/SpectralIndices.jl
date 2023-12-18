@@ -22,7 +22,7 @@ export SpectralIndex, indices, compute
 export PlatformBand, Band, bands
 export Constant, constants
 export compute_index
-export compute_kernel
+export compute_kernel, linear, poly, RBF 
 
 for (name, instance) in indices
     @eval begin

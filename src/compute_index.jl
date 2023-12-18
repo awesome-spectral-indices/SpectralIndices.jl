@@ -68,15 +68,15 @@ function compute_index(
         params = _create_params(kwargs...)
     end
 
-    results = compute_index(index, params)
+    results = compute_index(index, params; indices=indices)
     return results
 end
 
 function compute_index(
     index::String,
-    params::Dict
+    params::Dict;
+    indices=_create_indices()
 )
-    indices = _create_indices()
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
     result = _compute_index(indices[index], params...)
@@ -86,11 +86,12 @@ end
 
 function compute_index(
     index::String,
-    params::DataFrame
+    params::DataFrame;
+    indices=_create_indices()
 )
     # Convert DataFrame to a dictionary for each row and compute the index
     results = [
-        compute_index(index, Dict(zip(names(params), row))) for
+        compute_index(index, Dict(zip(names(params), row)); indices=indices) for
         row in eachrow(params)
     ]
 
@@ -100,8 +101,11 @@ end
 
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
-function compute_index(index::String, params::YAXArray)
-    indices = _create_indices()
+function compute_index(
+    index::String,
+    params::YAXArray;
+    indices=_create_indices()
+)
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
     result = _compute_index(indices[index], params...)
@@ -125,7 +129,7 @@ function compute_index(
         params = _create_params(kwargs...)
     end
 
-    results = compute_index(index, params)
+    results = compute_index(index, params; indices=indices)
 
     return results
 end
@@ -134,10 +138,10 @@ end
 #multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
 function compute_index(
     index::Vector{String},
-    params::Dict
+    params::Dict;
+    indices=_create_indices()
 )
 
-    indices = _create_indices()
     results = []
 
     for (nidx, idx) in enumerate(index)
@@ -151,12 +155,13 @@ end
 
 function compute_index(
     index::Vector{String},
-    params::DataFrame
+    params::DataFrame;
+    indices=_create_indices()
 )
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()
     for idx in index
-        result_df = compute_index(idx, params)
+        result_df = compute_index(idx, params; indices=indices)
         result_dfs[!, Symbol(idx)] = result_df[!, 1]
     end
 
@@ -167,12 +172,13 @@ end
 
 function compute_index(
     index::Vector{String},
-    params::YAXArray
+    params::YAXArray;
+    indices=_create_indices()
 )
 
     results = []
     for (nidx, idx) in enumerate(index)
-        res_tmp = compute_index(idx, params)
+        res_tmp = compute_index(idx, params; indices=indices)
         push!(results, res_tmp)
     end
     result = concatenatecubes(results, Dim{:Variables}(index))
