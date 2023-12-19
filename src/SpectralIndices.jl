@@ -6,20 +6,23 @@ using JSON
 using DataFrames
 using YAXArrays
 using DimensionalData
-#using Symbolics
 
 abstract type AbstractSpectralIndex end
 abstract type AbstractPlatformBand end
 
 include("utils.jl")
 include("axioms.jl")
-include("compute.jl")
+include("compute_index.jl")
+include("compute_kernel.jl")
 #include("datasets.jl")
+
 indices = _create_indices()
 
-export SpectralIndex, indices, compute, compute_index
+export SpectralIndex, indices, compute
 export PlatformBand, Band, bands
 export Constant, constants
+export compute_index
+export compute_kernel, linear, poly, RBF
 
 for (name, instance) in indices
     @eval begin

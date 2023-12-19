@@ -108,10 +108,13 @@ function _check_params(index, params::Dict)
 end
 
 function _check_params(index, params::YAXArray)
-
     for band in index.bands
         if !(band in params.Variables)
-            throw(ArgumentError("'$band' is missing in the parameters for $index computation!"))
+            throw(
+                ArgumentError(
+                    "'$band' is missing in the parameters for $index computation!"
+                ),
+            )
         end
     end
 end
@@ -128,7 +131,7 @@ end
 function _order_params(index, params::YAXArray)
     new_params = []
     for (bidx, band) in enumerate(index.bands)
-        push!(new_params, params[Variable = At(band)])
+        push!(new_params, params[Variable=At(band)])
     end
 
     return new_params
@@ -194,19 +197,18 @@ function _build_function(name::String, expr::Expr, args::Symbol...)
     return eval(function_name)
 end
 
-
 function _create_params(kw_args...)
     params = Dict(String(k) => v for (k, v) in kw_args)
     return params
 end
 
-function _create_params(kw_args::Pair{Symbol, DataFrame}...)
+function _create_params(kw_args::Pair{Symbol,DataFrame}...)
     dfs = [pair.second for pair in kw_args]
     params = hcat(dfs...)
     return params
 end
 
-function _create_params(kw_args::Pair{Symbol, <:YAXArray}...)
+function _create_params(kw_args::Pair{Symbol,<:YAXArray}...)
     params_yaxa = []
     names_yaxa = []
     for (key, value) in kw_args
