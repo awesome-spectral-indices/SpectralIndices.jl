@@ -6,7 +6,8 @@ using Test
         include("axioms.jl")
     end
     @safetestset "Compute" begin
-        include("compute.jl")
+        include("compute_index.jl")
+        include("compute_kernel.jl")
     end
     @safetestset "Utils" begin
         include("utils.jl")
