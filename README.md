@@ -30,7 +30,7 @@ SpectralIndices.jl is a Julia package for working with spectral indices commonly
 ## Features
 
 - Compute a wide range of spectral indices.
-- Support for various data types, including but not limited to
+- Support for various data types, including but not limited to (see this [issue](https://github.com/awesome-spectral-indices/SpectralIndices.jl/issues/8) for an updated list and WIP)
   - [x] Arrays
   - [x] DataFrames
   - [x] YAXArrays
