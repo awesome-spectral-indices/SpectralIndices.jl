@@ -16,7 +16,7 @@ end
 
     # Test with arrays
     a, b, c, p = [1, 2, 3], [4, 5, 6], [1, 1, 1], [2, 2, 2]
-    expected_result = [(1*4 + 1)^2, (2*5 + 1)^2, (3*6 + 1)^2]
+    expected_result = [(1 * 4 + 1)^2, (2 * 5 + 1)^2, (3 * 6 + 1)^2]
     @test all(poly(a, b, c, p) .== expected_result)
 end
 

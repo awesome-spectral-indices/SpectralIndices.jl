@@ -31,7 +31,7 @@ result_single = compute_index("NDVI", df_single)
 dfn_single = DataFrame(; N=[0.643, 0.56])
 dfr_single = DataFrame(; R=[0.175, 0.22])
 dfl_single = DataFrame(; L=[0.5, 0.4])
-result_single2 = compute_index("NDVI"; N = dfn_single, R=dfr_single)
+result_single2 = compute_index("NDVI"; N=dfn_single, R=dfr_single)
 @test size(result_single2, 1) == 2
 @test size(result_single2, 2) == 1
 @test names(result_single2) == ["NDVI"]
@@ -45,7 +45,7 @@ result_multiple = compute_index(["NDVI", "SAVI"], df_multiple)
 @test names(result_multiple) == ["NDVI", "SAVI"]
 
 # multiple indices as kwargs
-result_multiple2 = compute_index(["NDVI", "SAVI"]; N = dfn_single, R=dfr_single, L=dfl_single)
+result_multiple2 = compute_index(["NDVI", "SAVI"]; N=dfn_single, R=dfr_single, L=dfl_single)
 @test size(result_multiple2, 1) == 2
 @test size(result_multiple2, 2) == 2
 @test names(result_multiple2) == ["NDVI", "SAVI"]
@@ -57,9 +57,9 @@ N_data = fill(0.643, (5, 5, 10))
 R_data = fill(0.175, (5, 5, 10))
 L_data = fill(0.5, (5, 5, 10))
 
-nds = YAXArray((Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)),N_data)
-rds = YAXArray((Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)),R_data)
-lds = YAXArray((Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)),L_data)
+nds = YAXArray((Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)), N_data)
+rds = YAXArray((Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)), R_data)
+lds = YAXArray((Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Time}(1:10)), L_data)
 
 nr_ds = concatenatecubes([nds, rds], Dim{:Variables}(["N", "R"]))
 nrl_ds = concatenatecubes([nds, rds, lds], Dim{:Variables}(["N", "R", "L"]))
