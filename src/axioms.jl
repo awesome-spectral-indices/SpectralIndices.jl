@@ -91,15 +91,12 @@ function SpectralIndex(index::Dict)
 end
 
 function (si::SpectralIndex)(args::Number...)
+    arg_type = typeof(first(args))
     parsed_formula = Meta.parse(si.formula)
     expr = _build_function(si.short_name, parsed_formula, Symbol.(si.bands)...)
     result = Base.invokelatest(expr, args...) ## to deal with for performance
-    return result
+    return arg_type(result)
 end
-
-#function (si::SpectralIndex)(args::AbstractArray...)
-#    return si.(args...)
-#end
 
 function Base.show(io::IO, index::SpectralIndex)
     println(io, index.short_name, ": ", index.long_name)
