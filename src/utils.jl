@@ -202,12 +202,6 @@ function _create_params(kw_args...)
     return params
 end
 
-function _create_params(kw_args::Pair{Symbol,DataFrame}...)
-    dfs = [pair.second for pair in kw_args]
-    params = hcat(dfs...)
-    return params
-end
-
 function _create_params(kw_args::Pair{Symbol,<:YAXArray}...)
     params_yaxa = []
     names_yaxa = []

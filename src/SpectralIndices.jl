@@ -3,7 +3,6 @@ module SpectralIndices
 using Dates
 using Downloads
 using JSON
-using DataFrames
 using YAXArrays
 using DimensionalData
 
@@ -15,6 +14,10 @@ include("axioms.jl")
 include("compute_index.jl")
 include("compute_kernel.jl")
 #include("datasets.jl")
+
+if !isdefined(Base, :get_extension)
+    include("../ext/SpectralIndicesDataFramesExt.jl")
+end
 
 indices = _create_indices()
 
