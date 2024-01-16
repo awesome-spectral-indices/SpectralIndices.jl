@@ -74,15 +74,6 @@ function compute_index(index::String, params::Dict; indices=_create_indices())
     return result
 end
 
-## TODO: simplify even further
-# this is same function contente as dispatch on Dict
-function compute_index(index::String, params::YAXArray; indices=_create_indices())
-    _check_params(indices[index], params)
-    params = _order_params(indices[index], params)
-    result = _compute_index(indices[index], params...)
-    return result
-end
-
 function compute_index(index::Vector{String}, params=nothing, online::Bool=false; kwargs...)
     indices = _create_indices(online)
     names = keys(indices)
@@ -113,17 +104,5 @@ function compute_index(index::Vector{String}, params::Dict; indices=_create_indi
     return results
 end
 
-function compute_index(index::Vector{String}, params::YAXArray; indices=_create_indices())
-    results = []
-    for (nidx, idx) in enumerate(index)
-        res_tmp = compute_index(idx, params; indices=indices)
-        push!(results, res_tmp)
-    end
-    result = concatenatecubes(results, Dim{:Variables}(index))
-
-    return result
-end
-
 _compute_index(idx::AbstractSpectralIndex, prms::Number...) = idx(prms...)
 _compute_index(idx::AbstractSpectralIndex, prms::AbstractArray...) = idx.(prms...)
-_compute_index(idx::AbstractSpectralIndex, prms::YAXArray...) = idx.(prms...)

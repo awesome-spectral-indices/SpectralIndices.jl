@@ -3,8 +3,6 @@ module SpectralIndices
 using Dates
 using Downloads
 using JSON
-using YAXArrays
-using DimensionalData
 
 abstract type AbstractSpectralIndex end
 abstract type AbstractPlatformBand end
@@ -17,6 +15,7 @@ include("compute_kernel.jl")
 
 if !isdefined(Base, :get_extension)
     include("../ext/SpectralIndicesDataFramesExt.jl")
+    include("../ext/SpectralIndicesYAXArraysExt.jl")
 end
 
 indices = _create_indices()
