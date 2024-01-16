@@ -78,17 +78,6 @@ function linear(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray
     return result
 end
 
-function linear(params::DataFrame)
-    result = linear(params[!, "a"], params[!, "b"])
-    result_df = DataFrame(; linear=result)
-    return result_df
-end
-
-function linear(params::YAXArray)
-    result = linear(params[Variable=At("a")], params[Variable=At("b")])
-    return result
-end
-
 """
     poly(a::T, b::T, c::T, p::T) where T <: Number
     poly(a::T, b::T, c::T, p::T) where T <: AbstractArray
@@ -146,22 +135,6 @@ function poly(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray}}
     return result
 end
 
-function poly(params::DataFrame)
-    result = poly(params[!, "a"], params[!, "b"], params[!, "c"], params[!, "p"])
-    result_df = DataFrame(; poly=result)
-    return result_df
-end
-
-function poly(params::YAXArray)
-    result = poly(
-        params[Variable=At("a")],
-        params[Variable=At("b")],
-        params[Variable=At("c")],
-        params[Variable=At("p")],
-    )
-    return result
-end
-
 """
     RBF(a::T, b::T, sigma::T) where T <: Number
     RBF(a::T, b::T, sigma::T) where T <: AbstractArray
@@ -216,18 +189,5 @@ end
 
 function RBF(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray}}
     result = RBF(params["a"], params["b"], params["sigma"])
-    return result
-end
-
-function RBF(params::DataFrame)
-    result = RBF(params[!, "a"], params[!, "b"], params[!, "sigma"])
-    result_df = DataFrame(; RBF=result)
-    return result_df
-end
-
-function RBF(params::YAXArray)
-    result = RBF(
-        params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
-    )
     return result
 end

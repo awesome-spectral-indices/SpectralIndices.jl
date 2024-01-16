@@ -76,30 +76,8 @@ function compute_index(index::String, params::Dict; indices=indices)
     return result
 end
 
-function compute_index(index::String, params::DataFrame; indices=indices)
-    # Convert DataFrame to a dictionary for each row and compute the index
-    results = [
-        compute_index(index, Dict(zip(names(params), row)); indices=indices) for
-        row in eachrow(params)
-    ]
-
-    # Return the results as a DataFrame with the column named after the index
-    return DataFrame(Symbol(index) => results)
-end
-
-## TODO: simplify even further
-# this is same function contente as dispatch on Dict
-function compute_index(index::String, params::YAXArray; indices=indices)
-    _check_params(indices[index], params)
-    params = _order_params(indices[index], params)
-    result = _compute_index(indices[index], params...)
-    return result
-end
-
-function compute_index(
-    index::Vector{String}, params=nothing, online::Bool=false; indices=indices, kwargs...
-)
-    #indices = _create_indices(online)
+function compute_index(index::Vector{String}, params=nothing, online::Bool=false; kwargs...)
+    indices = _create_indices(online)
     names = keys(indices)
     for idx in index
         @assert idx in names "$index is not a valid Spectral Index!"
@@ -128,29 +106,5 @@ function compute_index(index::Vector{String}, params::Dict; indices=indices)
     return results
 end
 
-function compute_index(index::Vector{String}, params::DataFrame; indices=indices)
-    # Similar conversion and computation for a vector of indices
-    result_dfs = DataFrame()
-    for idx in index
-        result_df = compute_index(idx, params; indices=indices)
-        result_dfs[!, Symbol(idx)] = result_df[!, 1]
-    end
-
-    # Return the combined DataFrame with columns named after each index
-    return result_dfs
-end
-
-function compute_index(index::Vector{String}, params::YAXArray; indices=indices)
-    results = []
-    for (nidx, idx) in enumerate(index)
-        res_tmp = compute_index(idx, params; indices=indices)
-        push!(results, res_tmp)
-    end
-    result = concatenatecubes(results, Dim{:Variables}(index))
-
-    return result
-end
-
 _compute_index(idx::AbstractSpectralIndex, prms::Number...) = idx(prms...)
 _compute_index(idx::AbstractSpectralIndex, prms::AbstractArray...) = idx.(prms...)
-_compute_index(idx::AbstractSpectralIndex, prms::YAXArray...) = idx.(prms...)
