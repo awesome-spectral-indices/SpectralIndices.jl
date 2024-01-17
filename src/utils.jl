@@ -163,6 +163,7 @@ function parse_eval_dict(ex::AbstractString, locals::Dict)
     )
 end
 
+#=
 function _build_function(name::String, expr::Expr, args::Symbol...)
     function_name = Symbol(name, args...)
     inner_function_expr = quote
@@ -174,6 +175,11 @@ function _build_function(name::String, expr::Expr, args::Symbol...)
     eval(inner_function_expr)
 
     return eval(function_name)
+end
+=#
+
+function _build_function(name::String, expr::Expr, args::Symbol...)
+    return eval(:(($(args...),) -> $expr))
 end
 
 function _create_params(kw_args...)
