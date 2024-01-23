@@ -8,7 +8,25 @@ using SpectralIndices
 # Test offline
 @test SpectralIndices._get_indices() isa Dict
 # Test online
-@test SpectralIndices._get_indices(true) isa Dict
+@testset "Download Indices Test" begin
+    test_dir = mktempdir()
+    try
+        # Define the file location within the test directory
+        test_fileloc = joinpath(test_dir, "spectral-indices-dict.json")
+
+        # Run the _get_indices function with online = true
+        indices = SpectralIndices._get_indices(true; fileloc=test_fileloc)
+
+        # Test if the file was downloaded and parsed successfully
+        @test isfile(test_fileloc)
+        @test !isempty(indices)
+        @test indices isa Dict
+
+    finally
+        # Clean up: Delete the test file and directory
+        rm(test_dir; recursive=true)
+    end
+end
 
 params = Dict("N" => 0.6, "R" => 0.3)
 # Test correctness

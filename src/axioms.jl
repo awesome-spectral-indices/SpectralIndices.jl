@@ -98,12 +98,25 @@ function (si::SpectralIndex)(args::Number...)
     return arg_type(result)
 end
 
-function Base.show(io::IO, index::SpectralIndex)
-    println(io, index.short_name, ": ", index.long_name)
-    println(io, "Application domain: ", index.application_domain)
-    println(io, "Bands/Parameters: ", index.bands)
-    println(io, "Formula: ", index.formula)
-    return println(io, "Reference: ", index.reference)
+# Machine-readable output
+function Base.show(io::IO, si::SpectralIndex)
+    print(io, "SpectralIndex(")
+    println(io, "short_name: $(si.short_name),")
+    println(io, "long_name: $(si.long_name),")
+    println(io, "application_domain: $(si.application_domain),")
+    println(io, "bands: $(si.bands),")
+    println(io, "formula: $(si.formula),")
+    println(io, "reference: $(si.reference)")
+    return println(io, ")")
+end
+
+# Human-readable output
+function Base.show(io::IO, ::MIME"text/plain", si::SpectralIndex)
+    println(io, "$(si.short_name): $(si.long_name)")
+    println(io, "* Application Domain: $(si.application_domain)")
+    println(io, "* Bands/Parameters: $(si.bands)")
+    println(io, "* Formula: $(si.formula)")
+    return println(io, "* Reference: $(si.reference)")
 end
 
 """

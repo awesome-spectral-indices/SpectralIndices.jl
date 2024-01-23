@@ -54,11 +54,15 @@ indices = _get_indices(true)
 '''
 ```
 """
-function _get_indices(online::Bool=false)
+function _get_indices(
+    online::Bool=false;
+    filename="spectral-indices-dict.json",
+    fileloc=joinpath(dirname(@__FILE__), "..", "data", filename),
+)
     if online
         indices_loc = Downloads.download(
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
-            string(pwd(), "spectral-indices-dict.json"),
+            fileloc,
         )
         indices = JSON.parsefile(indices_loc)
     else
