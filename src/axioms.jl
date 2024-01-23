@@ -107,7 +107,7 @@ function Base.show(io::IO, si::SpectralIndex)
     println(io, "bands: $(si.bands),")
     println(io, "formula: $(si.formula),")
     println(io, "reference: $(si.reference)")
-    println(io, ")")
+    return println(io, ")")
 end
 
 # Human-readable output
@@ -116,7 +116,7 @@ function Base.show(io::IO, ::MIME"text/plain", si::SpectralIndex)
     println(io, "* Application Domain: $(si.application_domain)")
     println(io, "* Bands/Parameters: $(si.bands)")
     println(io, "* Formula: $(si.formula)")
-    println(io, "* Reference: $(si.reference)")
+    return println(io, "* Reference: $(si.reference)")
 end
 
 """
