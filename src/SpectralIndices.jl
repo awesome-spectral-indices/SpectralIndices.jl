@@ -19,10 +19,12 @@ if !isdefined(Base, :get_extension)
 end
 
 indices = _create_indices()
+bands = _create_bands()
+constants = _create_constants()
 
 export SpectralIndex, indices, compute
-export PlatformBand, Band, bands
-export Constant, constants
+export PlatformBand, Band
+export Constant
 export compute_index
 export compute_kernel, linear, poly, RBF
 
