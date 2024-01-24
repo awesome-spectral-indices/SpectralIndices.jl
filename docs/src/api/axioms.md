@@ -5,4 +5,5 @@ SpectralIndex
 compute
 PlatformBand
 Band
+Constant
 ```

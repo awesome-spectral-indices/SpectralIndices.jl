@@ -227,6 +227,7 @@ function PlatformBand(platform_band::Dict)
     return PlatformBand(platform, band, name, wavelength, bandwidth)
 end
 
+# Machine-readable output
 function Base.show(io::IO, pb::PlatformBand)
     println(io, "PlatformBand(Platform: $(pb.platform), Band: $(pb.name))")
     println(io, "* Band: $(pb.band)")
@@ -234,18 +235,12 @@ function Base.show(io::IO, pb::PlatformBand)
     return println(io, "* Bandwidth (nm): $(pb.bandwidth)")
 end
 
-Base.show(io::IO, mime::MIME{Symbol("text/plain")}, pb::PlatformBand) = Base.show(io, pb)
-
-function Base.show(io::IO, mime::MIME{Symbol("text/html")}, pb::PlatformBand)
-    println(io, "<div style=\"background-color:#F9F9F9; padding:10px;\">")
-    println(
-        io,
-        "<strong>Platform:</strong> $(pb.platform), <strong>Band:</strong> $(pb.name)<br>",
-    )
-    println(io, "<strong>Band:</strong> $(pb.band)<br>")
-    println(io, "<strong>Center Wavelength (nm):</strong> $(pb.wavelength)<br>")
-    println(io, "<strong>Bandwidth (nm):</strong> $(pb.bandwidth)<br>")
-    return println(io, "</div>")
+# Human-readable output
+function Base.show(io::IO, ::MIME"text/plain", pb::PlatformBand)
+    println(io, "Platform: $(pb.platform), Band: $(pb.name)")
+    println(io, "* Band: $(pb.band)")
+    println(io, "* Center Wavelength (nm): $(pb.wavelength)")
+    return println(io, "* Bandwidth (nm): $(pb.bandwidth)")
 end
 
 struct Band{S<:String,F<:Number,P<:Dict{String,PlatformBand}}
@@ -314,7 +309,11 @@ function Band(band::Dict{String,Any})
     platforms = Dict{String,PlatformBand}()
 
     for (platform, platform_info) in band["platforms"]
-        platforms[platform] = PlatformBand(platform_info)
+        if isa(platform_info, PlatformBand)
+            platforms[platform] = platform_info
+        else
+            platforms[platform] = PlatformBand(platform_info)
+        end
     end
 
     return Band(
@@ -322,19 +321,14 @@ function Band(band::Dict{String,Any})
     )
 end
 
-Base.show(io::IO, b::Band) = begin
-    println(io, "Band($(b.short_name): $(b.long_name))")
+# Machine-readable output
+function Base.show(io::IO, b::Band)
+    return println(io, "Band($(b.short_name): $(b.long_name))")
 end
 
-Base.show(io::IO, mime::MIME{Symbol("text/plain")}, b::Band) = Base.show(io, b)
-
-function Base.show(io::IO, mime::MIME{Symbol("text/html")}, b::Band)
-    println(io, "<div style=\"background-color:#F9F9F9; padding:10px;\">")
-    println(io, "<strong>Band:</strong> $(b.short_name): $(b.long_name)<br>")
-    println(io, "<strong>Common Name:</strong> $(b.common_name)<br>")
-    println(io, "<strong>Min Wavelength (nm):</strong> $(b.min_wavelength)<br>")
-    println(io, "<strong>Max Wavelength (nm):</strong> $(b.max_wavelength)<br>")
-    return println(io, "</div>")
+# Human-readable output
+function Base.show(io::IO, ::MIME"text/plain", b::Band)
+    return println(io, "$(b.short_name): $(b.long_name)")
 end
 
 function _create_bands()
@@ -348,8 +342,6 @@ function _create_bands()
     return bands_class
 end
 
-bands = _create_bands()
-
 struct Constant{S<:String,D,V}
     description::S
     long_name::S
@@ -359,6 +351,32 @@ struct Constant{S<:String,D,V}
     value::V
 end
 
+"""
+    Constant(constant::Dict{String, Any}) -> Constant
+
+Create a `Constant` object from a dictionary.
+
+# Arguments
+
+  - `constant::Dict{String, Any}`: A dictionary containing the following keys:
+
+      + `"description"`: Description of the constant.
+      + `"short_name"`: Short name of the constant.
+      + `"default"`: Default value of the constant.
+
+# Returns
+
+  - `Constant`: An instance of the `Constant` struct with fields populated based on the provided dictionary.
+
+# Example
+
+```julia
+constant_dict = Dict(
+    "description" => "Speed of light in vacuum", "short_name" => "c", "default" => 299792458
+)
+constant = Constant(constant_dict)
+```
+"""
 function Constant(constant::Dict{String,Any})
     description = constant["description"]
     short_name = constant["short_name"]
@@ -367,10 +385,19 @@ function Constant(constant::Dict{String,Any})
     return Constant(description, description, short_name, short_name, default, default)
 end
 
+# Machine-readable output
 function Base.show(io::IO, c::Constant)
-    return print(
-        io, "Constant($(c.short_name): $(c.long_name))\n  * Default value: $(c.default)"
-    )
+    field_names = fieldnames(typeof(c))
+    println(io, "Constant($(c.short_name): $(c.long_name))")
+    println(io, "  * Fields: $field_names")
+    return println(io, "  * Default value: $(c.default)")
+end
+
+# Human-readable output
+function Base.show(io::IO, ::MIME"text/plain", c::Constant)
+    field_names = fieldnames(typeof(c))
+    println(io, "Constant: $(c.short_name)")
+    return println(io, "  * Fields: $field_names")
 end
 
 function _create_constants()
@@ -383,5 +410,3 @@ function _create_constants()
 
     return constants_class
 end
-
-constants = _create_constants()
