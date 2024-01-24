@@ -123,3 +123,40 @@ end
         output == expected_output
     end
 end
+
+@testset "Constant Show Methods Tests" begin
+    # Create a sample Constant instance
+    sample_constant = Constant(
+        "Sample Description",
+        "Sample Long Name",
+        "Sample Short Name",
+        "Sample Standard",
+        "Sample Default",
+        "Sample Value",
+    )
+
+    # Test Machine-readable Output
+    @test begin
+        io_buffer = IOBuffer()
+        show(io_buffer, sample_constant)
+        output = String(take!(io_buffer))
+        expected_output = """
+        Constant(Sample Short Name: Sample Long Name)
+          * Fields: (:description, :long_name, :short_name, :standard, :default, :value)
+          * Default value: Sample Default
+        """
+        output == expected_output
+    end
+
+    # Test Human-readable Output
+    @test begin
+        io_buffer = IOBuffer()
+        show(io_buffer, MIME("text/plain"), sample_constant)
+        output = String(take!(io_buffer))
+        expected_output = """
+        Constant: Sample Short Name
+          * Fields: (:description, :long_name, :short_name, :standard, :default, :value)
+        """
+        output == expected_output
+    end
+end

@@ -359,10 +359,19 @@ function Constant(constant::Dict{String,Any})
     return Constant(description, description, short_name, short_name, default, default)
 end
 
+# Machine-readable output
 function Base.show(io::IO, c::Constant)
-    return print(
-        io, "Constant($(c.short_name): $(c.long_name))\n  * Default value: $(c.default)"
-    )
+    field_names = fieldnames(typeof(c))
+    println(io, "Constant($(c.short_name): $(c.long_name))")
+    println(io, "  * Fields: $field_names")
+    return println(io, "  * Default value: $(c.default)")
+end
+
+# Human-readable output
+function Base.show(io::IO, ::MIME"text/plain", c::Constant)
+    field_names = fieldnames(typeof(c))
+    println(io, "Constant: $(c.short_name)")
+    return println(io, "  * Fields: $field_names")
 end
 
 function _create_constants()
