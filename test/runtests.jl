@@ -9,8 +9,11 @@ end
     include("axioms.jl")
 end
 
-@safetestset "Compute" begin
+@safetestset "Compute Indices" begin
     include("compute_index.jl")
+end
+
+@safetestset "Compute Kernels" begin
     include("compute_kernel.jl")
 end
 
