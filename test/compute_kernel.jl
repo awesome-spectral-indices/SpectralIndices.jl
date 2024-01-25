@@ -77,3 +77,35 @@ end
         @test compute_kernel(RBF, params) ≈ [exp(-0.5), exp(-0.125)]
     end
 end
+
+@testset "SpectralIndices Kernel Functions with YAXArrays" begin
+    # Create dimensions and data for testing
+    axlist = (
+        Dim{:time}(range(1, 20; length=20)),
+        Dim{:Lon}(1:5),
+        Dim{:Lat}(1:5),
+        Dim{:Variable}(["a", "b", "c", "p", "sigma"]),
+    )
+    data = rand(20, 5, 5, 5)
+
+    # Create YAXArray instances
+    yax = YAXArray(axlist, data)
+
+    # Test SpectralIndices.linear
+    @testset "SpectralIndices.linear" begin
+        result = SpectralIndices.linear(yax)
+        @test result isa YAXArray
+    end
+
+    # Test SpectralIndices.poly
+    @testset "SpectralIndices.poly" begin
+        result = SpectralIndices.poly(yax)
+        @test result isa YAXArray
+    end
+
+    # Test SpectralIndices.RBF
+    @testset "SpectralIndices.RBF" begin
+        result = SpectralIndices.RBF(yax)
+        @test result isa YAXArray
+    end
+end
