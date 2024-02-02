@@ -28,6 +28,20 @@ using SpectralIndices
     end
 end
 
+@testset "Download Datasets Test" begin
+    temp_dir = mktempdir() # Temporary directory for testing
+    try
+        expected_files = ["test_S2_10m.json", "test_spectral.json"]
+        get_datasets(; datasets=expected_files, data_loc=temp_dir)
+        for expected_file in expected_files
+            @test isfile(joinpath(temp_dir, expected_file))
+        end
+
+    finally
+        rm(temp_dir; recursive=true) # Clean up
+    end
+end
+
 params = Dict("N" => 0.6, "R" => 0.3)
 # Test correctness
 @test SpectralIndices._check_params(NDVI, params) === nothing

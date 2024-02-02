@@ -11,7 +11,7 @@ include("utils.jl")
 include("axioms.jl")
 include("compute_index.jl")
 include("compute_kernel.jl")
-#include("datasets.jl")
+include("datasets.jl")
 
 if !isdefined(Base, :get_extension)
     include("../ext/SpectralIndicesDataFramesExt.jl")
@@ -22,6 +22,7 @@ indices = _create_indices()
 bands = _create_bands()
 constants = _create_constants()
 
+export get_datasets
 export SpectralIndex, indices, compute
 export PlatformBand, Band
 export Constant

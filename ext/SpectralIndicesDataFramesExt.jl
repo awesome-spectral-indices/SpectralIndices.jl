@@ -54,4 +54,18 @@ function SpectralIndices.RBF(params::DataFrame)
     return result_df
 end
 
+function open_dataset(dataset::String)
+    datasets = Dict("sentinel" => "S2_10m.json", "spectral" => "spectral.json")
+
+    if dataset in keys(datasets)
+        nothing
+    else
+        error("Dataset name not valid. Datasets available: sentinel and spectral")
+    end
+    ds = _load_json(datasets[dataset])
+    ds = DataFrame(ds)
+
+    return ds
+end
+
 end #module
