@@ -28,11 +28,15 @@ function get_datasets(;
 )
     for ds in datasets
         file_dest = joinpath(data_loc, ds)
-        Downloads.download(
-            "https://raw.githubusercontent.com/awesome-spectral-indices/spyndex/main/spyndex/data/" *
-            ds,
-            file_dest,
-        )
+        try
+            Downloads.download(
+                "https://raw.githubusercontent.com/awesome-spectral-indices/spyndex/main/spyndex/data/" *
+                ds,
+                file_dest,
+            )
+        catch e
+            @warn "Failed to download dataset $ds: $e"
+        end
     end
 end
 
