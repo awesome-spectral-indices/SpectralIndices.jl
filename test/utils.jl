@@ -31,7 +31,7 @@ end
 @testset "Download Datasets Test" begin
     temp_dir = mktempdir() # Temporary directory for testing
     try
-        expected_files = ["test_S2_10m.json", "test_spectral.json"]
+        expected_files = ["S2_10m.json", "spectral.json"]
         get_datasets(; datasets=expected_files, data_loc=temp_dir)
         for expected_file in expected_files
             @test isfile(joinpath(temp_dir, expected_file))

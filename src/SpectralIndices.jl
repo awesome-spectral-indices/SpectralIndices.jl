@@ -22,7 +22,7 @@ indices = _create_indices()
 bands = _create_bands()
 constants = _create_constants()
 
-export get_datasets
+export get_datasets, load_dataset
 export SpectralIndex, indices, compute
 export PlatformBand, Band
 export Constant
