@@ -28,6 +28,8 @@ export PlatformBand, Band
 export Constant
 export compute_index
 export compute_kernel, linear, poly, RBF
+export bands
+export constants
 
 for (name, instance) in indices
     @eval begin

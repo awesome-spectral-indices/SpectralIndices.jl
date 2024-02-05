@@ -95,7 +95,11 @@ function (si::SpectralIndex)(args::Number...)
     parsed_formula = Meta.parse(si.formula)
     expr = _build_function(si.short_name, parsed_formula, Symbol.(si.bands)...)
     result = Base.invokelatest(expr, args...) ## to deal with for performance
-    return arg_type(result)
+    if arg_type <: Int
+        return result
+    else
+        return arg_type(result)
+    end
 end
 
 # Machine-readable output
@@ -155,7 +159,7 @@ function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
     if isempty(params)
         return compute_index(si.short_name; kwargs...)
     else
-        return compute_index(si.short_name; params=params)
+        return compute_index(si.short_name, params; kwargs...)
     end
 end
 
@@ -387,17 +391,20 @@ end
 
 # Machine-readable output
 function Base.show(io::IO, c::Constant)
-    field_names = fieldnames(typeof(c))
-    println(io, "Constant($(c.short_name): $(c.long_name))")
-    println(io, "  * Fields: $field_names")
-    return println(io, "  * Default value: $(c.default)")
+    println(io, "Constant: $(c.short_name) - $(c.long_name)")
+    println(io, "Description: $(c.description)")
+    println(io, "Standard: $(c.standard)")
+    println(io, "Default value: $(c.default)")
+    return println(io, "Current value: $(c.value)")
 end
 
 # Human-readable output
 function Base.show(io::IO, ::MIME"text/plain", c::Constant)
-    field_names = fieldnames(typeof(c))
-    println(io, "Constant: $(c.short_name)")
-    return println(io, "  * Fields: $field_names")
+    println(io, "$(c.short_name): $(c.long_name)")
+    println(io, "* Description: $(c.description)")
+    println(io, "* Standard: $(c.standard)")
+    println(io, "* Default value: $(c.default)")
+    return println(io, "* Current value: $(c.value)")
 end
 
 function _create_constants()
