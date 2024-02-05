@@ -6,6 +6,7 @@ This tutorial relies on data stored in `data`. To access it we are going to use 
 ```@example dataframes
 using SpectralIndices, DataFrames
 df = load_dataset("spectral")
+first(df, 5)
 ```
 Each column of this dataset is the Surface Reflectance from Landsat 8 for 3 different classes. The samples were taken over Oporto. The data is taken from [spyndex](https://spyndex.readthedocs.io/en/latest/tutorials/pandas.html) and this tutorial is meant to closely mirror the python version.
 
@@ -44,12 +45,14 @@ In this case we are going to need only Green, Red, NIR and SWIR1 bands. Since th
 
 ```@example dataframes
 params = select(df, :SR_B3=>:G, :SR_B4=>:R, :SR_B5=>:N, :SR_B6=>:S1)
+first(params, 5)
 ```
 
 Now our dataset is ready, and we just need to call the `compute_index` function
 
 ```@example dataframes
 idx = compute_index(["NDVI", "NDWI", "NDBI"], params)
+first(idx, 5)
 ```
 
 The result is a new `DataFrame` with the desired indices as columns.
@@ -63,6 +66,7 @@ idx = compute_index(["NDVI", "NDWI", "NDBI"];
     N = select(df, :SR_B5=>:N),
     R = select(df, :SR_B4=>:R),
     S1 = select(df, :SR_B6=>:S1))
+first(idx, 5)
 ```
 
 
