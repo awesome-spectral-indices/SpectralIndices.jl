@@ -4,9 +4,14 @@ using SpectralIndices
 using DataFrames
 
 function SpectralIndices._create_params(kw_args::Pair{Symbol,DataFrame}...)
-    dfs = [pair.second for pair in kw_args]
-    params = hcat(dfs...)
-    return params
+    combined_df = DataFrame()
+
+    for pair in kw_args
+        df = copy(pair.second)
+        rename!(df, names(df) .=> Symbol.(pair.first))
+        combined_df = hcat(combined_df, df, makeunique=true)
+    end
+    return combined_df
 end
 
 function SpectralIndices.compute_index(
@@ -31,7 +36,6 @@ function SpectralIndices.compute_index(
         result_df = compute_index(idx, params; indices=indices)
         result_dfs[!, Symbol(idx)] = result_df[!, 1]
     end
-
     # Return the combined DataFrame with columns named after each index
     return result_dfs
 end
