@@ -1,7 +1,7 @@
 pages = [
     "SpectralIndices.jl" => "index.md",
     "Tutorials" => Any[
-        "Basics" => "tutorials/basic_types.jl",
+        "Basics" => "tutorials/basic_types.md",
         "DataFrames.jl" => "tutorials/dataframes.md",
     ],
     "API Documentation" => Any[

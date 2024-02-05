@@ -1,38 +1,47 @@
 # Built-in types
 
-This tutorial is a showcase of the basic use of SpectralIndices.jl. It shows how to use the package on the built-in types and data structures in Julia. This will help gain a basic understanding of the inner workings of the package.
+This guide provides a comprehensive overview of utilizing SpectralIndices.jl with Julia's built-in types and data structures. By exploring these foundational elements, you'll gain valuable insights into the package's functionality and its application in calculating spectral indices like NDVI and SAVI.
 
-## Int
+## Introduction to Indices Calculation
 
-Suppose we have two data points, for near infrared and red reflectances of vegetation, represented by and `Int`:
+Let's begin with an example involving two data points representing the near-infrared (NIR) and red reflectances of vegetation, stored as `Int` values:
 
 ```@example basic
 nir = 6723
 red = 1243
 ```
 
-We want to try and compute the NDVI. There are different ways to do this. First let us explore what the NDVI is. This can be simply done by calling it directly:
+Our goal is to calculate the Normalized Difference Vegetation Index (NDVI). NDVI is a widely used spectral index for monitoring vegetation health, calculated using NIR and red reflectances. The formula for NDVI is:
+
+```math
+NDVI = \frac{NIR-Red}{NIR+Red}
+```
+
+### Direct Calculation with NDVI Struct
+
+SpectralIndices.jl provides a straightforward method for computing NDVI:
 
 ```@example basic
 using SpectralIndices
 NDVI
 ```
 
-As you can see, we have all the information we need in the struct. Furthermore, the struct also acts as a function, actually computing the NDVI:
+This outputs the NDVI struct, containing all necessary information. The struct can also be used as a function to compute NDVI:
 
 ```@example basic
 NDVI(nir, red)
 ```
 
-This is not a suggested way for computing indices, but it is still possible to do it. The order of the parameters follows the order in which they appear in the `bands` field of the `SpectralIndex`. In this case:
+This method is direct but not the recommended approach for computing indices. When using this method, ensure the parameter order matches the `bands` field of the `SpectralIndex`:
 
 ```@example basic
 NDVI.bands
 ```
 
-we first need to pass the nir band and then the red band, as we did. 
+### Using the `compute` Function
 
-The second way is to use the `compute` function. This function takes as input the `SpectralIndex` struct itself and either a `Dict` of the parameters to be computed, or kwargs of them. We will axplore both possibilities.
+
+A more flexible way to calculate indices is through the compute function. This function accepts the `SpectralIndex` struct and parameters as either a dictionary or keyword arguments:
 
 ```@example basic
 params = Dict(
@@ -42,7 +51,7 @@ params = Dict(
 ndvi = compute(NDVI, params)
 ```
 
-Please be careful: the keys in the dict *must* be the same name of the bands as the one that is spelled out in `bands`. 
+!!! warn Please ensure dictionary keys match the band names specified in the `bands` field.
 
 Additionally you can pass the values as kwargs as follows:
 
@@ -50,13 +59,15 @@ Additionally you can pass the values as kwargs as follows:
 ndvi = compute(NDVI; N=nir, R=red)
 ```
 
-Note that for kwargs the position does not matter:
+Order of keyword arguments does not affect the outcome:
 
 ```@example basic
 ndvi1 = compute(NDVI; N=nir, R=red)
 ndvi2 = compute(NDVI; R=red, N=nir)
 ndvi1 == ndvi2
 ```
+
+### Using `compute_index`
 
 Lastly, you can use `compute_index` to compute it. The precedure is identical to what has been shown so far for `compute`, but the specification of the index is done by passing its name in a `String`:
 
@@ -74,7 +85,7 @@ Or, using the kwargs:
 ndvi = compute_index("NDVI"; N=nir, R=red)
 ```
 
-## Float
+## Handling Floats
 
 For `Float`s the procedure is similar. We will illustrate the example with the `SAVI` index
 
@@ -88,7 +99,7 @@ This index needs the following bands:
 SAVI.bands
 ```
 
-The `L` parameter is new in this example. Thankfully SpectralIndices.jl provides a list of constant values handy that we can leverage in this situation:
+The `L` parameter is new in this example. Thankfully, SpectralIndices.jl provides a list of constant values handy that we can leverage in this situation:
 
 ```@example basic
 constants["L"]
@@ -133,6 +144,7 @@ savi = compute_index("SAVI", params)
 savi = compute_index("SAVI"; N=nir, R=red, L=0.5)
 ```
 
+### Support for Different Float Types
 
 In both examples we see that the returned value is a `Float64`, since this is what we gave the function as input:
 
@@ -175,6 +187,8 @@ savi2 = compute_index("SAVI"; N=T(nir), R=T(red), L=T(0.5))
 eltype(savi1) == eltype(savi2) == Float16
 ```
 
+### Computing Multiple Indices
+
 Now that we have added more indices we can explore how to compute multiple indices at the same time. All is needed is to pass a Vector of `String`s to the `compute_index` function with the chosen spectral indices inside, as well as the chosen parameters of course:
 
 ```@example basic
@@ -192,7 +206,7 @@ Alternatively, using kwargs:
 ndvi, savi = compute_index(["NDVI", "SAVI"]; N=nir, R=red, L=0.5)
 ```
 
-## Vectors
+## Extension to Vectors
 
 The extension to `Vector`s is relatively straightforward. We follow the same procedure as before, defining our parameters, only this time they are arrays:
 

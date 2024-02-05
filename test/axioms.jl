@@ -141,9 +141,11 @@ end
         show(io_buffer, sample_constant)
         output = String(take!(io_buffer))
         expected_output = """
-        Constant(Sample Short Name: Sample Long Name)
-          * Fields: (:description, :long_name, :short_name, :standard, :default, :value)
-          * Default value: Sample Default
+        Constant: Sample Short Name - Sample Long Name
+        Description: Sample Description
+        Standard: Sample Standard
+        Default value: Sample Default
+        Current value: Sample Value
         """
         output == expected_output
     end
@@ -154,8 +156,11 @@ end
         show(io_buffer, MIME("text/plain"), sample_constant)
         output = String(take!(io_buffer))
         expected_output = """
-        Constant: Sample Short Name
-          * Fields: (:description, :long_name, :short_name, :standard, :default, :value)
+        Sample Short Name: Sample Long Name
+        * Description: Sample Description
+        * Standard: Sample Standard
+        * Default value: Sample Default
+        * Current value: Sample Value
         """
         output == expected_output
     end
