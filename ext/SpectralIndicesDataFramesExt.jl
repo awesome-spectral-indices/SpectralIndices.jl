@@ -54,7 +54,7 @@ function SpectralIndices.RBF(params::DataFrame)
     return result_df
 end
 
-function SpectralIndices.load_dataset(dataset::String)
+function SpectralIndices.load_dataset(dataset::String, ::Type{T}=DataFrame) where {T<:DataFrame}
     datasets = Dict("sentinel" => "S2_10m.json", "spectral" => "spectral.json")
 
     if dataset in keys(datasets)
@@ -62,10 +62,36 @@ function SpectralIndices.load_dataset(dataset::String)
     else
         error("Dataset name not valid. Datasets available: sentinel and spectral")
     end
-    ds = _load_json(datasets[dataset])
-    ds = DataFrame(ds)
 
-    return ds
+    ds = SpectralIndices._load_json(datasets[dataset])
+    all_indices = Set{Int}()
+    for val in values(ds)
+        for idx in keys(val)
+            push!(all_indices, parse(Int, idx))
+        end
+    end
+    all_indices = sort(collect(all_indices)) # Convert to sorted list
+    
+    # Prepare a DataFrame with a specific row for each unique index
+    df = DataFrame(index = all_indices)
+    
+    # Initialize columns based on the keys in `ds`
+    for col_name in keys(ds)
+        df[!, col_name] = Vector{Union{Missing, Any}}(missing, length(all_indices))
+    end
+
+    # Populate the DataFrame with actual values
+    for (col_name, col_data) in ds
+        for (idx, value) in col_data
+            row_idx = findfirst(==(parse(Int, idx)), all_indices)
+            df[row_idx, col_name] = value
+        end
+    end
+
+    # Optionally, remove the index column if it's not needed
+    select!(df, Not(:index))
+
+    return df
 end
 
 end #module
