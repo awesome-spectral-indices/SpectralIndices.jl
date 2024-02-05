@@ -9,7 +9,7 @@ function SpectralIndices._create_params(kw_args::Pair{Symbol,DataFrame}...)
     for pair in kw_args
         df = copy(pair.second)
         rename!(df, names(df) .=> Symbol.(pair.first))
-        combined_df = hcat(combined_df, df, makeunique=true)
+        combined_df = hcat(combined_df, df; makeunique=true)
     end
     return combined_df
 end
@@ -58,7 +58,9 @@ function SpectralIndices.RBF(params::DataFrame)
     return result_df
 end
 
-function SpectralIndices.load_dataset(dataset::String, ::Type{T}=DataFrame) where {T<:DataFrame}
+function SpectralIndices.load_dataset(
+    dataset::String, ::Type{T}=DataFrame
+) where {T<:DataFrame}
     datasets = Dict("sentinel" => "S2_10m.json", "spectral" => "spectral.json")
 
     if dataset in keys(datasets)
@@ -75,13 +77,13 @@ function SpectralIndices.load_dataset(dataset::String, ::Type{T}=DataFrame) wher
         end
     end
     all_indices = sort(collect(all_indices)) # Convert to sorted list
-    
+
     # Prepare a DataFrame with a specific row for each unique index
-    df = DataFrame(index = all_indices)
-    
+    df = DataFrame(; index=all_indices)
+
     # Initialize columns based on the keys in `ds`
     for col_name in keys(ds)
-        df[!, col_name] = Vector{Union{Missing, Any}}(missing, length(all_indices))
+        df[!, col_name] = Vector{Union{Missing,Any}}(missing, length(all_indices))
     end
 
     # Populate the DataFrame with actual values
