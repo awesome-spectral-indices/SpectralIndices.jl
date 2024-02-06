@@ -56,7 +56,6 @@ julia> compute_index(
 function compute_index(
     index::String, params=nothing, online::Bool=false; indices=indices, kwargs...
 )
-    #indices = _create_indices(online)
     names = keys(indices)
     @assert index in names "$index is not a valid Spectral Index!"
 

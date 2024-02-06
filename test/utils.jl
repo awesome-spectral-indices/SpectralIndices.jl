@@ -47,19 +47,3 @@ params = Dict("N" => 0.6, "R" => 0.3)
 @test SpectralIndices._check_params(NDVI, params) === nothing
 # Test missing
 @test_throws ArgumentError SpectralIndices._check_params(NDVI, Dict("N" => 0.6))
-
-locals = Dict("x" => 2, "y" => 3)
-expression = "x + y"
-
-# Test correct evaluation
-@test SpectralIndices.parse_eval_dict(expression, locals) == 5
-
-name = "test_func"
-expr = :(x + y)
-args = (:x, :y)
-
-# Create a test function
-test_func = SpectralIndices._build_function(name, expr, args...)
-
-# Test the created function
-@test test_func(2, 3) == 5

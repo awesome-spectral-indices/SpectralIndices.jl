@@ -120,72 +120,6 @@ function _order_params(index, params)
     return new_params
 end
 
-"""
-    parse_eval_dict(ex::AbstractString, locals::Dict{String, Any})
-
-Parse and evaluate a Julia expression `ex` with local variable assignments from the `locals` dictionary.
-
-# Arguments
-
-  - `ex::AbstractString`: The expression to be parsed and evaluated.
-  - `locals::Dict{String, Any}`: A dictionary of local variables, where keys are variable names (as strings) and values are their corresponding values.
-
-# Returns
-
-  - `Any`: The result of evaluating the parsed expression.
-
-# Examples
-
-```julia
-# Define a dictionary of local variables
-local_variables = Dict("x" => 2, "y" => 3)
-
-# Define an expression to evaluate with local variables
-expression = "x + y"
-
-# Evaluate the expression with local variable assignments
-result = parse_eval_dict(expression, local_variables)
-
-# The result should be 5
-```
-"""
-function parse_eval_dict(ex::AbstractString, locals::Dict)
-    ex = Meta.parse(ex)
-    assignments = Expr[]
-
-    for (key, val) in locals
-        push!(assignments, :($(Symbol(key)) = $val))
-    end
-
-    return eval(
-        quote
-            let
-                $(assignments...)
-                $ex
-            end
-        end,
-    )
-end
-
-#=
-function _build_function(name::String, expr::Expr, args::Symbol...)
-    function_name = Symbol(name, args...)
-    inner_function_expr = quote
-        function $function_name($(args...))
-            return $expr
-        end
-    end
-
-    eval(inner_function_expr)
-
-    return eval(function_name)
-end
-=#
-
-function _build_function(expr::Expr, args::Symbol...)
-    return eval(:(($(args...),) -> $expr))
-end
-
 function _create_params(kw_args...)
     params = Dict(String(k) => v for (k, v) in kw_args)
     return params
@@ -202,7 +136,7 @@ function _create_indexfun(
             formula = index_info["formula"]
             formula = replace(formula, "**" => "^")
             bands = index_info["bands"]
-            bands_args = join(bands, "::Number, ") * "::Number"  # Format function arguments
+            bands_args = join(bands, "::Number, ") * "::Number"
 
             write(file, "\n$(short_name)_func($(bands_args)) = $formula\n")
         end
