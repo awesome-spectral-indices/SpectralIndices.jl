@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Basics · SpectralIndices.jl</title><meta name="title" content="Basics · SpectralIndices.jl"/><meta property="og:title" content="Basics · SpectralIndices.jl"/><meta property="twitter:title" content="Basics · SpectralIndices.jl"/><meta name="description" content="Documentation for SpectralIndices.jl."/><meta property="og:description" content="Documentation for SpectralIndices.jl."/><meta property="twitter:description" content="Documentation for SpectralIndices.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="SpectralIndices.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">SpectralIndices.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">SpectralIndices.jl</a></li><li><span class="tocitem">Tutorials</span><ul><li class="is-active"><a class="tocitem" href>Basics</a><ul class="internal"><li><a class="tocitem" href="#Introduction-to-Indices-Calculation"><span>Introduction to Indices Calculation</span></a></li><li><a class="tocitem" href="#Handling-Floats"><span>Handling Floats</span></a></li><li><a class="tocitem" href="#Extension-to-Vectors"><span>Extension to Vectors</span></a></li></ul></li><li><a class="tocitem" href="../dataframes/">DataFrames.jl</a></li><li><a class="tocitem" href="../yaxarrays/">YAXArrays.jl</a></li></ul></li><li><span class="tocitem">API Documentation</span><ul><li><a class="tocitem" href="../../api/axioms/">Axioms</a></li><li><a class="tocitem" href="../../api/compute/">Compute</a></li><li><a class="tocitem" href="../../api/datasets/">Datasets</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Basics</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Basics</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/awesome-spectral-indices/SpectralIndices.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/awesome-spectral-indices/SpectralIndices.jl/blob/main/docs/src/tutorials/basic_types.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Built-in-types"><a class="docs-heading-anchor" href="#Built-in-types">Built-in types</a><a id="Built-in-types-1"></a><a class="docs-heading-anchor-permalink" href="#Built-in-types" title="Permalink"></a></h1><p>This guide provides a comprehensive overview of utilizing SpectralIndices.jl with Julia&#39;s built-in types and data structures. By exploring these foundational elements, you&#39;ll gain valuable insights into the package&#39;s functionality and its application in calculating spectral indices like NDVI and SAVI.</p><h2 id="Introduction-to-Indices-Calculation"><a class="docs-heading-anchor" href="#Introduction-to-Indices-Calculation">Introduction to Indices Calculation</a><a id="Introduction-to-Indices-Calculation-1"></a><a class="docs-heading-anchor-permalink" href="#Introduction-to-Indices-Calculation" title="Permalink"></a></h2><p>Let&#39;s begin with an example involving two data points representing the near-infrared (NIR) and red reflectances of vegetation, stored as <code>Int</code> values:</p><pre><code class="language-julia hljs">nir = 6723
+red = 1243</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">1243</code></pre><p>Our goal is to calculate the Normalized Difference Vegetation Index (NDVI). NDVI is a widely used spectral index for monitoring vegetation health, calculated using NIR and red reflectances. The formula for NDVI is:</p><p class="math-container">\[NDVI = \frac{NIR-Red}{NIR+Red}\]</p><h3 id="Direct-Calculation-with-NDVI-Struct"><a class="docs-heading-anchor" href="#Direct-Calculation-with-NDVI-Struct">Direct Calculation with NDVI Struct</a><a id="Direct-Calculation-with-NDVI-Struct-1"></a><a class="docs-heading-anchor-permalink" href="#Direct-Calculation-with-NDVI-Struct" title="Permalink"></a></h3><p>SpectralIndices.jl provides a straightforward method for computing NDVI:</p><pre><code class="language-julia hljs">using SpectralIndices
+NDVI</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">NDVI: Normalized Difference Vegetation Index
+* Application Domain: vegetation
+* Bands/Parameters: Any[&quot;N&quot;, &quot;R&quot;]
+* Formula: (N-R)/(N+R)
+* Reference: https://ntrs.nasa.gov/citations/19740022614
+</code></pre><p>This outputs the NDVI struct, containing all necessary information. The struct can also be used as a function to compute NDVI:</p><pre><code class="language-julia hljs">NDVI(nir, red)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6879236756213909</code></pre><p>This method is direct but not the recommended approach for computing indices. When using this method, ensure the parameter order matches the <code>bands</code> field of the <code>SpectralIndex</code>:</p><pre><code class="language-julia hljs">NDVI.bands</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2-element Vector{Any}:
+ &quot;N&quot;
+ &quot;R&quot;</code></pre><h3 id="Using-the-compute-Function"><a class="docs-heading-anchor" href="#Using-the-compute-Function">Using the <code>compute</code> Function</a><a id="Using-the-compute-Function-1"></a><a class="docs-heading-anchor-permalink" href="#Using-the-compute-Function" title="Permalink"></a></h3><p>A more flexible way to calculate indices is through the compute function. This function accepts the <code>SpectralIndex</code> struct and parameters as either a dictionary or keyword arguments:</p><pre><code class="language-julia hljs">params = Dict(
+    &quot;N&quot; =&gt; nir,
+    &quot;R&quot; =&gt; red
+)
+ndvi = compute(NDVI, params)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6879236756213909</code></pre><p>!!! warn Please ensure dictionary keys match the band names specified in the <code>bands</code> field.</p><p>Additionally you can pass the values as kwargs as follows:</p><pre><code class="language-julia hljs">ndvi = compute(NDVI; N=nir, R=red)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6879236756213909</code></pre><p>Order of keyword arguments does not affect the outcome:</p><pre><code class="language-julia hljs">ndvi1 = compute(NDVI; N=nir, R=red)
+ndvi2 = compute(NDVI; R=red, N=nir)
+ndvi1 == ndvi2</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">true</code></pre><h3 id="Using-compute_index"><a class="docs-heading-anchor" href="#Using-compute_index">Using <code>compute_index</code></a><a id="Using-compute_index-1"></a><a class="docs-heading-anchor-permalink" href="#Using-compute_index" title="Permalink"></a></h3><p>Lastly, you can use <code>compute_index</code> to compute it. The precedure is identical to what has been shown so far for <code>compute</code>, but the specification of the index is done by passing its name in a <code>String</code>:</p><pre><code class="language-julia hljs">params = Dict(
+    &quot;N&quot; =&gt; nir,
+    &quot;R&quot; =&gt; red
+)
+ndvi = compute_index(&quot;NDVI&quot;, params)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6879236756213909</code></pre><p>Or, using the kwargs:</p><pre><code class="language-julia hljs">ndvi = compute_index(&quot;NDVI&quot;; N=nir, R=red)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6879236756213909</code></pre><h2 id="Handling-Floats"><a class="docs-heading-anchor" href="#Handling-Floats">Handling Floats</a><a id="Handling-Floats-1"></a><a class="docs-heading-anchor-permalink" href="#Handling-Floats" title="Permalink"></a></h2><p>For <code>Float</code>s the procedure is similar. We will illustrate the example with the <code>SAVI</code> index</p><pre><code class="language-julia hljs">SAVI</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">SAVI: Soil-Adjusted Vegetation Index
+* Application Domain: vegetation
+* Bands/Parameters: Any[&quot;L&quot;, &quot;N&quot;, &quot;R&quot;]
+* Formula: (1.0+L)*(N-R)/(N+R+L)
+* Reference: https://doi.org/10.1016/0034-4257(88)90106-X
+</code></pre><p>This index needs the following bands:</p><pre><code class="language-julia hljs">SAVI.bands</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">3-element Vector{Any}:
+ &quot;L&quot;
+ &quot;N&quot;
+ &quot;R&quot;</code></pre><p>The <code>L</code> parameter is new in this example. Thankfully, SpectralIndices.jl provides a list of constant values handy that we can leverage in this situation:</p><pre><code class="language-julia hljs">constants[&quot;L&quot;]</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">L: Canopy background adjustment
+* Description: Canopy background adjustment
+* Standard: L
+* Default value: 1.0
+* Current value: 1.0
+</code></pre><p>So now that we know what <code>L</code> is or does, we can use it in our calculation of the SAVI index. But first we are going to redefine the values to be <code>Float</code>s since we want to showcase some properties of SpectralIndices.jl with that data type. Additionally, SAVI needs imput values to be between -1 and 1:</p><pre><code class="language-julia hljs">nir /= 10000
+red /= 10000</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.1243</code></pre><p>Now we can proceed as before. Either using a <code>Dict</code> to built our parameters:</p><pre><code class="language-julia hljs">params = Dict(
+    &quot;N&quot; =&gt; nir,
+    &quot;R&quot; =&gt; red,
+    &quot;L&quot; =&gt; 0.5
+)
+savi = compute(SAVI, params)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6339657565941694</code></pre><p>or by passing them as kwargs:</p><pre><code class="language-julia hljs">savi = compute(SAVI; N=nir, R=red, L=0.5)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6339657565941694</code></pre><p>And the same holds true for <code>compute_index</code> as well:</p><pre><code class="language-julia hljs">params = Dict(
+    &quot;N&quot; =&gt; nir,
+    &quot;R&quot; =&gt; red,
+    &quot;L&quot; =&gt; 0.5
+)
+savi = compute_index(&quot;SAVI&quot;, params)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6339657565941694</code></pre><pre><code class="language-julia hljs">savi = compute_index(&quot;SAVI&quot;; N=nir, R=red, L=0.5)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">0.6339657565941694</code></pre><h3 id="Support-for-Different-Float-Types"><a class="docs-heading-anchor" href="#Support-for-Different-Float-Types">Support for Different Float Types</a><a id="Support-for-Different-Float-Types-1"></a><a class="docs-heading-anchor-permalink" href="#Support-for-Different-Float-Types" title="Permalink"></a></h3><p>In both examples we see that the returned value is a <code>Float64</code>, since this is what we gave the function as input:</p><pre><code class="language-julia hljs">savi1 = compute_index(&quot;SAVI&quot;, params)
+savi2 = compute_index(&quot;SAVI&quot;; N=nir, R=red, L=0.5)
+
+eltype(savi1) == eltype(savi2) == Float64</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">true</code></pre><p>We can also compute spectral indices with other float types, such as <code>Float32</code> or <code>Float16</code>. All it needs is to feed the <code>compute</code> or the <code>compute_index</code> function input points of the chosen <code>Float</code> type. This is specifically helpful for machine learning applications, where <code>Float32</code> are the default:</p><pre><code class="language-julia hljs">T = Float32
+params = Dict(
+    &quot;N&quot; =&gt; T(nir),
+    &quot;R&quot; =&gt; T(red),
+    &quot;L&quot; =&gt; 0.5f0
+)
+
+savi1 = compute_index(&quot;SAVI&quot;, params)
+savi2 = compute_index(&quot;SAVI&quot;; N=T(nir), R=T(red), L=0.5f0)
+
+eltype(savi1) == eltype(savi2) == Float32</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">false</code></pre><p>The same also holds for <code>Float16</code>:</p><pre><code class="language-julia hljs">T = Float16
+params = Dict(
+    &quot;N&quot; =&gt; T(nir),
+    &quot;R&quot; =&gt; T(red),
+    &quot;L&quot; =&gt; T(0.5)
+)
+
+savi1 = compute_index(&quot;SAVI&quot;, params)
+savi2 = compute_index(&quot;SAVI&quot;; N=T(nir), R=T(red), L=T(0.5))
+
+eltype(savi1) == eltype(savi2) == Float16</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">false</code></pre><h3 id="Computing-Multiple-Indices"><a class="docs-heading-anchor" href="#Computing-Multiple-Indices">Computing Multiple Indices</a><a id="Computing-Multiple-Indices-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-Multiple-Indices" title="Permalink"></a></h3><p>Now that we have added more indices we can explore how to compute multiple indices at the same time. All is needed is to pass a Vector of <code>String</code>s to the <code>compute_index</code> function with the chosen spectral indices inside, as well as the chosen parameters of course:</p><pre><code class="language-julia hljs">params = Dict(
+    &quot;N&quot; =&gt; nir,
+    &quot;R&quot; =&gt; red,
+    &quot;L&quot; =&gt; 0.5
+)
+ndvi, savi = compute_index([&quot;NDVI&quot;, &quot;SAVI&quot;], params)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2-element Vector{Any}:
+ 0.687923675621391
+ 0.6339657565941694</code></pre><p>Alternatively, using kwargs:</p><pre><code class="language-julia hljs">ndvi, savi = compute_index([&quot;NDVI&quot;, &quot;SAVI&quot;]; N=nir, R=red, L=0.5)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2-element Vector{Any}:
+ 0.687923675621391
+ 0.6339657565941694</code></pre><h2 id="Extension-to-Vectors"><a class="docs-heading-anchor" href="#Extension-to-Vectors">Extension to Vectors</a><a id="Extension-to-Vectors-1"></a><a class="docs-heading-anchor-permalink" href="#Extension-to-Vectors" title="Permalink"></a></h2><p>The extension to <code>Vector</code>s is relatively straightforward. We follow the same procedure as before, defining our parameters, only this time they are arrays:</p><pre><code class="language-julia hljs">params = Dict(
+    &quot;N&quot; =&gt; fill(nir, 10),
+    &quot;R&quot; =&gt; fill(red, 10),
+    &quot;L&quot; =&gt; fill(0.5, 10)
+)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Dict{String, Vector{Float64}} with 3 entries:
+  &quot;N&quot; =&gt; [0.6723, 0.6723, 0.6723, 0.6723, 0.6723, 0.6723, 0.6723, 0.6723, 0.672…
+  &quot;L&quot; =&gt; [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+  &quot;R&quot; =&gt; [0.1243, 0.1243, 0.1243, 0.1243, 0.1243, 0.1243, 0.1243, 0.1243, 0.124…</code></pre><p>After that we can compute either one, or both indices:</p><pre><code class="language-julia hljs">ndvi, savi = compute_index([&quot;NDVI&quot;, &quot;SAVI&quot;], params)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2-element Vector{Any}:
+ [0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391]
+ [0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694]</code></pre><pre><code class="language-julia hljs">ndvi = compute_index(&quot;NDVI&quot;, params)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">10-element Vector{Float64}:
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391</code></pre><pre><code class="language-julia hljs">savi = compute_index(&quot;SAVI&quot;, params)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">10-element Vector{Float64}:
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694</code></pre><p>And as always, we can also pass them as kwargs:</p><pre><code class="language-julia hljs">ndvi, savi = compute_index([&quot;NDVI&quot;, &quot;SAVI&quot;];
+    N=fill(nir, 10),
+    R=fill(red, 10),
+    L=fill(0.5, 10))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2-element Vector{Any}:
+ [0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391, 0.687923675621391]
+ [0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694, 0.6339657565941694]</code></pre><pre><code class="language-julia hljs">ndvi = compute_index(&quot;NDVI&quot;;
+    N=fill(nir, 10),
+    R=fill(red, 10),
+    L=fill(0.5, 10))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">10-element Vector{Float64}:
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391
+ 0.687923675621391</code></pre><pre><code class="language-julia hljs">savi = compute_index(&quot;SAVI&quot;;
+    N=fill(nir, 10),
+    R=fill(red, 10),
+    L=fill(0.5, 10))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">10-element Vector{Float64}:
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694
+ 0.6339657565941694</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« SpectralIndices.jl</a><a class="docs-footer-nextpage" href="../dataframes/">DataFrames.jl »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Tuesday 6 February 2024 21:49">Tuesday 6 February 2024</span>. Using Julia version 1.10.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
