@@ -7,8 +7,14 @@ using JSON
 abstract type AbstractSpectralIndex end
 abstract type AbstractPlatformBand end
 
+indices_funcs = Dict()
 include("utils.jl")
-include("axioms.jl")
+_create_indexfun()
+include("indices_funcs.jl")
+include("indices.jl")
+include("platforms.jl")
+include("bands.jl")
+include("constants.jl")
 include("compute_index.jl")
 include("compute_kernel.jl")
 include("datasets.jl")
@@ -28,12 +34,18 @@ export PlatformBand, Band
 export Constant
 export compute_index
 export compute_kernel, linear, poly, RBF
+export bands
+export constants
+
+function _export_index(si::SpectralIndex)
+    @eval begin
+        export $(Symbol(si.short_name))
+        const $(Symbol(si.short_name)) = $si
+    end
+end
 
 for (name, instance) in indices
-    @eval begin
-        $(Symbol(name)) = $instance
-        export $(Symbol(name))
-    end
+    _export_index(indices[name])
 end
 
 end #module

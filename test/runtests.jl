@@ -6,7 +6,10 @@ using Test
 end
 
 @safetestset "Axioms" begin
-    include("axioms.jl")
+    include("indices.jl")
+    include("platforms.jl")
+    include("bands.jl")
+    include("constants.jl")
 end
 
 @safetestset "Compute Indices" begin
