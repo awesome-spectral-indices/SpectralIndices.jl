@@ -182,11 +182,34 @@ function _build_function(name::String, expr::Expr, args::Symbol...)
 end
 =#
 
-function _build_function(name::String, expr::Expr, args::Symbol...)
+function _build_function(expr::Expr, args::Symbol...)
     return eval(:(($(args...),) -> $expr))
 end
 
 function _create_params(kw_args...)
     params = Dict(String(k) => v for (k, v) in kw_args)
     return params
+end
+
+function _create_indexfun(
+    index_dict::Dict{String,Any}=_get_indices();
+    filename::String="indices_funcs.jl",
+    fileloc=joinpath(dirname(@__FILE__), filename),
+)
+    open(fileloc, "w") do file
+        for (index_name, index_info) in index_dict
+            short_name = index_info["short_name"]
+            formula = index_info["formula"]
+            formula = replace(formula, "**" => "^")
+            bands = index_info["bands"]
+            bands_args = join(bands, "::Number, ") * "::Number"  # Format function arguments
+
+            write(file, "\n$(short_name)_func($(bands_args)) = $formula\n")
+        end
+
+        for (index_name, index_info) in index_dict
+            short_name = index_info["short_name"]
+            write(file, "indices_funcs[\"$index_name\"] = $(short_name)_func\n")
+        end
+    end
 end

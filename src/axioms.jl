@@ -5,16 +5,18 @@ struct SpectralIndices{T <: Dict{String, AbstractSpectralIndex}, O}
 end
 =#
 
-function spectral_indices(indices_dict::Dict{String,Any}; origin="SpectralIndices")
+function spectral_indices(
+    indices_dict::Dict{String,Any}, indices_funcs=indices_funcs; origin="SpectralIndices"
+)
     indices = Dict{String,AbstractSpectralIndex}()
     for (key, value) in indices_dict
-        indices[key] = SpectralIndex(value)
+        indices[key] = SpectralIndex(value, indices_funcs[key])
     end
     return indices
 end
 
 ## SpectralIndex
-struct SpectralIndex{S<:String,B,D<:Date,P} <: AbstractSpectralIndex
+struct SpectralIndex{S<:String,B,D<:Date,P,F} <: AbstractSpectralIndex
     short_name::S
     long_name::S
     bands::B
@@ -24,6 +26,7 @@ struct SpectralIndex{S<:String,B,D<:Date,P} <: AbstractSpectralIndex
     date_of_addition::D
     contributor::S
     platforms::P
+    compute::F
 end
 
 """
@@ -64,7 +67,7 @@ Or, accessing directly the provided Dict of spectral indices:
 NIRv
 ```
 """
-function SpectralIndex(index::Dict)
+function SpectralIndex(index::Dict, func)
     short_name = index["short_name"]
     long_name = index["long_name"]
     bands = index["bands"]
@@ -72,7 +75,7 @@ function SpectralIndex(index::Dict)
     reference = index["reference"]
 
     formula = filter(x -> !isspace(x), index["formula"])
-    formula = replace(formula, r"\*\*" => "^")
+    formula = replace(formula, "**" => "^")
     date_of_addition = Date(index["date_of_addition"], dateformat"y-m-d")
     contributor = index["contributor"]
     platforms = index["platforms"]
@@ -87,19 +90,12 @@ function SpectralIndex(index::Dict)
         date_of_addition,
         contributor,
         platforms,
+        func,
     )
 end
 
-function (si::SpectralIndex)(args::Number...)
-    arg_type = typeof(first(args))
-    parsed_formula = Meta.parse(si.formula)
-    expr = _build_function(si.short_name, parsed_formula, Symbol.(si.bands)...)
-    result = Base.invokelatest(expr, args...) ## to deal with for performance
-    if arg_type <: Int
-        return result
-    else
-        return arg_type(result)
-    end
+function (si::SpectralIndex)(args...)
+    return si.compute(args...)
 end
 
 # Machine-readable output
@@ -121,6 +117,13 @@ function Base.show(io::IO, ::MIME"text/plain", si::SpectralIndex)
     println(io, "* Bands/Parameters: $(si.bands)")
     println(io, "* Formula: $(si.formula)")
     return println(io, "* Reference: $(si.reference)")
+end
+
+function export_index(si::SpectralIndex)
+    @eval begin
+        export $(Symbol(si.short_name))
+        const $(Symbol(si.short_name)) = $si
+    end
 end
 
 """
@@ -164,8 +167,8 @@ function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
 end
 
 function _create_indices(online::Bool=false)
-    indices = _get_indices(online)
-    return spectral_indices(indices)
+    indices_dict = _get_indices(online)
+    return spectral_indices(indices_dict)
 end
 
 struct PlatformBand{S<:String,W<:Number,B<:Number} <: AbstractPlatformBand

@@ -3,6 +3,7 @@ pages = [
     "Tutorials" => Any[
         "Basics" => "tutorials/basic_types.md",
         "DataFrames.jl" => "tutorials/dataframes.md",
+        "YAXArrays.jl" => "tutorials/yaxarrays.md",
     ],
     "API Documentation" => Any[
         "Axioms" => "api/axioms.md",
