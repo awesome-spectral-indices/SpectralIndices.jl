@@ -5,7 +5,7 @@ This section of the documentation will help you understand how to work with Spec
 This tutorial relies on data stored in `data`. To access it we are going to use the following:
 ```@example dataframes
 using SpectralIndices, DataFrames
-df = load_dataset("spectral")
+df = load_dataset("spectral", DataFrame)
 first(df, 5)
 ```
 Each column of this dataset is the Surface Reflectance from Landsat 8 for 3 different classes. The samples were taken over Oporto. The data is taken from [spyndex](https://spyndex.readthedocs.io/en/latest/tutorials/pandas.html) and this tutorial is meant to closely mirror the python version.

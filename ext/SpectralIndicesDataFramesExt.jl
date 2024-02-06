@@ -59,7 +59,7 @@ function SpectralIndices.RBF(params::DataFrame)
 end
 
 function SpectralIndices.load_dataset(
-    dataset::String, ::Type{T}=DataFrame
+    dataset::String, ::Type{T}
 ) where {T<:DataFrame}
     datasets = Dict("sentinel" => "S2_10m.json", "spectral" => "spectral.json")
 

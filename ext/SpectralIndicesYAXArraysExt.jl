@@ -90,7 +90,7 @@ function SpectralIndices.RBF(params::YAXArray)
 end
 
 function SpectralIndices.load_dataset(
-    dataset::String, ::Type{T}=YAXArray
+    dataset::String, ::Type{T}
 ) where {T<:YAXArray}
     datasets = Dict("sentinel" => "S2_10m.json", "spectral" => "spectral.json")
 
