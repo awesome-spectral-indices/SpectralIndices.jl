@@ -2,7 +2,7 @@
 
 This tutorial will illustrate how to use SpectralIndices.jl using YAXArrays.jl as input data.
 
-First of all we need to download the data like in the previous tutorial. Only this time the data is going to be higher dimensional and slighly more complex, hence the need for YAXArrays.jl. In order to do so we are going to use the `load_dataset` function:
+First we need to download the data, like in the previous tutorial. Only this time the data is going to be higher dimensional and slightly more complex, hence the need for YAXArrays.jl. In order to do so we are going to use the `load_dataset` function:
 
 ```@example yaxarrays
 using YAXArrays, DimensionalData
@@ -90,4 +90,15 @@ We can finally compute the kNDVI:
 
 ```@example yaxarrays
 kndvi = compute_index("kNDVI"; kNN = knn, kNR=knr)
+```
+
+Let's plot it!
+
+```@example yaxarrays
+using GLMakie
+fig = Figure(resolution = (500, 500))
+ax = Axis(fig[1, 1])
+image!(ax, kndvi.data, colormap=:haline)
+ylims!(300, 0)
+fig
 ```
