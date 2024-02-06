@@ -9,7 +9,7 @@ abstract type AbstractPlatformBand end
 
 indices_funcs = Dict()
 include("utils.jl")
-_create_indexfun()
+#_create_indexfun()
 include("indices_funcs.jl")
 include("indices.jl")
 include("platforms.jl")
