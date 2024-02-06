@@ -62,7 +62,7 @@ jobs:
             using Documenter: doctest
             using SpectralIndices
             doctest(SpectralIndices)'
-      - run: julia --project=docs docs/make.jl
+      - run: xvfb-run -s '-screen 0 1024x768x24' julia --project=docs docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
