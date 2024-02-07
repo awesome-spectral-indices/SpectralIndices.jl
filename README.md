@@ -6,7 +6,7 @@
 
 | **Documentation** | **Build Status** | **Julia** | **Testing** |
 |:-----------------:|:----------------:|:---------:|:---------|
-| [![docs][docs-img]][docs-url] | [![CI][ci-img]][ci-url] [![codecov][cc-img]][cc-url] | [![Julia][julia-img]][julia-url] [![Code Style: Blue][style-img]][style-url] | [![Aqua QA][aqua-img]][aqua-url] [![JET][jet-img]][jet-url] |
+| [![docs][docs-img]][docs-url] | [![CI][ci-img]][ci-url] [![codecov][cc-img]][cc-url] | [![Julia][julia-img]][julia-url] [![Code Style: Blue][style-img]][style-url] | [![Aqua QA][aqua-img]][aqua-url] |
 
 [docs-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-url]: https://awesome-spectral-indices.github.io/SpectralIndices.jl/dev/
@@ -129,3 +129,4 @@ If you use SpectralIndices.jl in your research, please consider citing it using 
   publisher={Nature Publishing Group UK London}
 }
 ```
+[![RSC4Earth](https://github.com/davemlz/sen2nbar/raw/main/docs/_static/esds.png)](https://rsc4earth.de/authors/esds/)
