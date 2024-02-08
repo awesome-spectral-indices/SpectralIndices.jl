@@ -101,19 +101,11 @@ function SpectralIndices.load_dataset(
     end
 
     ds = SpectralIndices._load_json(datasets[dataset])
-
-    # Convert each vector of vectors in `ds` into a matrix
     matrices = [hcat(ds[i]...) for i in 1:length(ds)]
-
-    # Stack these matrices to form a 3D array
     data_3d = cat(matrices...; dims=3)
-
-    # Define dimensions
     x_dim = Dim{:x}(1:300)
     y_dim = Dim{:y}(1:300)
     bands = Dim{:bands}(["B02", "B03", "B04", "B08"])
-
-    # Create the YAXArray
     yax_ds = YAXArray((x_dim, y_dim, bands), data_3d)
 
     return yax_ds

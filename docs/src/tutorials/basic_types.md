@@ -41,7 +41,7 @@ NDVI.bands
 ### Using the `compute` Function
 
 
-A more flexible way to calculate indices is through the compute function. This function accepts the `SpectralIndex` struct and parameters as either a dictionary or keyword arguments:
+A more flexible way to calculate indices is through the `compute` function. This function accepts the `SpectralIndex` struct and parameters as either a dictionary or keyword arguments:
 
 ```@example basic
 params = Dict(
@@ -144,49 +144,6 @@ savi = compute_index("SAVI", params)
 savi = compute_index("SAVI"; N=nir, R=red, L=0.5)
 ```
 
-### Support for Different Float Types
-
-In both examples we see that the returned value is a `Float64`, since this is what we gave the function as input:
-
-```@example basic
-savi1 = compute_index("SAVI", params)
-savi2 = compute_index("SAVI"; N=nir, R=red, L=0.5)
-
-eltype(savi1) == eltype(savi2) == Float64
-```
-
-We can also compute spectral indices with other float types, such as `Float32` or `Float16`. All it needs is to feed the `compute` or the `compute_index` function input points of the chosen `Float` type. This is specifically helpful for machine learning applications, where `Float32` are the default:
-
-```@example basic
-T = Float32
-params = Dict(
-    "N" => T(nir),
-    "R" => T(red),
-    "L" => 0.5f0
-)
-
-savi1 = compute_index("SAVI", params)
-savi2 = compute_index("SAVI"; N=T(nir), R=T(red), L=0.5f0)
-
-eltype(savi1) == eltype(savi2) == Float32
-```
-
-The same also holds for `Float16`:
-
-```@example basic
-T = Float16
-params = Dict(
-    "N" => T(nir),
-    "R" => T(red),
-    "L" => T(0.5)
-)
-
-savi1 = compute_index("SAVI", params)
-savi2 = compute_index("SAVI"; N=T(nir), R=T(red), L=T(0.5))
-
-eltype(savi1) == eltype(savi2) == Float16
-```
-
 ### Computing Multiple Indices
 
 Now that we have added more indices we can explore how to compute multiple indices at the same time. All is needed is to pass a Vector of `String`s to the `compute_index` function with the chosen spectral indices inside, as well as the chosen parameters of course:
@@ -223,6 +180,9 @@ After that we can compute either one, or both indices:
 ```@example basic
 ndvi, savi = compute_index(["NDVI", "SAVI"], params)
 ```
+
+We can use the same params to calculate single indices. The additional bands are just going to be ignored:
+
 ```@example basic
 ndvi = compute_index("NDVI", params)
 ```
