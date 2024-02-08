@@ -210,3 +210,24 @@ savi = compute_index("SAVI";
     R=fill(red, 10),
     L=fill(0.5, 10))
 ```
+
+## Extension to NamedTuples
+
+SpectralIndices.jl allows you to also create indices from `NamedTuples`:
+
+```@example basic
+params = (N=fill(0.2, 10), R=fill(0.1, 10), L=fill(0.5, 10))
+compute_index("NDVI", params)
+```
+```@example basic
+compute_index(["NDVI", "SAVI"], params)
+```
+
+You can also pass the `NamedTuple` as kwargs splatting them, but the output will not be a `NamedTuple`
+
+```@example basic
+compute_index("NDVI"; params...)
+```
+```@example basic
+compute_index(["NDVI", "SAVI"]; params...)
+```

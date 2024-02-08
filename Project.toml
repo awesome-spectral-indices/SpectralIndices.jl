@@ -34,6 +34,7 @@ JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [targets]
-test = ["Test", "SafeTestsets", "Aqua", "JET", "JuliaFormatter", "DataFrames", "YAXArrays"]
+test = ["Test", "SafeTestsets", "Aqua", "JET", "JuliaFormatter", "DataFrames", "YAXArrays", "Random"]

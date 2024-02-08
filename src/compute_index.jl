@@ -117,17 +117,16 @@ function compute_index(index::String, params::NamedTuple; indices=indices)
     return result_nt
 end
 
-function compute_index(index::Vector{String}, params::NamedTuple; indices)
+function compute_index(index::Vector{String}, params::NamedTuple; indices=indices)
     results_dict = Dict{Symbol, Any}()
     for idx in index
         result_nt = compute_index(idx, params; indices=indices)
-        for (key, value) in result_nt
-            results_dict[key] = value
-        end
+        # TODO @MartinuzziFrancesco: there has to be a better way
+        results_dict[fieldnames(typeof(result_nt))[1]] = first(result_nt)
     end
 
     # Convert the dictionary to a named tuple
-    return NamedTuple{tuple(keys(results_dict)...)}(values(results_dict)...)
+    return (;results_dict...)
 end
 
 
