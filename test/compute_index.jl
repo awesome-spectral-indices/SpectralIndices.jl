@@ -2,22 +2,102 @@ using Test
 using SpectralIndices
 using DataFrames
 using YAXArrays
+using Random
+Random.seed!(17)
+
+convert_to_kwargs(dict) = Dict(Symbol(k) => v for (k, v) in dict)
 
 @testset "Input Validation" begin
     @test_throws AssertionError compute_index("InvalidIndex", N=0.5, R=0.5)
 end
 
-# @testset "Corner Cases" begin
-#     @test compute_index("NDVI"; N=0.0, R=0.0) == NaN
-# end
+@testset "Built-in types compute_index tests: $idx_name" for (idx_name, idx) in indices
+    @testset "Single Values as Params" begin
+        if idx_name == "AVI" || idx_name == "TVI"
+            params = Dict("N" => 0.2, "R"=>0.1)
+        else
+            params = Dict(band => rand() for band in idx.bands)
+        end
+        result = compute_index(idx_name, params)
+        @test result isa Float64
+        @test length(result) == 1
+    end
+    @testset "Single Values as Kwargs" begin
+        if idx_name == "AVI" || idx_name == "TVI"
+            params = Dict("N" => 0.2, "R"=>0.1)
+        else
+            params = Dict(band => rand() for band in idx.bands)
+        end
+        result = compute_index(idx_name; convert_to_kwargs(params)...)
+        @test result isa Float64
+        @test length(result) == 1
+    end
 
-@testset "Input Validation" begin
-    @test_throws AssertionError compute_index("InvalidIndex"; N=0.5, R=0.5)
+    @testset "Arrays as Params" begin
+        if idx_name == "AVI" || idx_name == "TVI"
+            params = Dict("N" => fill(0.2, 10), "R"=>fill(0.1, 10))
+        else
+            params = Dict(band => rand(10) for band in idx.bands)
+        end
+        result = compute_index(idx_name, params)
+        @test result isa AbstractArray
+        @test length(result) == 10
+    end
+    @testset "Arrays as Kwargs" begin
+        if idx_name == "AVI" || idx_name == "TVI"
+            params = Dict("N" => fill(0.2, 10), "R"=>fill(0.1, 10))
+        else
+            params = Dict(band => rand(10) for band in idx.bands)
+        end
+        result = compute_index(idx_name; convert_to_kwargs(params)...)
+        @test result isa AbstractArray
+        @test length(result) == 10
+    end
+
+    @testset "Matrices as Params" begin
+        if idx_name == "AVI" || idx_name == "TVI"
+            params = Dict("N" => fill(0.2, 10, 10), "R"=>fill(0.1, 10, 10))
+        else
+            params = Dict(band => rand(10, 10) for band in idx.bands)
+        end
+        result = compute_index(idx_name, params)
+        @test result isa Matrix
+        @test size(result) == (10,10)
+    end
+    @testset "Matrices as Kwargs" begin
+        if idx_name == "AVI" || idx_name == "TVI"
+            params = Dict("N" => fill(0.2, 10, 10), "R"=>fill(0.1, 10, 10))
+        else
+            params = Dict(band => rand(10, 10) for band in idx.bands)
+        end
+        result = compute_index(idx_name; convert_to_kwargs(params)...)
+        @test result isa Matrix
+        @test size(result) == (10,10)
+    end
+
+    @testset "NamedTuples as Params" begin
+        if idx_name == "AVI" || idx_name == "TVI"
+            params = (N = fill(0.2, 10), R=fill(0.1, 10))
+        else
+            band_tuples = [(Symbol(band) => rand(10)) for band in idx.bands]
+            params = NamedTuple(band_tuples)
+        end
+        result = compute_index(idx_name, params)
+        @test result isa NamedTuple
+        @test size(first(result)) == (10,)
+    end
+    @testset "NamedTuples as Kwargs" begin
+        if idx_name == "AVI" || idx_name == "TVI"
+            params = (N = fill(0.2, 10), R=fill(0.1, 10))
+        else
+            band_tuples = [(Symbol(band) => rand(10)) for band in idx.bands]
+            params = NamedTuple(band_tuples)
+        end
+        result = compute_index(idx_name; params...)
+        @test result isa AbstractArray
+        @test size(result) == (10,)
+    end
 end
-
-#dfn_single = DataFrame(; N=[0.643, 0.56])
-#dfr_single = DataFrame(; R=[0.175, 0.22])
-#dfl_single = DataFrame(; L=[0.5, 0.4])
 
 @testset "DataFrame Tests" begin
     @testset "Single Index as Params" begin

@@ -78,6 +78,11 @@ function linear(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray
     return result
 end
 
+function linear(params::NamedTuple)
+  result = linear(params.a, params.b)
+  return result
+end
+
 """
     poly(a::T, b::T, c::T, p::T) where T <: Number
     poly(a::T, b::T, c::T, p::T) where T <: AbstractArray
@@ -135,6 +140,11 @@ function poly(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray}}
     return result
 end
 
+function poly(params::NamedTuple)
+    result = poly(params.a, params.b, params.c, params.p)
+    return result
+end
+
 """
     RBF(a::T, b::T, sigma::T) where T <: Number
     RBF(a::T, b::T, sigma::T) where T <: AbstractArray
@@ -189,5 +199,10 @@ end
 
 function RBF(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray}}
     result = RBF(params["a"], params["b"], params["sigma"])
+    return result
+end
+
+function RBF(params::NamedTuple)
+    result = RBF(params.a, params.b, params.sigma)
     return result
 end

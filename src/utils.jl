@@ -72,59 +72,6 @@ function _get_indices(
     return indices["SpectralIndices"]
 end
 
-"""
-    _check_params(index::String, params::Dict, indices::Dict)
-
-Check if the parameters dictionary contains all required bands for spectral index computation.
-
-# Arguments
-
-  - `index::String`: The name of the spectral index to check.
-  - `params::Dict`: The parameters dictionary to check for required bands.
-  - `indices::Dict`: The dictionary containing information about spectral indices.
-
-# Returns
-
-  - `None`
-
-# Examples
-
-```julia
-# Check parameters for the NDVI index
-index_name = "NDVI"
-parameters = Dict("N" => 0.6, "R" => 0.3, "G" => 0.7)
-indices = _get_indices()
-
-# Check if parameters contain required bands
-_check_params(index_name, parameters, indices)
-```
-"""
-function _check_params(index, params::Dict)
-    for band in index.bands
-        if !(band in keys(params))
-            throw(
-                ArgumentError(
-                    "'$band' is missing in the parameters for $index computation!"
-                ),
-            )
-        end
-    end
-end
-
-function _order_params(index, params)
-    new_params = []
-    for (bidx, band) in enumerate(index.bands)
-        push!(new_params, params[band])
-    end
-
-    return new_params
-end
-
-function _create_params(kw_args...)
-    params = Dict(String(k) => v for (k, v) in kw_args)
-    return params
-end
-
 function _create_indexfun(
     index_dict::Dict{String,Any}=_get_indices();
     filename::String="indices_funcs.jl",
