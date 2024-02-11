@@ -15,7 +15,7 @@ GeoDataFrames = "62cb38b5-d8d2-4862-a48e-6a340996859f"
 YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 
 [extensions]
-SpectralIndicesDataFramesExt = ["DataFrames", GeoDataFrames]
+SpectralIndicesDataFramesExt = ["DataFrames", "GeoDataFrames"]
 SpectralIndicesYAXArraysExt = ["YAXArrays", "DimensionalData"]
 
 [compat]
