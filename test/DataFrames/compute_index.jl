@@ -9,7 +9,7 @@ Random.seed!(17)
         if idx_name == "AVI" || idx_name == "TVI"
             df_single = DataFrame(; N=[0.2, 0.2], R=[0.1, 0.1])
         else
-            df_single = DataFrame(; band = rand(10) for band in idx.bands)
+            df_single = DataFrame([band => rand(10) for band in idx_bands])
         end
         result = compute_index(idx_name, params)
         @test eltype(result) isa Float64
