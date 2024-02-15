@@ -4,27 +4,32 @@ using DataFrames
 using Random
 Random.seed!(17)
 
-@testset "Built-in types compute_index tests: $idx_name" for (idx_name, idx) in indices
-    @testset "DataFrames as Params" begin
+function convert_to_kwargs(df::DataFrame)
+    kwargs = [(Symbol(band) => DataFrame(band => df[:, band])) for band in names(df)]
+    return kwargs
+end
+
+@testset "DataFrames compute_index tests: $idx_name" for (idx_name, idx) in indices
+    @testset "as Params" begin
         if idx_name == "AVI" || idx_name == "TVI"
-            df_single = DataFrame(; N=[0.2, 0.2], R=[0.1, 0.1])
+            params = DataFrame(; N=[0.2, 0.2], R=[0.1, 0.1])
         else
-            df_single = DataFrame([band => rand(10) for band in idx_bands])
+            params = DataFrame([band => rand(10) for band in idx_bands])
         end
         result = compute_index(idx_name, params)
         @test eltype(result) isa Float64
         @test result isa DataFrame
     end
 
-    @testset "Single Values as Kwargs" begin
+    @testset "as Kwargs" begin
         if idx_name == "AVI" || idx_name == "TVI"
-            params = Dict("N" => 0.2, "R"=>0.1)
+            params = DataFrame(; N=[0.2, 0.2], R=[0.1, 0.1])
         else
-            params = Dict(band => rand() for band in idx.bands)
+            params = DataFrame([band => rand(10) for band in idx_bands])
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
-        @test result isa Float64
-        @test length(result) == 1
+        @test eltype(result) isa Float64
+        @test result isa DataFrame
     end
 
     @testset "Single Index as Params" begin
