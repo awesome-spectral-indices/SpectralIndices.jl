@@ -20,6 +20,8 @@ end
 
 @safetestset "Compute Kernels" begin
     include("compute_kernel.jl")
+    include("DataFrames/compute_kernel.jl")
+    include("YAXArrays/compute_kernel.jl")
 end
 
 @safetestset "Utils" begin
