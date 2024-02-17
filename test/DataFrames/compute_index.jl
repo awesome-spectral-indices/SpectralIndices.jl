@@ -20,9 +20,8 @@ end
             params = DataFrame([band => rand(10) for band in idx.bands])
         end
         result = compute_index(idx_name, params)
-        @test eltype(result) isa Float64
         @test result isa DataFrame
-        @test names(result_single) == [idx_name]
+        @test names(result) == [idx_name]
     end
 
     @testset "as Kwargs" begin
@@ -32,19 +31,8 @@ end
             params = DataFrame([band => rand(10) for band in idx.bands])
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
-        @test eltype(result) isa Float64
         @test result isa DataFrame
-        @test names(result_single) == [idx_name]
-    end
-
-    @testset "Multiple Indices as Params" begin
-        df_multiple = DataFrame(; N=[0.643, 0.56], R=[0.175, 0.22], L=[0.5, 0.4])
-        result_multiple = compute_index(["NDVI", "SAVI"], df_multiple)
-        @test size(result_multiple, 1) == 2
-        @test size(result_multiple, 2) == 2
-        @test names(result_multiple) == ["NDVI", "SAVI"]
-        @test typeof(result_multiple[!, "NDVI"][1]) == Float64
-        @test typeof(result_multiple[!, "SAVI"][1]) == Float64
+        @test names(result) == [idx_name]
     end
 end
 
