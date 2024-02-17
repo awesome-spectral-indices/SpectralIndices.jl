@@ -13,6 +13,7 @@ end
 end
 
 @safetestset "Compute Indices" begin
+    include("test_utils.jl")
     include("compute_index.jl")
     include("DataFrames/compute_index.jl")
     include("YAXArrays/compute_index.jl")

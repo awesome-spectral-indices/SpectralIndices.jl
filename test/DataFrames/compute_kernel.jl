@@ -1,7 +1,11 @@
 using Test
 using SpectralIndices
 using DataFrames
-include("../test_utils.jl")
+
+function convert_to_kwargs(df::DataFrame)
+    kwargs = [(Symbol(band) => DataFrame(band => df[:, band])) for band in names(df)]
+    return kwargs
+end
 
 params = DataFrame(;
     a=[1, 2], b=[3, 4], c=[1, 1], p=[2, 2], sigma=[5, 5]

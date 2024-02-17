@@ -4,8 +4,12 @@ using DataFrames
 using Random
 using Combinatorics
 using StatsBase
-include("../test_utils.jl")
 Random.seed!(17)
+
+function convert_to_kwargs(df::DataFrame)
+    kwargs = [(Symbol(band) => DataFrame(band => df[:, band])) for band in names(df)]
+    return kwargs
+end
 
 @testset "DataFrames compute_index single index tests: $idx_name" for (idx_name, idx) in indices
     @testset "as Params" begin

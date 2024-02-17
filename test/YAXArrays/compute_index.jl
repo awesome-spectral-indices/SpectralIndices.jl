@@ -5,8 +5,13 @@ using DimensionalData
 using Random
 using Combinatorics
 using StatsBase
-include("../test_utils.jl")
 Random.seed!(17)
+
+function convert_to_kwargs(yaxarr::YAXArray)
+    var_names = lookup(yaxarr, :Variables)
+    kwargs = [(Symbol(var_name) => yaxarr[Variable=At(var_name)]) for var_name in var_names]
+    return kwargs
+end
 
 xdim = Dim{:x}(range(1, 10, length=10))
 ydim = Dim{:x}(range(1, 10, length=15))
