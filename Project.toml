@@ -30,6 +30,7 @@ julia = "1.6"
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
 JET = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
 JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
@@ -39,4 +40,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 
 [targets]
-test = ["Test", "SafeTestsets", "Aqua", "JET", "JuliaFormatter", "DataFrames", "YAXArrays", "Random", "Combinatorics", "StatsBase"]
+test = ["Test", "SafeTestsets", "Aqua", "JET", "JuliaFormatter", "DataFrames", "YAXArrays", "Random", "Combinatorics", "StatsBase", "DimensionalData"]

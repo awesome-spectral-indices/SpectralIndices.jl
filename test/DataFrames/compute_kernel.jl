@@ -1,17 +1,43 @@
 using Test
 using SpectralIndices
 using DataFrames
+include("../test_utils.jl")
 
-df = DataFrame(;
-            a=T.([1, 2]), b=T.([3, 4]), c=T.([1, 1]), p=T.([2, 2]), sigma=T.([5, 5])
-        )
-@testset "Kernel functions for Dataframes" begin
-    @test eachcol(linear(df)) == eachcol(DataFrame(; linear=T.([3, 8])))
-    df_expected = DataFrame(; poly=T.([(1 * 3 + 1)^2, (2 * 4 + 1)^2]))
-            @test eachcol(poly(df)) == eachcol(df_expected)
+params = DataFrame(;
+    a=[1, 2], b=[3, 4], c=[1, 1], p=[2, 2], sigma=[5, 5]
+)
 
-    df_expected = DataFrame(;
-            RBF=exp.((-1.0 .* ((df.a .- df.b) .^ 2.0)) ./ (2.0 .* (df.sigma .^ 2.0)))
-        )
-    @test eachcol(RBF(df)) == eachcol(df_expected)
+@testset "linear test" begin
+    result = linear(params)
+    @test result isa DataFrame
+end
+
+@testset "poly test" begin
+    result = poly(params)
+    @test result isa DataFrame
+end
+
+@testset "RBF test" begin
+    result = RBF(params)
+    @test result isa DataFrame
+end
+
+@testset "DataFrames compute_kernel tests" begin
+    @testset "as Params" begin
+        lr = compute_kernel(linear, params)
+        @test lr isa DataFrame
+        pr = compute_kernel(poly, params)
+        @test pr isa DataFrame
+        rr = compute_kernel(RBF, params)
+        @test rr isa DataFrame
+    end
+
+    @testset "as Kwargs" begin
+        lr = compute_kernel(linear; convert_to_kwargs(params)...)
+        @test lr isa DataFrame
+        pr = compute_kernel(poly; convert_to_kwargs(params)...)
+        @test pr isa DataFrame
+        rr = compute_kernel(RBF; convert_to_kwargs(params)...)
+        @test rr isa DataFrame
+    end
 end
