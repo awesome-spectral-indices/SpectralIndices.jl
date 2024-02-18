@@ -10,6 +10,10 @@ makedocs(;
     doctest=true,
     linkcheck=true,
     warnonly=[:missing_docs],
+    format = Documenter.HTML(
+        size_threshold = nothing,
+        prettyurls = get(ENV, "CI", nothing) == "true",
+        assets = ["assets/docs.css"]),
     pages=pages,
 )
 
