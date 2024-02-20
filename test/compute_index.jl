@@ -8,9 +8,13 @@ Random.seed!(17)
 
 convert_to_kwargs(dict) = Dict(Symbol(k) => v for (k, v) in dict)
 
-@testset "Input Validation" begin
+@testset "Input Validation: Invalid Index" begin
     @test_throws AssertionError compute_index("InvalidIndex", N=0.5, R=0.5)
 end
+
+#@testset "Input Validation: Missing Band" begin
+#    @test_throws AssertionError compute_index("InvalidIndex", N=0.5, R=0.5)
+#end
 
 @testset "Built-in types compute_index single index tests: $idx_name" for (idx_name, idx) in indices
     @testset "Single Values as Params" begin

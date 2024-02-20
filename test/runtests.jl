@@ -5,6 +5,12 @@ using Test
     include("qa.jl")
 end
 
+@safetestset "Utils" begin
+    include("utils.jl")
+    include("DataFrames/datasets.jl")
+    include("YAXArrays/datasets.jl")
+end
+
 @safetestset "Axioms" begin
     include("indices.jl")
     include("platforms.jl")
@@ -23,8 +29,4 @@ end
     include("compute_kernel.jl")
     include("DataFrames/compute_kernel.jl")
     include("YAXArrays/compute_kernel.jl")
-end
-
-@safetestset "Utils" begin
-    include("utils.jl")
 end

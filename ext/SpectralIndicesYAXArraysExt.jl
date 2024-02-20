@@ -92,12 +92,12 @@ end
 function SpectralIndices.load_dataset(
     dataset::String, ::Type{T}
 ) where {T<:YAXArray}
-    datasets = Dict("sentinel" => "S2_10m.json", "spectral" => "spectral.json")
+    datasets = Dict("sentinel" => "S2_10m.json")
 
     if dataset in keys(datasets)
         nothing
     else
-        error("Dataset name not valid. Datasets available: sentinel and spectral")
+        error("Dataset name not valid. Datasets available for YAXArrays: sentinel")
     end
 
     ds = SpectralIndices._load_json(datasets[dataset])
