@@ -61,12 +61,12 @@ end
 function SpectralIndices.load_dataset(
     dataset::String, ::Type{T}
 ) where {T<:DataFrame}
-    datasets = Dict("sentinel" => "S2_10m.json", "spectral" => "spectral.json")
+    datasets = Dict("spectral" => "spectral.json")
 
     if dataset in keys(datasets)
         nothing
     else
-        error("Dataset name not valid. Datasets available: sentinel and spectral")
+        error("Dataset name not valid. Datasets available for DataFrames: spectral")
     end
 
     ds = SpectralIndices._load_json(datasets[dataset])
@@ -76,17 +76,13 @@ function SpectralIndices.load_dataset(
             push!(all_indices, parse(Int, idx))
         end
     end
-    all_indices = sort(collect(all_indices)) # Convert to sorted list
-
-    # Prepare a DataFrame with a specific row for each unique index
+    all_indices = sort(collect(all_indices))
     df = DataFrame(; index=all_indices)
 
-    # Initialize columns based on the keys in `ds`
     for col_name in keys(ds)
         df[!, col_name] = Vector{Union{Missing,Any}}(missing, length(all_indices))
     end
 
-    # Populate the DataFrame with actual values
     for (col_name, col_data) in ds
         for (idx, value) in col_data
             row_idx = findfirst(==(parse(Int, idx)), all_indices)
@@ -94,7 +90,6 @@ function SpectralIndices.load_dataset(
         end
     end
 
-    # Optionally, remove the index column if it's not needed
     select!(df, Not(:index))
 
     return df

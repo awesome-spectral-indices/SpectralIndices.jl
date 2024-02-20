@@ -72,11 +72,4 @@ df_ds = SpectralIndices.load_dataset("spectral")
 The current implementation expects the JSON files ("S2_10m.json" for "sentinel" and "spectral.json" for "spectral") to follow a specific format: a vector of vectors where each inner vector represents a band's data in a 300x300 spatial grid for the YAXArray version, or a suitable structure that can be directly converted into a DataFrame for the DataFrame version.
 The files are already provided for examples in the package in the folder `data`.
 """
-function load_dataset(dataset::String, ::Type{T}) where {T}
-    dfext = Base.get_extension(SpectralIndices, :SpectralIndicesDataFramesExt)
-    yaxaxext = Base.get_extension(SpectralIndices, :SpectralIndicesYAXArraysExt)
-
-    if isnothing(dfext) && isnothing(yaxaxext)
-        error("Load a library (DataFrames, YAXArrays) to use this function")
-    end
-end
+function load_dataset() end
