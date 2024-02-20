@@ -44,6 +44,9 @@ end
 
         params = Dict("a" => [1, 2], "b" => [3, 4])
         @test compute_kernel(linear, params) == [3, 8]
+
+        params = (a=2, b=3)
+        @test compute_kernel(linear, params) == 6
     end
 
     # Test polynomial kernel
@@ -53,6 +56,9 @@ end
 
         params = Dict("a" => [1, 2], "b" => [2, 3], "c" => [1, 1], "p" => [2, 3])
         @test compute_kernel(poly, params) == [9, 343]
+
+        params = (a=2, b=3, c=1, p=2)
+        @test compute_kernel(poly, params) == 49
     end
 
     # Test RBF kernel
@@ -62,6 +68,9 @@ end
 
         params = Dict("a" => [1, 2], "b" => [2, 1], "sigma" => [1, 2])
         @test compute_kernel(RBF, params) ≈ [exp(-0.5), exp(-0.125)]
+
+        params = (a=1, b=2, sigma=1)
+        @test compute_kernel(RBF, params) ≈ exp(-0.5)
     end
 end
 
