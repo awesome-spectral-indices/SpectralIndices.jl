@@ -86,11 +86,13 @@ function _create_indexfun(index_dict::Dict{String,Any}=_get_indices();
 
             counter = 1
             const_defs = []
+            untyped_const_defs = []
             default_values = []
             formula = replace(formula, r"\b\d+(\.\d+)?\b" => match -> begin
                 const_name = "const$(counter)"
                 default_value = match
                 push!(const_defs, "$const_name::Number=TFL($default_value)")
+                push!(untyped_const_defs, "$const_name=$const_name")
                 push!(default_values, default_value)
                 counter += 1
                 return const_name
@@ -100,11 +102,21 @@ function _create_indexfun(index_dict::Dict{String,Any}=_get_indices();
             bands_args = join(bands, "::Number, ") * "::Number"
 
             kwargs = join(const_defs, ", ")
+            untyped_kwargs = join(untyped_const_defs, ", ")
             func_signature = isempty(const_defs) ? 
                 "function $(short_name)_func(::Type{TFL}, $bands_args) where {TFL <: Number}" : 
                 "function $(short_name)_func(::Type{TFL}, $bands_args; $kwargs) where {TFL <: Number}"
+            
+            untyped_func_signature = isempty(const_defs) ? 
+                "function $(short_name)_func($bands_args)" :
+                "function $(short_name)_func($bands_args; $kwargs)"
 
-            write(file, "$func_signature\n    $formula\nend\n\n")
+            untyped_fun_call = isempty(const_defs) ?
+                "$(short_name)_func(Float64, $bands_args)" :
+                "$(short_name)_func(Float64, $bands_args; $untyped_kwargs)"
+
+            write(file, "$func_signature\n    return $formula\nend\n\n")
+            write(file, "$untyped_func_signature\n    return $untyped_fun_call\nend\n\n")
 
             write(file, "indices_funcs[\"$index_name\"] = $(short_name)_func\n\n")
         end
