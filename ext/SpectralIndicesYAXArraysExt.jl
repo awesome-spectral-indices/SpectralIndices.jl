@@ -39,21 +39,29 @@ end
 
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
-function SpectralIndices.compute_index(
-    index::String, params::YAXArray; indices=SpectralIndices._create_indices()
-)
+function SpectralIndices.compute_index(::Type{T},
+    index::String,
+    params::YAXArray;
+    indices=SpectralIndices._create_indices()) where {T<:Number}
     SpectralIndices._check_params(indices[index], params)
     params = SpectralIndices._order_params(indices[index], params)
-    result = SpectralIndices._compute_index(indices[index], params...)
+    result = SpectralIndices._compute_index(T, indices[index], params...)
     return result
 end
 
-function SpectralIndices.compute_index(
-    index::Vector{String}, params::YAXArray; indices=SpectralIndices._create_indices()
-)
+function SpectralIndices.compute_index(index::String,
+    params::YAXArray;
+    indices=SpectralIndices._create_indices())
+    return SpectralIndices.compute_index(Float64, index, params; indices=indices)
+end
+
+function SpectralIndices.compute_index(::Type{T},
+    index::Vector{String},
+    params::YAXArray;
+    indices=SpectralIndices._create_indices()) where {T<:Number}
     results = []
     for (nidx, idx) in enumerate(index)
-        res_tmp = compute_index(idx, params; indices=indices)
+        res_tmp = compute_index(T, idx, params; indices=indices)
         push!(results, res_tmp)
     end
     result = concatenatecubes(results, Dim{:Variables}(index))
@@ -61,10 +69,16 @@ function SpectralIndices.compute_index(
     return result
 end
 
-function SpectralIndices._compute_index(
-    idx::SpectralIndices.AbstractSpectralIndex, prms::YAXArray...
-)
-    return idx.(prms...)
+function SpectralIndices.compute_index(index::Vector{String},
+    params::YAXArray;
+    indices=SpectralIndices._create_indices())
+    return SpectralIndices.compute_index(Float64, index, params; indices=indices)
+end
+
+function SpectralIndices._compute_index(::Type{T},
+    idx::SpectralIndices.AbstractSpectralIndex,
+    prms::YAXArray...) where {T<:Number}
+    return idx.(T, prms...)
 end
 
 function SpectralIndices.linear(params::YAXArray)

@@ -19,13 +19,17 @@ Compute a specified kernel using either provided parameters or keyword arguments
 result = compute_kernel(linear; params=Dict("a" => 1, "b" => 2))
 ```
 """
-function compute_kernel(kernel, params=nothing; kwargs...)
-    if params === nothing
+function compute_kernel(::Type{T}, kernel, params=nothing; kwargs...) where {T<:Number}
+    if isnothing(params)
         params = _create_params(kwargs...)
     end
 
-    results = kernel(params)
+    results = kernel(T, params)
     return results
+end
+
+function compute_kernel(kernel, params=nothing; kwargs...)
+    return compute_kernel(Float64, kernel, params; kwargs...)
 end
 
 """
@@ -70,17 +74,23 @@ df = DataFrame(; a=[1, 2, 3], b=[4, 5, 6])
 result = linear(df)
 ```
 """
-linear(a::Number, b::Number) = a * b
-linear(a::AbstractArray, b::AbstractArray) = a .* b
+linear(::Type{T}, a::Number, b::Number) where {T<:Number} = a * b
+linear(a::Number, b::Number) = linear(Float64, a, b)
+linear(::Type{T}, a::AbstractArray, b::AbstractArray) where {T<:Number} = a .* b
+linear(a::AbstractArray, b::AbstractArray) = linear(Float64, a, b)
 
-function linear(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray}}
-    result = linear(params["a"], params["b"])
+function linear(::Type{T}, params::Dict{String,U}) where {T<:Number, U<:Union{<:Number,<:AbstractArray}}
+    result = linear(T, params["a"], params["b"])
     return result
 end
 
+function linear(params::Dict{String,U}) where {U<:Union{<:Number,<:AbstractArray}}
+  return linear(Float64, params)
+end
+
 function linear(params::NamedTuple)
-  result = linear(params.a, params.b)
-  return result
+    result = linear(params.a, params.b)
+    return result
 end
 
 """

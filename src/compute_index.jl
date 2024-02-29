@@ -134,7 +134,7 @@ _compute_index(::Type{T}, idx::AbstractSpectralIndex, prms::AbstractArray...) wh
 function compute_index(::Type{T}, index::String, params::NamedTuple; indices=indices) where {T<:Number}
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
-    result = _compute_index(indices[index], params...)
+    result = _compute_index(T, indices[index], params...)
     result_nt = (; Dict(Symbol(index) => result)...)
     return result_nt
 end
@@ -146,7 +146,7 @@ end
 function compute_index(::Type{T}, index::Vector{String}, params::NamedTuple; indices=indices) where {T<:Number}
     results_dict = Dict{Symbol, Any}()
     for idx in index
-        result_nt = compute_index(idx, params; indices=indices)
+        result_nt = compute_index(T, idx, params; indices=indices)
         # TODO @MartinuzziFrancesco: there has to be a better way
         results_dict[fieldnames(typeof(result_nt))[1]] = first(result_nt)
     end

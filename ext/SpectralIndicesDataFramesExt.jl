@@ -14,12 +14,12 @@ function SpectralIndices._create_params(kw_args::Pair{Symbol,DataFrame}...)
     return combined_df
 end
 
-function SpectralIndices.compute_index(
+function SpectralIndices.compute_index(::Type{T},
     index::String, params::DataFrame; indices=SpectralIndices._create_indices()
-)
+) where {T<:Number}
     # Convert DataFrame to a dictionary for each row and compute the index
     results = [
-        compute_index(index, Dict(zip(names(params), row)); indices=indices) for
+        SpectralIndices.compute_index(T, index, Dict(zip(names(params), row)); indices=indices) for
         row in eachrow(params)
     ]
 
@@ -27,17 +27,30 @@ function SpectralIndices.compute_index(
     return DataFrame(Symbol(index) => results)
 end
 
-function SpectralIndices.compute_index(
-    index::Vector{String}, params::DataFrame; indices=SpectralIndices._create_indices()
-)
+function SpectralIndices.compute_index(index::String,
+    params::DataFrame;
+    indices=SpectralIndices._create_indices())
+    return SpectralIndices.compute_index(Float64, index, params; indices=indices)
+end
+
+function SpectralIndices.compute_index(::Type{T},
+    index::Vector{String},
+    params::DataFrame;
+    indices=SpectralIndices._create_indices()) where {T<:Number}
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()
     for idx in index
-        result_df = compute_index(idx, params; indices=indices)
+        result_df = SpectralIndices.compute_index(T, idx, params; indices=indices)
         result_dfs[!, Symbol(idx)] = result_df[!, 1]
     end
     # Return the combined DataFrame with columns named after each index
     return result_dfs
+end
+
+function SpectralIndices.compute_index(index::Vector{String},
+    params::DataFrame;
+    indices=SpectralIndices._create_indices())
+    return SpectralIndices.compute_index(Float64, index, params; indices=indices)
 end
 
 function SpectralIndices.linear(params::DataFrame)
