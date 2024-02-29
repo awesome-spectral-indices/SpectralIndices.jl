@@ -107,16 +107,16 @@ function _create_indexfun(index_dict::Dict{String,Any}=_get_indices();
                 "function $(short_name)_func(::Type{TFL}, $bands_args) where {TFL <: Number}" : 
                 "function $(short_name)_func(::Type{TFL}, $bands_args; $kwargs) where {TFL <: Number}"
             
-            untyped_func_signature = isempty(const_defs) ? 
-                "function $(short_name)_func($bands_args)" :
-                "function $(short_name)_func($bands_args; $kwargs)"
+            #untyped_func_signature = isempty(const_defs) ? 
+            #    "function $(short_name)_func($bands_args)" :
+            #    "function $(short_name)_func($bands_args; $kwargs)"
 
-            untyped_fun_call = isempty(const_defs) ?
-                "$(short_name)_func(Float64, $bands_args)" :
-                "$(short_name)_func(Float64, $bands_args; $untyped_kwargs)"
+            #untyped_fun_call = isempty(const_defs) ?
+            #    "$(short_name)_func(Float64, $bands_args)" :
+            #    "$(short_name)_func(Float64, $bands_args; $untyped_kwargs)"
 
             write(file, "$func_signature\n    return $formula\nend\n\n")
-            write(file, "$untyped_func_signature\n    return $untyped_fun_call\nend\n\n")
+            #write(file, "$untyped_func_signature\n    return $untyped_fun_call\nend\n\n")
 
             write(file, "indices_funcs[\"$index_name\"] = $(short_name)_func\n\n")
         end
