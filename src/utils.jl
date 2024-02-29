@@ -72,25 +72,41 @@ function _get_indices(
     return indices["SpectralIndices"]
 end
 
-function _create_indexfun(
-    index_dict::Dict{String,Any}=_get_indices();
+function _create_indexfun(index_dict::Dict{String,Any}=_get_indices();
     filename::String="indices_funcs.jl",
     fileloc=joinpath(dirname(@__FILE__), filename),
 )
     open(fileloc, "w") do file
+        write(file, "indices_funcs = Dict()\n\n")
+
         for (index_name, index_info) in index_dict
             short_name = index_info["short_name"]
             formula = index_info["formula"]
             formula = replace(formula, "**" => "^")
+
+            counter = 1
+            const_defs = []
+            default_values = []
+            formula = replace(formula, r"\b\d+(\.\d+)?\b" => match -> begin
+                const_name = "const$(counter)"
+                default_value = match
+                push!(const_defs, "$const_name::Number=TFL($default_value)")
+                push!(default_values, default_value)
+                counter += 1
+                return const_name
+            end)
+
             bands = index_info["bands"]
             bands_args = join(bands, "::Number, ") * "::Number"
 
-            write(file, "\n$(short_name)_func($(bands_args)) = $formula\n")
-        end
+            kwargs = join(const_defs, ", ")
+            func_signature = isempty(const_defs) ? 
+                "function $(short_name)_func(::Type{TFL}, $bands_args) where {TFL <: Number}" : 
+                "function $(short_name)_func(::Type{TFL}, $bands_args; $kwargs) where {TFL <: Number}"
 
-        for (index_name, index_info) in index_dict
-            short_name = index_info["short_name"]
-            write(file, "indices_funcs[\"$index_name\"] = $(short_name)_func\n")
+            write(file, "$func_signature\n    $formula\nend\n\n")
+
+            write(file, "indices_funcs[\"$index_name\"] = $(short_name)_func\n\n")
         end
     end
 end
