@@ -8,7 +8,7 @@ floats = [Float64, Float32, Float16]
     a_v, b_v, c_v, p_v, sigma_v = T.([1, 2, 3]),
     T.([4, 5, 6]), T.([1, 1, 1]), T.([2, 2, 2]),
     T.([5, 5, 5])
-    
+
     @testset "Tests for linear function with type $T" begin
         @test linear(T, a, b) == T(6)
         @test eltype(linear(T, a, b)) == T
@@ -60,7 +60,9 @@ end
         @test compute_kernel(T, poly, params) == 49
         @test eltype(compute_kernel(T, poly, params)) == T
 
-        params = Dict("a" => T.([1, 2]), "b" => T.([2, 3]), "c" => T.([1, 1]), "p" => T.([2, 3]))
+        params = Dict(
+            "a" => T.([1, 2]), "b" => T.([2, 3]), "c" => T.([1, 1]), "p" => T.([2, 3])
+        )
         @test compute_kernel(T, poly, params) == T.([9, 343])
         @test eltype(compute_kernel(T, poly, params)) == T
 
@@ -82,4 +84,3 @@ end
     end
     GC.gc()
 end
-

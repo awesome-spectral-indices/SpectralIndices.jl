@@ -79,13 +79,15 @@ linear(a::Number, b::Number) = linear(Float64, a, b)
 linear(::Type{T}, a::AbstractArray, b::AbstractArray) where {T<:Number} = a .* b
 linear(a::AbstractArray, b::AbstractArray) = linear(Float64, a, b)
 
-function linear(::Type{T}, params::Dict{String,U}) where {T<:Number, U<:Union{<:Number,<:AbstractArray}}
+function linear(
+    ::Type{T}, params::Dict{String,U}
+) where {T<:Number,U<:Union{<:Number,<:AbstractArray}}
     result = linear(T, params["a"], params["b"])
     return result
 end
 
 function linear(params::Dict{String,U}) where {U<:Union{<:Number,<:AbstractArray}}
-  return linear(Float64, params)
+    return linear(Float64, params)
 end
 
 function linear(::Type{T}, params::NamedTuple) where {T<:Number}
@@ -147,7 +149,7 @@ function poly(a::Number, b::Number, c::Number, p::Number)
     return poly(Float64, a, b, c, p)
 end
 
-function poly(::Type{T}, a::V, b::V, c::V, p::V) where {T<:Number, V<:AbstractArray}
+function poly(::Type{T}, a::V, b::V, c::V, p::V) where {T<:Number,V<:AbstractArray}
     return @. (a * b + c)^p
 end
 
@@ -155,7 +157,9 @@ function poly(a::T, b::T, c::T, p::T) where {T<:AbstractArray}
     return poly(Float64, a, b, c, p)
 end
 
-function poly(::Type{T}, params::Dict{String,P}) where {T<:Number, P<:Union{<:Number,<:AbstractArray}}
+function poly(
+    ::Type{T}, params::Dict{String,P}
+) where {T<:Number,P<:Union{<:Number,<:AbstractArray}}
     result = poly(params["a"], params["b"], params["c"], params["p"])
     return result
 end
@@ -217,9 +221,14 @@ df = DataFrame(; a=[1, 2, 3], b=[4, 5, 6], sigma=[0.5, 0.5, 0.5])
 result = RBF(df)
 ```
 """
-function RBF(::Type{T}, a::Number, b::Number, sigma::Number;
-    const1::Number = T(-1.0),
-    const2::Number = T(2.0)) where {T<:Number}
+function RBF(
+    ::Type{T},
+    a::Number,
+    b::Number,
+    sigma::Number;
+    const1::Number=T(-1.0),
+    const2::Number=T(2.0),
+) where {T<:Number}
     return exp((const1 * (a - b)^const2) / (const2 * sigma^const2))
 end
 
@@ -227,9 +236,9 @@ function RBF(a::Number, b::Number, sigma::Number)
     return RBF(Float64, a, b, sigma)
 end
 
-function RBF(::Type{T}, a::V, b::V, sigma::V;
-    const1::Number = T(-1.0),
-    const2::Number = T(2.0)) where {T<:Number, V<:AbstractArray}
+function RBF(
+    ::Type{T}, a::V, b::V, sigma::V; const1::Number=T(-1.0), const2::Number=T(2.0)
+) where {T<:Number,V<:AbstractArray}
     return @. exp((const1 * (a - b)^const2) / (const2 * sigma^const2))
 end
 
@@ -237,8 +246,9 @@ function RBF(a::T, b::T, sigma::T) where {T<:AbstractArray}
     return RBF(Float64, a, b, sigma)
 end
 
-function RBF(::Type{T},
-    params::Dict{String,V}) where {T<:Number, V<:Union{<:Number,<:AbstractArray}}
+function RBF(
+    ::Type{T}, params::Dict{String,V}
+) where {T<:Number,V<:Union{<:Number,<:AbstractArray}}
     return RBF(T, params["a"], params["b"], params["sigma"])
 end
 

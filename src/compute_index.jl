@@ -53,8 +53,8 @@ julia> compute_index(
 
 ```
 """
-function compute_index(::Type{T},
-    index::String, params=nothing, online::Bool=false; indices=indices, kwargs...
+function compute_index(
+    ::Type{T}, index::String, params=nothing, online::Bool=false; indices=indices, kwargs...
 ) where {T<:Number}
     names = keys(indices)
     @assert index in names "$index is not a valid Spectral Index!"
@@ -67,15 +67,13 @@ function compute_index(::Type{T},
     return results
 end
 
-function compute_index(index::String,
-    params=nothing,
-    online::Bool=false; kwargs...)
+function compute_index(index::String, params=nothing, online::Bool=false; kwargs...)
     return compute_index(Float64, index, params, online; kwargs...)
 end
 
-function compute_index(::Type{T},
-    index::Vector{String}, params=nothing,
-    online::Bool=false; kwargs...) where {T<:Number}
+function compute_index(
+    ::Type{T}, index::Vector{String}, params=nothing, online::Bool=false; kwargs...
+) where {T<:Number}
     indices = _create_indices(online)
     names = keys(indices)
     for idx in index
@@ -91,12 +89,13 @@ function compute_index(::Type{T},
     return results
 end
 
-function compute_index(index::Vector{String}, params=nothing,
-    online::Bool=false; kwargs...)
+function compute_index(index::Vector{String}, params=nothing, online::Bool=false; kwargs...)
     return compute_index(Float64, index, params, online; kwargs...)
 end
 
-function compute_index(::Type{T}, index::String, params::Dict; indices=indices) where {T<:Number}
+function compute_index(
+    ::Type{T}, index::String, params::Dict; indices=indices
+) where {T<:Number}
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
     result = _compute_index(T, indices[index], params...)
@@ -110,8 +109,9 @@ end
 
 # TODO: return results in a matrix columnswise
 #multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
-function compute_index(::Type{T}, index::Vector{String}, params::Dict; indices=indices) where {T<:Number}
-
+function compute_index(
+    ::Type{T}, index::Vector{String}, params::Dict; indices=indices
+) where {T<:Number}
     results = []
     for (nidx, idx) in enumerate(index)
         result = compute_index(T, idx, params; indices=indices)
@@ -126,12 +126,22 @@ function compute_index(index::Vector{String}, params::Dict; indices=indices)
 end
 
 #_compute_index(idx::AbstractSpectralIndex, prms::Number...) = idx(prms...)
-_compute_index(::Type{T}, idx::AbstractSpectralIndex, prms::Number...) where {T<:Number} = idx(T, prms...)
+function _compute_index(
+    ::Type{T}, idx::AbstractSpectralIndex, prms::Number...
+) where {T<:Number}
+    return idx(T, prms...)
+end
 
 #_compute_index(idx::AbstractSpectralIndex, prms::AbstractArray...) = idx.(prms...)
-_compute_index(::Type{T}, idx::AbstractSpectralIndex, prms::AbstractArray...) where {T<:Number} = idx.(T, prms...)
+function _compute_index(
+    ::Type{T}, idx::AbstractSpectralIndex, prms::AbstractArray...
+) where {T<:Number}
+    return idx.(T, prms...)
+end
 
-function compute_index(::Type{T}, index::String, params::NamedTuple; indices=indices) where {T<:Number}
+function compute_index(
+    ::Type{T}, index::String, params::NamedTuple; indices=indices
+) where {T<:Number}
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
     result = _compute_index(T, indices[index], params...)
@@ -143,8 +153,10 @@ function compute_index(index::String, params::NamedTuple; indices=indices)
     return compute_index(Float64, index, params; indices=indices)
 end
 
-function compute_index(::Type{T}, index::Vector{String}, params::NamedTuple; indices=indices) where {T<:Number}
-    results_dict = Dict{Symbol, Any}()
+function compute_index(
+    ::Type{T}, index::Vector{String}, params::NamedTuple; indices=indices
+) where {T<:Number}
+    results_dict = Dict{Symbol,Any}()
     for idx in index
         result_nt = compute_index(T, idx, params; indices=indices)
         # TODO @MartinuzziFrancesco: there has to be a better way
@@ -152,13 +164,12 @@ function compute_index(::Type{T}, index::Vector{String}, params::NamedTuple; ind
     end
 
     # Convert the dictionary to a named tuple
-    return (;results_dict...)
+    return (; results_dict...)
 end
 
 function compute_index(index::Vector{String}, params::NamedTuple; indices=indices)
     return compute_index(Float64, index, params; indices=indices)
 end
-
 
 """
     _check_params(index::String, params::Dict, indices::Dict)
@@ -212,7 +223,6 @@ function _create_params(kw_args...)
     params = Dict(String(k) => v for (k, v) in kw_args)
     return params
 end
-
 
 function _check_params(index, params::NamedTuple)
     for band in index.bands

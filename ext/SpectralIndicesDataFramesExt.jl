@@ -14,29 +14,32 @@ function SpectralIndices._create_params(kw_args::Pair{Symbol,DataFrame}...)
     return combined_df
 end
 
-function SpectralIndices.compute_index(::Type{T},
-    index::String, params::DataFrame; indices=SpectralIndices._create_indices()
+function SpectralIndices.compute_index(
+    ::Type{T}, index::String, params::DataFrame; indices=SpectralIndices._create_indices()
 ) where {T<:Number}
     # Convert DataFrame to a dictionary for each row and compute the index
     results = [
-        SpectralIndices.compute_index(T, index, Dict(zip(names(params), row)); indices=indices) for
-        row in eachrow(params)
+        SpectralIndices.compute_index(
+            T, index, Dict(zip(names(params), row)); indices=indices
+        ) for row in eachrow(params)
     ]
 
     # Return the results as a DataFrame with the column named after the index
     return DataFrame(Symbol(index) => results)
 end
 
-function SpectralIndices.compute_index(index::String,
-    params::DataFrame;
-    indices=SpectralIndices._create_indices())
+function SpectralIndices.compute_index(
+    index::String, params::DataFrame; indices=SpectralIndices._create_indices()
+)
     return SpectralIndices.compute_index(Float64, index, params; indices=indices)
 end
 
-function SpectralIndices.compute_index(::Type{T},
+function SpectralIndices.compute_index(
+    ::Type{T},
     index::Vector{String},
     params::DataFrame;
-    indices=SpectralIndices._create_indices()) where {T<:Number}
+    indices=SpectralIndices._create_indices(),
+) where {T<:Number}
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()
     for idx in index
@@ -47,9 +50,9 @@ function SpectralIndices.compute_index(::Type{T},
     return result_dfs
 end
 
-function SpectralIndices.compute_index(index::Vector{String},
-    params::DataFrame;
-    indices=SpectralIndices._create_indices())
+function SpectralIndices.compute_index(
+    index::Vector{String}, params::DataFrame; indices=SpectralIndices._create_indices()
+)
     return SpectralIndices.compute_index(Float64, index, params; indices=indices)
 end
 
@@ -83,9 +86,7 @@ function SpectralIndices.RBF(params::DataFrame)
     return RBF(Float64, params)
 end
 
-function SpectralIndices.load_dataset(
-    dataset::String, ::Type{T}
-) where {T<:DataFrame}
+function SpectralIndices.load_dataset(dataset::String, ::Type{T}) where {T<:DataFrame}
     datasets = Dict("spectral" => "spectral.json")
 
     if dataset in keys(datasets)

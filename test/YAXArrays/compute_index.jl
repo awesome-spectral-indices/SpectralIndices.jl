@@ -15,10 +15,12 @@ function convert_to_kwargs(yaxarr::YAXArray)
     return kwargs
 end
 
-xdim = Dim{:x}(range(1, 10, length=10))
-ydim = Dim{:x}(range(1, 10, length=15))
+xdim = Dim{:x}(range(1, 10; length=10))
+ydim = Dim{:x}(range(1, 10; length=15))
 
-@testset "YAXArrays compute_index $T single index tests: $idx_name" for (idx_name, idx) in indices, T in floats
+@testset "YAXArrays compute_index $T single index tests: $idx_name" for (idx_name, idx) in
+                                                                        indices,
+    T in floats
 
     @testset "as Params" begin
         if idx_name == "AVI" || idx_name == "TVI"
@@ -64,7 +66,8 @@ end
 
 msi = custom_key_combinations(indices, 2, 200)
 
-@testset "YAXArrays compute_index $T multiple indices tests: $idxs" for idxs in msi, T in floats
+@testset "YAXArrays compute_index $T multiple indices tests: $idxs" for idxs in msi,
+    T in floats
 
     if idxs[1] in ["AVI", "TVI"] && length(idxs) > 1
         for i in 2:length(idxs)

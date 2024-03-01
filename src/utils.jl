@@ -72,7 +72,8 @@ function _get_indices(
     return indices["SpectralIndices"]
 end
 
-function _create_indexfun(index_dict::Dict{String,Any}=_get_indices();
+function _create_indexfun(
+    index_dict::Dict{String,Any}=_get_indices();
     filename::String="indices_funcs.jl",
     fileloc=joinpath(dirname(@__FILE__), filename),
 )
@@ -88,25 +89,31 @@ function _create_indexfun(index_dict::Dict{String,Any}=_get_indices();
             const_defs = []
             untyped_const_defs = []
             default_values = []
-            formula = replace(formula, r"\b\d+(\.\d+)?\b" => match -> begin
-                const_name = "const$(counter)"
-                default_value = match
-                push!(const_defs, "$const_name::Number=TFL($default_value)")
-                push!(untyped_const_defs, "$const_name=$const_name")
-                push!(default_values, default_value)
-                counter += 1
-                return const_name
-            end)
+            formula = replace(
+                formula,
+                r"\b\d+(\.\d+)?\b" =>
+                    match -> begin
+                        const_name = "const$(counter)"
+                        default_value = match
+                        push!(const_defs, "$const_name::Number=TFL($default_value)")
+                        push!(untyped_const_defs, "$const_name=$const_name")
+                        push!(default_values, default_value)
+                        counter += 1
+                        return const_name
+                    end,
+            )
 
             bands = index_info["bands"]
             bands_args = join(bands, "::Number, ") * "::Number"
 
             kwargs = join(const_defs, ", ")
             untyped_kwargs = join(untyped_const_defs, ", ")
-            func_signature = isempty(const_defs) ? 
-                "function $(short_name)_func(::Type{TFL}, $bands_args) where {TFL <: Number}" : 
+            func_signature = if isempty(const_defs)
+                "function $(short_name)_func(::Type{TFL}, $bands_args) where {TFL <: Number}"
+            else
                 "function $(short_name)_func(::Type{TFL}, $bands_args; $kwargs) where {TFL <: Number}"
-            
+            end
+
             #untyped_func_signature = isempty(const_defs) ? 
             #    "function $(short_name)_func($bands_args)" :
             #    "function $(short_name)_func($bands_args; $kwargs)"

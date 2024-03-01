@@ -8,11 +8,7 @@ function convert_to_kwargs(yaxarr::YAXArray)
     return kwargs
 end
 
-axlist = (
-    Dim{:Lon}(1:5),
-    Dim{:Lat}(1:5),
-    Dim{:Variables}(["a", "b", "c", "p", "sigma"]),
-)
+axlist = (Dim{:Lon}(1:5), Dim{:Lat}(1:5), Dim{:Variables}(["a", "b", "c", "p", "sigma"]))
 
 floats = [Float64, Float32, Float16]
 @testset "YAXArrays tests for linear, poly, and RBF functions for $T" for T in floats
@@ -67,4 +63,3 @@ end
     end
     GC.gc()
 end
-

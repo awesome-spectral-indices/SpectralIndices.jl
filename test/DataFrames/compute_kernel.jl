@@ -8,7 +8,6 @@ function convert_to_kwargs(df::DataFrame)
 end
 
 @testset "YAXArrays tests for linear, poly, and RBF functions for $T" for T in floats
-
     params = DataFrame(;
         a=T.([1, 2]), b=T.([3, 4]), c=T.([1, 1]), p=T.([2, 2]), sigma=T.([5, 5])
     )
