@@ -29,7 +29,7 @@ NDVI
 This outputs the NDVI struct, containing all necessary information. The struct can also be used as a function to compute NDVI:
 
 ```@example basic
-NDVI(nir, red)
+NDVI(Float64, nir, red)
 ```
 
 This method is direct but not the recommended approach for computing indices. When using this method, ensure the parameter order matches the `bands` field of the `SpectralIndex`:
@@ -144,7 +144,19 @@ savi = compute_index("SAVI", params)
 savi = compute_index("SAVI"; N=nir, R=red, L=0.5)
 ```
 
-### Computing Multiple Indices
+## Float32, Float16
+The package can compute indices at custom precision
+
+```@example basic
+T = Float32
+savi = compute_index(T, "SAVI"; N=T(nir), R=T(red), L=T(0.5))
+```
+```@example basic
+T = Float16
+savi = compute_index(T, "SAVI"; N=T(nir), R=T(red), L=T(0.5))
+```
+
+## Computing Multiple Indices
 
 Now that we have added more indices we can explore how to compute multiple indices at the same time. All is needed is to pass a Vector of `String`s to the `compute_index` function with the chosen spectral indices inside, as well as the chosen parameters of course:
 
