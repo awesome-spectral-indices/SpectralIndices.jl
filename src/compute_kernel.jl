@@ -1,5 +1,5 @@
 """
-    compute_kernel(kernel, params=nothing; kwargs...)
+    compute_kernel([Float64], kernel, params=nothing; kwargs...)
 
 Compute a specified kernel using either provided parameters or keyword arguments.
 
@@ -33,11 +33,11 @@ function compute_kernel(kernel, params=nothing; kwargs...)
 end
 
 """
-    linear(a::Number, b::Number)
-    linear(a::AbstractArray, b::AbstractArray)
-    linear(params::Dict{String, T})
-    linear(params::DataFrame)
-    linear(params::YAXArray)
+    linear([Float64], a::Number, b::Number)
+    linear([Float64], a::AbstractArray, b::AbstractArray)
+    linear([Float64], params::Dict{String, T})
+    linear([Float64], params::DataFrame)
+    linear([Float64], params::YAXArray)
 
 Compute the linear kernel `a * b`. This function supports various input types,
 including numbers, arrays, dictionaries, data frames, and YAXArrays.
@@ -96,11 +96,11 @@ end
 linear(params::NamedTuple) = linear(Float64, params)
 
 """
-    poly(a::T, b::T, c::T, p::T) where T <: Number
-    poly(a::T, b::T, c::T, p::T) where T <: AbstractArray
-    poly(params::Dict{String, T})
-    poly(params::DataFrame)
-    poly(params::YAXArray)
+    poly([Float64], a::T, b::T, c::T, p::T) where T <: Number
+    poly([Float64], a::T, b::T, c::T, p::T) where T <: AbstractArray
+    poly([Float64], params::Dict{String, T})
+    poly([Float64], params::DataFrame)
+    poly([Float64], params::YAXArray)
 
 Compute the polynomial kernel `(a * b + c) ^ p`. This function supports various input types,
 including numbers, arrays, dictionaries, data frames, and YAXArrays.
@@ -139,30 +139,46 @@ df = DataFrame(; a=[1, 2, 3], b=[4, 5, 6], c=[1, 1, 1], p=[2, 2, 2])
 result = poly(df)
 ```
 """
-function poly(a::T, b::T, c::T, p::T) where {T<:Number}
+function poly(::Type{T}, a::Number, b::Number, c::Number, p::Number) where {T<:Number}
     return (a * b + c)^p
 end
 
-function poly(a::T, b::T, c::T, p::T) where {T<:AbstractArray}
+function poly(a::Number, b::Number, c::Number, p::Number)
+    return poly(Float64, a, b, c, p)
+end
+
+function poly(::Type{T}, a::V, b::V, c::V, p::V) where {T<:Number, V<:AbstractArray}
     return @. (a * b + c)^p
 end
 
-function poly(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray}}
+function poly(a::T, b::T, c::T, p::T) where {T<:AbstractArray}
+    return poly(Float64, a, b, c, p)
+end
+
+function poly(::Type{T}, params::Dict{String,P}) where {T<:Number, P<:Union{<:Number,<:AbstractArray}}
     result = poly(params["a"], params["b"], params["c"], params["p"])
     return result
 end
 
-function poly(params::NamedTuple)
+function poly(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray}}
+    return poly(Float64, params)
+end
+
+function poly(::Type{T}, params::NamedTuple) where {T<:Number}
     result = poly(params.a, params.b, params.c, params.p)
     return result
 end
 
+function poly(params::NamedTuple)
+    return poly(Float64, params)
+end
+
 """
-    RBF(a::T, b::T, sigma::T) where T <: Number
-    RBF(a::T, b::T, sigma::T) where T <: AbstractArray
-    RBF(params::Dict{String, T})
-    RBF(params::DataFrame)
-    RBF(params::YAXArray)
+    RBF([Float64], a::T, b::T, sigma::T) where T <: Number
+    RBF([Float64], a::T, b::T, sigma::T) where T <: AbstractArray
+    RBF([Float64], params::Dict{String, T})
+    RBF([Float64], params::DataFrame)
+    RBF([Float64], params::YAXArray)
 
 Compute the Radial Basis Function (RBF) kernel `exp((-1.0 * (a - b) ^ 2.0) / (2.0 * sigma ^ 2.0))`.
 This function supports various input types, including numbers, arrays, dictionaries, data frames,
@@ -201,20 +217,39 @@ df = DataFrame(; a=[1, 2, 3], b=[4, 5, 6], sigma=[0.5, 0.5, 0.5])
 result = RBF(df)
 ```
 """
-function RBF(a::T, b::T, sigma::T) where {T<:Number}
-    return exp((-1.0 * (a - b)^2.0) / (2.0 * sigma^2.0))
+function RBF(::Type{T}, a::Number, b::Number, sigma::Number;
+    const1::Number = T(-1.0),
+    const2::Number = T(2.0)) where {T<:Number}
+    return exp((const1 * (a - b)^const2) / (const2 * sigma^const2))
+end
+
+function RBF(a::Number, b::Number, sigma::Number)
+    return RBF(Float64, a, b, sigma)
+end
+
+function RBF(::Type{T}, a::V, b::V, sigma::V;
+    const1::Number = T(-1.0),
+    const2::Number = T(2.0)) where {T<:Number, V<:AbstractArray}
+    return @. exp((const1 * (a - b)^const2) / (const2 * sigma^const2))
 end
 
 function RBF(a::T, b::T, sigma::T) where {T<:AbstractArray}
-    return @. exp((-1.0 * (a - b)^2.0) / (2.0 * sigma^2.0))
+    return RBF(Float64, a, b, sigma)
+end
+
+function RBF(::Type{T},
+    params::Dict{String,V}) where {T<:Number, V<:Union{<:Number,<:AbstractArray}}
+    return RBF(T, params["a"], params["b"], params["sigma"])
 end
 
 function RBF(params::Dict{String,T}) where {T<:Union{<:Number,<:AbstractArray}}
-    result = RBF(params["a"], params["b"], params["sigma"])
-    return result
+    return RBF(Float64, params)
+end
+
+function RBF(::Type{T}, params::NamedTuple) where {T<:Number}
+    return RBF(T, params.a, params.b, params.sigma)
 end
 
 function RBF(params::NamedTuple)
-    result = RBF(params.a, params.b, params.sigma)
-    return result
+    return RBF(Float64, params)
 end

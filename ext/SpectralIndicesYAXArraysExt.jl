@@ -81,26 +81,37 @@ function SpectralIndices._compute_index(::Type{T},
     return idx.(T, prms...)
 end
 
-function SpectralIndices.linear(params::YAXArray)
-    result = linear(params[Variable=At("a")], params[Variable=At("b")])
-    return result
+function SpectralIndices.linear(::Type{T}, params::YAXArray) where {T<:Number}
+    return SpectralIndices.linear(T, params[Variable=At("a")], params[Variable=At("b")])
 end
 
-function SpectralIndices.poly(params::YAXArray)
-    result = poly(
+function SpectralIndices.linear(params::YAXArray)
+    return SpectralIndices.linear(Float64, params[Variable=At("a")], params[Variable=At("b")])
+end
+
+function SpectralIndices.poly(::Type{T}, params::YAXArray) where {T<:Number}
+    return SpectralIndices.poly(T,
         params[Variable=At("a")],
         params[Variable=At("b")],
         params[Variable=At("c")],
         params[Variable=At("p")],
     )
-    return result
+end
+
+function SpectralIndices.poly(params::YAXArray)
+    return SpectralIndices.poly(Float64, params)
+end
+
+function SpectralIndices.RBF(::Type{T}, params::YAXArray) where {T<:Number}
+    return SpectralIndices.RBF(T,
+        params[Variable=At("a")],
+        params[Variable=At("b")],
+        params[Variable=At("sigma")]
+    )
 end
 
 function SpectralIndices.RBF(params::YAXArray)
-    result = RBF(
-        params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
-    )
-    return result
+    return SpectralIndices.RBF(Float64, params)
 end
 
 function SpectralIndices.load_dataset(

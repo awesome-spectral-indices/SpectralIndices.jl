@@ -53,22 +53,34 @@ function SpectralIndices.compute_index(index::Vector{String},
     return SpectralIndices.compute_index(Float64, index, params; indices=indices)
 end
 
-function SpectralIndices.linear(params::DataFrame)
-    result = linear(params[!, "a"], params[!, "b"])
+function SpectralIndices.linear(::Type{T}, params::DataFrame) where {T<:Number}
+    result = linear(T, params[!, "a"], params[!, "b"])
     result_df = DataFrame(; linear=result)
     return result_df
 end
 
-function SpectralIndices.poly(params::DataFrame)
-    result = poly(params[!, "a"], params[!, "b"], params[!, "c"], params[!, "p"])
+function SpectralIndices.linear(params::DataFrame)
+    return linear(Float64, params)
+end
+
+function SpectralIndices.poly(::Type{T}, params::DataFrame) where {T<:Number}
+    result = poly(T, params[!, "a"], params[!, "b"], params[!, "c"], params[!, "p"])
     result_df = DataFrame(; poly=result)
     return result_df
 end
 
-function SpectralIndices.RBF(params::DataFrame)
-    result = RBF(params[!, "a"], params[!, "b"], params[!, "sigma"])
+function SpectralIndices.poly(params::DataFrame)
+    return poly(Float64, params)
+end
+
+function SpectralIndices.RBF(::Type{T}, params::DataFrame) where {T<:Number}
+    result = RBF(T, params[!, "a"], params[!, "b"], params[!, "sigma"])
     result_df = DataFrame(; RBF=result)
     return result_df
+end
+
+function SpectralIndices.RBF(params::DataFrame)
+    return RBF(Float64, params)
 end
 
 function SpectralIndices.load_dataset(

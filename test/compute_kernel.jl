@@ -1,42 +1,44 @@
 using Test
 using SpectralIndices
 
-types = [Float64, Float32, Float16]
+floats = [Float64, Float32, Float16]
 
-@testset "Tests for linear, poly, and RBF functions" begin
-    for T in types
-        a, b, c, p, sigma = T(2), T(3), T(1), T(2), T(5)
-        a_v, b_v, c_v, p_v, sigma_v = T.([1, 2, 3]),
-        T.([4, 5, 6]), T.([1, 1, 1]), T.([2, 2, 2]),
-        T.([5, 5, 5])
-        
-
-        @testset "Tests for linear function with type $T" begin
-            @test linear(a, b) == T(6)
-            @test all(linear(a_v, b_v) .== T.([4, 10, 18]))
-
-        end
-
-        @testset "Tests for poly function with type $T" begin
-            @test poly(a, b, c, p) == T(49)
-
-            expected_result = T.([(1 * 4 + 1)^2, (2 * 5 + 1)^2, (3 * 6 + 1)^2])
-            @test all(poly(a_v, b_v, c_v, p_v) .== expected_result)
-        end
-
-        @testset "Tests for RBF function with type $T" begin
-            expected_number_result = exp((-1.0 * (a - b)^2.0) / (2.0 * sigma^2.0))
-            @test RBF(a, b, sigma) ≈ expected_number_result
-
-            expected_array_result =
-                exp.((-1.0 .* ((a_v .- b_v) .^ 2.0)) ./ (2.0 .* (sigma_v .^ 2.0)))
-            @test all(RBF(a_v, b_v, sigma_v) .≈ expected_array_result)
-
-        end
+@testset "Tests for linear, poly, and RBF functions" for T in floats
+    a, b, c, p, sigma = T(2), T(3), T(1), T(2), T(5)
+    a_v, b_v, c_v, p_v, sigma_v = T.([1, 2, 3]),
+    T.([4, 5, 6]), T.([1, 1, 1]), T.([2, 2, 2]),
+    T.([5, 5, 5])
+    
+    @testset "Tests for linear function with type $T" begin
+        @test linear(a, b) == T(6)
+        @test eltype(linear(a, b) == T)
+        @test all(linear(a_v, b_v) .== T.([4, 10, 18]))
+        @test eltype(linear(a_v, b_v) == T)
     end
+
+    @testset "Tests for poly function with type $T" begin
+        @test poly(a, b, c, p) == T(49)
+        @test eltype(poly(a, b, c, p)) == T
+
+        expected_result = T.([(1 * 4 + 1)^2, (2 * 5 + 1)^2, (3 * 6 + 1)^2])
+        @test all(poly(a_v, b_v, c_v, p_v) .== expected_result)
+        @test eltype(poly(a_v, b_v, c_v, p_v)) == T
+    end
+
+    @testset "Tests for RBF function with type $T" begin
+        expected_number_result = T(exp((-1.0 * (a - b)^2.0) / (2.0 * sigma^2.0)))
+        @test RBF(a, b, sigma) ≈ expected_number_result
+        @test eltype(RBF(a, b, sigma)) == T
+
+        expected_array_result =
+            T.(exp.((-1.0 .* ((a_v .- b_v) .^ 2.0)) ./ (2.0 .* (sigma_v .^ 2.0))))
+        @test all(RBF(a_v, b_v, sigma_v) .≈ expected_array_result)
+        @test eltype(RBF(a_v, b_v, sigma_v)) == T
+    end
+    GC.gc()
 end
 
-@testset "Compute Kernel Tests" begin
+@testset "Compute Kernel Tests" for T in floats
     # Test linear kernel
     @testset "Linear Kernel" begin
         params = Dict("a" => 2, "b" => 3)
@@ -72,5 +74,6 @@ end
         params = (a=1, b=2, sigma=1)
         @test compute_kernel(RBF, params) ≈ exp(-0.5)
     end
+    GC.gc()
 end
 
