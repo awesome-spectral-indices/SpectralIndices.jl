@@ -1,6 +1,6 @@
 using SafeTestsets
 using Test
-#=
+
 @safetestset "Quality Assurance" begin
     include("qa.jl")
 end
@@ -24,7 +24,7 @@ end
     include("DataFrames/compute_index.jl")
     include("YAXArrays/compute_index.jl")
 end
-=#
+
 @safetestset "Compute Kernels" begin
     include("compute_kernel.jl")
     include("DataFrames/compute_kernel.jl")
