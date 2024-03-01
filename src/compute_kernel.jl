@@ -88,10 +88,12 @@ function linear(params::Dict{String,U}) where {U<:Union{<:Number,<:AbstractArray
   return linear(Float64, params)
 end
 
-function linear(params::NamedTuple)
-    result = linear(params.a, params.b)
+function linear(::Type{T}, params::NamedTuple) where {T<:Number}
+    result = linear(T, params.a, params.b)
     return result
 end
+
+linear(params::NamedTuple) = linear(Float64, params)
 
 """
     poly(a::T, b::T, c::T, p::T) where T <: Number

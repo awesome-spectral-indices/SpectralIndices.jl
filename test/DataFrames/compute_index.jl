@@ -13,7 +13,7 @@ function convert_to_kwargs(df::DataFrame)
     return kwargs
 end
 
-@testset "DataFrames compute_index single index tests: $idx_name" for (idx_name, idx) in indices, T in floats
+@testset "DataFrames compute_index $T single index tests: $idx_name" for (idx_name, idx) in indices, T in floats
     @testset "as Params" begin
         if idx_name == "AVI" || idx_name == "TVI"
             params = DataFrame(; N=T.([0.2, 0.2]), R=T.([0.1, 0.1]))
@@ -43,11 +43,12 @@ end
         @test names(result) == [idx_name]
         @test first(eltype.(eachcol(result))) == T
     end
+    GC.gc()
 end
 
 msi = custom_key_combinations(indices, 2, 200)
 
-@testset "DataFrames compute_index multiple indices tests: $idxs" for idxs in msi, T in floats
+@testset "DataFrames compute_index $T multiple indices tests: $idxs" for idxs in msi, T in floats
 
     if idxs[1] in ["AVI", "TVI"] && length(idxs) > 1
         for i in 2:length(idxs)
@@ -101,4 +102,5 @@ msi = custom_key_combinations(indices, 2, 200)
         @test names(result) == idxs
         @test first(eltype.(eachcol(result))) == T
     end
+    GC.gc()
 end

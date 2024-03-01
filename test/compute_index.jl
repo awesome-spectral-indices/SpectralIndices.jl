@@ -18,7 +18,7 @@ end
 #    @test_throws AssertionError compute_index("InvalidIndex", N=0.5, R=0.5)
 #end
 
-@testset "Built-in types compute_index single index tests: $idx_name" for (idx_name, idx) in indices, T in floats
+@testset "Built-in types compute_index $T single index tests: $idx_name" for (idx_name, idx) in indices, T in floats
     @testset "Single Values as Params" begin
         if idx_name == "AVI" || idx_name == "TVI"
             params = Dict("N" => T(0.2), "R"=>T(0.1))
@@ -135,11 +135,12 @@ end
         @test eltype(values(result)[1]) == T
         @test size(result) == (10,)
     end
+    GC.gc()
 end
 
 msi = custom_key_combinations(indices, 2, 200)
   
-@testset "Built-in types compute_index multiple indices tests: $idxs" for idxs in msi, T in floats
+@testset "Built-in types compute_index $T multiple indices tests: $idxs" for idxs in msi, T in floats
 
     # Preprocessing to avoid "AVI" or "TVI" being the first index if there are multiple indices
     if idxs[1] in ["AVI", "TVI"] && length(idxs) > 1
@@ -334,4 +335,5 @@ msi = custom_key_combinations(indices, 2, 200)
         @test size(first(result)) == (10,)
         @test eltype(first(values(result))) == T
     end
+    GC.gc()
 end

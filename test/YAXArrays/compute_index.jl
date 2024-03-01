@@ -18,7 +18,7 @@ end
 xdim = Dim{:x}(range(1, 10, length=10))
 ydim = Dim{:x}(range(1, 10, length=15))
 
-@testset "YAXArrays compute_index single index tests: $idx_name" for (idx_name, idx) in indices, T in floats
+@testset "YAXArrays compute_index $T single index tests: $idx_name" for (idx_name, idx) in indices, T in floats
 
     @testset "as Params" begin
         if idx_name == "AVI" || idx_name == "TVI"
@@ -59,11 +59,12 @@ ydim = Dim{:x}(range(1, 10, length=15))
         @test size(result) == (length(xdim), length(ydim))
         @test eltype(result) == T
     end
+    GC.gc()
 end
 
 msi = custom_key_combinations(indices, 2, 200)
 
-@testset "YAXArrays compute_index multiple indices tests: $idxs" for idxs in msi, T in floats
+@testset "YAXArrays compute_index $T multiple indices tests: $idxs" for idxs in msi, T in floats
 
     if idxs[1] in ["AVI", "TVI"] && length(idxs) > 1
         for i in 2:length(idxs)
@@ -98,13 +99,16 @@ msi = custom_key_combinations(indices, 2, 200)
         unique_band_names = unique(yaxa_names)
         unique_yaxas = yaxa_tmp[1:length(unique_band_names)] #sheesh, more elegant pls
         params = concatenatecubes(unique_yaxas, Dim{:Variables}(unique_band_names))
-        result = compute_index(idxs, params)
-        @test result isa YAXArray
-        @test size(result) == (length(xdim), length(ydim), 2)
-        result = compute_index(idxs, params)
-        @test result isa YAXArray
-        @test size(result) == (length(xdim), length(ydim), 2)
-        @test eltype(result) == T
+        if T == Float64
+            result = compute_index(idxs, params)
+            @test result isa YAXArray
+            @test size(result) == (length(xdim), length(ydim), 2)
+        else
+            result = compute_index(T, idxs, params)
+            @test result isa YAXArray
+            @test size(result) == (length(xdim), length(ydim), 2)
+            @test eltype(result) == T
+        end
     end
 
     @testset "as Kwargs" begin
@@ -131,12 +135,16 @@ msi = custom_key_combinations(indices, 2, 200)
         unique_band_names = unique(yaxa_names)
         unique_yaxas = yaxa_tmp[1:length(unique_band_names)] #sheesh, more elegant pls
         params = concatenatecubes(unique_yaxas, Dim{:Variables}(unique_band_names))
-        result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test result isa YAXArray
-        @test size(result) == (length(xdim), length(ydim), 2)
-        result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test result isa YAXArray
-        @test size(result) == (length(xdim), length(ydim), 2)
-        @test eltype(result) == T
+        if T == Float64
+            result = compute_index(idxs; convert_to_kwargs(params)...)
+            @test result isa YAXArray
+            @test size(result) == (length(xdim), length(ydim), 2)
+        else
+            result = compute_index(T, idxs; convert_to_kwargs(params)...)
+            @test result isa YAXArray
+            @test size(result) == (length(xdim), length(ydim), 2)
+            @test eltype(result) == T
+        end
     end
+    GC.gc()
 end
