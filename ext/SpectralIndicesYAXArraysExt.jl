@@ -40,20 +40,29 @@ end
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
 function SpectralIndices.compute_index(
-    index::String, params::YAXArray; indices=SpectralIndices._create_indices()
-)
+    ::Type{T}, index::String, params::YAXArray; indices=SpectralIndices._create_indices()
+) where {T<:Number}
     SpectralIndices._check_params(indices[index], params)
     params = SpectralIndices._order_params(indices[index], params)
-    result = SpectralIndices._compute_index(indices[index], params...)
+    result = SpectralIndices._compute_index(T, indices[index], params...)
     return result
 end
 
 function SpectralIndices.compute_index(
-    index::Vector{String}, params::YAXArray; indices=SpectralIndices._create_indices()
+    index::String, params::YAXArray; indices=SpectralIndices._create_indices()
 )
+    return SpectralIndices.compute_index(Float64, index, params; indices=indices)
+end
+
+function SpectralIndices.compute_index(
+    ::Type{T},
+    index::Vector{String},
+    params::YAXArray;
+    indices=SpectralIndices._create_indices(),
+) where {T<:Number}
     results = []
     for (nidx, idx) in enumerate(index)
-        res_tmp = compute_index(idx, params; indices=indices)
+        res_tmp = compute_index(T, idx, params; indices=indices)
         push!(results, res_tmp)
     end
     result = concatenatecubes(results, Dim{:Variables}(index))
@@ -61,37 +70,53 @@ function SpectralIndices.compute_index(
     return result
 end
 
-function SpectralIndices._compute_index(
-    idx::SpectralIndices.AbstractSpectralIndex, prms::YAXArray...
+function SpectralIndices.compute_index(
+    index::Vector{String}, params::YAXArray; indices=SpectralIndices._create_indices()
 )
-    return idx.(prms...)
+    return SpectralIndices.compute_index(Float64, index, params; indices=indices)
+end
+
+function SpectralIndices._compute_index(
+    ::Type{T}, idx::SpectralIndices.AbstractSpectralIndex, prms::YAXArray...
+) where {T<:Number}
+    return idx.(T, prms...)
+end
+
+function SpectralIndices.linear(::Type{T}, params::YAXArray) where {T<:Number}
+    return SpectralIndices.linear(T, params[Variable=At("a")], params[Variable=At("b")])
 end
 
 function SpectralIndices.linear(params::YAXArray)
-    result = linear(params[Variable=At("a")], params[Variable=At("b")])
-    return result
+    return SpectralIndices.linear(
+        Float64, params[Variable=At("a")], params[Variable=At("b")]
+    )
 end
 
-function SpectralIndices.poly(params::YAXArray)
-    result = poly(
+function SpectralIndices.poly(::Type{T}, params::YAXArray) where {T<:Number}
+    return SpectralIndices.poly(
+        T,
         params[Variable=At("a")],
         params[Variable=At("b")],
         params[Variable=At("c")],
         params[Variable=At("p")],
     )
-    return result
+end
+
+function SpectralIndices.poly(params::YAXArray)
+    return SpectralIndices.poly(Float64, params)
+end
+
+function SpectralIndices.RBF(::Type{T}, params::YAXArray) where {T<:Number}
+    return SpectralIndices.RBF(
+        T, params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
+    )
 end
 
 function SpectralIndices.RBF(params::YAXArray)
-    result = RBF(
-        params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
-    )
-    return result
+    return SpectralIndices.RBF(Float64, params)
 end
 
-function SpectralIndices.load_dataset(
-    dataset::String, ::Type{T}
-) where {T<:YAXArray}
+function SpectralIndices.load_dataset(dataset::String, ::Type{T}) where {T<:YAXArray}
     datasets = Dict("sentinel" => "S2_10m.json")
 
     if dataset in keys(datasets)

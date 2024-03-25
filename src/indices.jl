@@ -149,9 +149,7 @@ function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
 end
 
 function _spectral_indices(
-    indices_dict::Dict{String,Any},
-    indices_funcs=indices_funcs;
-    origin="SpectralIndices"
+    indices_dict::Dict{String,Any}, indices_funcs=indices_funcs; origin="SpectralIndices"
 )
     indices = Dict{String,AbstractSpectralIndex}()
     for (key, value) in indices_dict

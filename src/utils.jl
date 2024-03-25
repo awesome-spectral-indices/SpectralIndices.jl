@@ -78,19 +78,54 @@ function _create_indexfun(
     fileloc=joinpath(dirname(@__FILE__), filename),
 )
     open(fileloc, "w") do file
+        write(file, "indices_funcs = Dict()\n\n")
+
         for (index_name, index_info) in index_dict
             short_name = index_info["short_name"]
             formula = index_info["formula"]
             formula = replace(formula, "**" => "^")
+
+            counter = 1
+            const_defs = []
+            untyped_const_defs = []
+            default_values = []
+            formula = replace(
+                formula,
+                r"\b\d+(\.\d+)?\b" =>
+                    match -> begin
+                        const_name = "const$(counter)"
+                        default_value = match
+                        push!(const_defs, "$const_name::Number=TFL($default_value)")
+                        push!(untyped_const_defs, "$const_name=$const_name")
+                        push!(default_values, default_value)
+                        counter += 1
+                        return const_name
+                    end,
+            )
+
             bands = index_info["bands"]
             bands_args = join(bands, "::Number, ") * "::Number"
 
-            write(file, "\n$(short_name)_func($(bands_args)) = $formula\n")
-        end
+            kwargs = join(const_defs, ", ")
+            untyped_kwargs = join(untyped_const_defs, ", ")
+            func_signature = if isempty(const_defs)
+                "function $(short_name)_func(::Type{TFL}, $bands_args) where {TFL <: Number}"
+            else
+                "function $(short_name)_func(::Type{TFL}, $bands_args; $kwargs) where {TFL <: Number}"
+            end
 
-        for (index_name, index_info) in index_dict
-            short_name = index_info["short_name"]
-            write(file, "indices_funcs[\"$index_name\"] = $(short_name)_func\n")
+            #untyped_func_signature = isempty(const_defs) ? 
+            #    "function $(short_name)_func($bands_args)" :
+            #    "function $(short_name)_func($bands_args; $kwargs)"
+
+            #untyped_fun_call = isempty(const_defs) ?
+            #    "$(short_name)_func(Float64, $bands_args)" :
+            #    "$(short_name)_func(Float64, $bands_args; $untyped_kwargs)"
+
+            write(file, "$func_signature\n    return $formula\nend\n\n")
+            #write(file, "$untyped_func_signature\n    return $untyped_fun_call\nend\n\n")
+
+            write(file, "indices_funcs[\"$index_name\"] = $(short_name)_func\n\n")
         end
     end
 end
