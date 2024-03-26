@@ -11,11 +11,13 @@ JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 [weakdeps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
+Rasters = "a3a2b9e3-a471-40c9-b274-f788e487c689"
 YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 
 [extensions]
 SpectralIndicesDataFramesExt = "DataFrames"
 SpectralIndicesYAXArraysExt = ["YAXArrays", "DimensionalData"]
+SpectralIndicesRastersExt = ["Rasters", "DimensionalData"]
 
 [compat]
 DataFrames = "1"
@@ -34,10 +36,12 @@ DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
 JET = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
 JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Rasters = "a3a2b9e3-a471-40c9-b274-f788e487c689"
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 
 [targets]
-test = ["Test", "SafeTestsets", "Aqua", "JET", "JuliaFormatter", "DataFrames", "YAXArrays", "Random", "Combinatorics", "StatsBase", "DimensionalData"]
+test = ["Test", "SafeTestsets", "Aqua", "JET", "JuliaFormatter", "DataFrames", 
+    "YAXArrays", "Random", "Combinatorics", "StatsBase", "DimensionalData", "Rasters"]
