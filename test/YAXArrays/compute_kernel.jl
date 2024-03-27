@@ -16,19 +16,19 @@ floats = [Float64, Float32, Float16]
     params = YAXArray(axlist, data)
 
     @testset "linear test" begin
-        result = linear(T, params)
+        result = linear(params)
         @test result isa YAXArray
         @test eltype(result) == T
     end
 
     @testset "poly test" begin
-        result = poly(T, params)
+        result = poly(params)
         @test result isa YAXArray
         @test eltype(result) == T
     end
 
     @testset "RBF test" begin
-        result = RBF(T, params)
+        result = RBF(params)
         @test result isa YAXArray
         @test eltype(result) == T
     end
@@ -39,25 +39,25 @@ end
     data = rand(T, 5, 5, 5)
     params = YAXArray(axlist, data)
     @testset "as Params" begin
-        lr = compute_kernel(T, linear, params)
+        lr = compute_kernel(linear, params)
         @test lr isa YAXArray
         @test eltype(lr) == T
-        pr = compute_kernel(T, poly, params)
+        pr = compute_kernel(poly, params)
         @test pr isa YAXArray
         @test eltype(pr) == T
-        rr = compute_kernel(T, RBF, params)
+        rr = compute_kernel(RBF, params)
         @test rr isa YAXArray
         @test eltype(rr) == T
     end
 
     @testset "as Kwargs" begin
-        lr = compute_kernel(T, linear; convert_to_kwargs(params)...)
+        lr = compute_kernel(linear; convert_to_kwargs(params)...)
         @test lr isa YAXArray
         @test eltype(lr) == T
-        pr = compute_kernel(T, poly; convert_to_kwargs(params)...)
+        pr = compute_kernel(poly; convert_to_kwargs(params)...)
         @test pr isa YAXArray
         @test eltype(pr) == T
-        rr = compute_kernel(T, RBF; convert_to_kwargs(params)...)
+        rr = compute_kernel(RBF; convert_to_kwargs(params)...)
         @test rr isa YAXArray
         @test eltype(rr) == T
     end
