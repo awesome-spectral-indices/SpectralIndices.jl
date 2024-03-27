@@ -104,7 +104,7 @@ function _create_indexfun(
             )
 
             bands = index_info["bands"]
-            bands_args = join(bands, "::Number, ") * "::Number"
+            bands_args = join(bands, ", ")
 
             kwargs = join(const_defs, ", ")
             untyped_kwargs = join(untyped_const_defs, ", ")

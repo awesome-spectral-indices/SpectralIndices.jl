@@ -1,5 +1,6 @@
 using SpectralIndices
 using Documenter
+using DocumenterVitepress
 
 include("pages.jl")
 
@@ -10,14 +11,21 @@ makedocs(;
     doctest=true,
     linkcheck=true,
     warnonly=[:missing_docs],
-    format=Documenter.HTML(;
-        size_threshold=nothing,
-        prettyurls=get(ENV, "CI", nothing) == "true",
-        assets=["assets/docs.css"],
+    format=DocumenterVitepress.MarkdownVitepress(
+        repo = "github.com/awesome-spectral-indices/SpectralIndices.jl", # this must be the full URL!
+        devbranch = "main",
+        devurl = "dev";
     ),
+    draft = false,
+    source = "src",
+    build = "build",
     pages=pages,
 )
 
 deploydocs(;
-    repo="github.com/awesome-spectral-indices/SpectralIndices.jl.git", push_preview=true
+    repo="github.com/awesome-spectral-indices/SpectralIndices.jl",
+    target = "build", # this is where Vitepress stores its output
+    branch = "gh-pages",
+    devbranch = "main",
+    push_preview = true
 )

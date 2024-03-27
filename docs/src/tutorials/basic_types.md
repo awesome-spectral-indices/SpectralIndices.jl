@@ -13,9 +13,7 @@ red = 1243
 
 Our goal is to calculate the Normalized Difference Vegetation Index (NDVI). NDVI is a widely used spectral index for monitoring vegetation health, calculated using NIR and red reflectances. The formula for NDVI is:
 
-```math
-NDVI = \frac{NIR-Red}{NIR+Red}
-```
+$$NDVI = \frac{NIR-Red}{NIR+Red}$$
 
 ### Direct Calculation with NDVI Struct
 
@@ -51,7 +49,8 @@ params = Dict(
 ndvi = compute(NDVI, params)
 ```
 
-!!! warn Please ensure dictionary keys match the band names specified in the `bands` field.
+!!! warning
+    Please ensure dictionary keys match the band names specified in the `bands` field.
 
 Additionally you can pass the values as kwargs as follows:
 

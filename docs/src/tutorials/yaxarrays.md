@@ -1,4 +1,4 @@
-# YAXArrays.jl
+## YAXArrays.jl
 
 This tutorial will illustrate how to use SpectralIndices.jl using YAXArrays.jl as input data.
 
@@ -7,6 +7,9 @@ First we need to download the data, like in the previous tutorial. Only this tim
 ```@example yaxarrays
 using YAXArrays, DimensionalData
 using SpectralIndices
+```
+
+```@ansi yaxarrays
 yaxa = load_dataset("sentinel", YAXArray)
 ```
 
@@ -14,17 +17,71 @@ As it is possible to observe we have a `YAXArray` object with three dimensions: 
 
 The data is stored as `Int64`, so let us convert it to `Float` and rescale it:
 
-```@example yaxarrays
+```@ansi yaxarrays
 yaxa = yaxa./10000
 ```
 
 Now let's compute the NDVI for this dataset!
 
+First, let's define the bands to be used:
 ```@example yaxarrays
-ndvi = compute_index("NDVI";
-    N=yaxa[bands = At("B08")],
-    R=yaxa[bands = At("B04")])
+b8 = yaxa[bands = At("B08")]
+b4 = yaxa[bands = At("B04")]
+nothing # hide
 ```
+
+now, let's compute the index
+
+```@ansi yaxarrays
+ndvi_compute = compute_index("NDVI"; N=b8, R=b4)
+```
+
+### map
+
+Due to the `type` design, in order to use `map` we will use the `PartialFunctions` package to specify the first initial `type` on each function, namely
+
+```@example yaxarrays
+using PartialFunctions
+ndvi_p = NDVI.compute $Float64
+```
+now, we can compute the index
+
+```@ansi yaxarrays
+ndvi_map = map(ndvi_p, b8, b4)
+```
+Let's check that we have the same output:
+
+```@example yaxarrays
+ndvi_compute.data == ndvi_map.data
+```
+
+### mapCube
+For out of memory calculations then using `mapCube` is the way to go. This can be implemented as follows. First, we wrap our function of interest into a function compatible with `mapCube`, namely
+
+```@example yaxarrays
+function ndvi_out(xout, x1, x2)
+    xout .= NDVI.(Float64, x1, x2) # note the .
+end
+```
+next, define the input and output dimensions of your `YAXArray`'s.
+```@example yaxarrays
+in_dims = InDims("x") # the second one will be inferred
+out_dims = OutDims("x") # dito
+nothing # hide
+```
+
+```@ansi yaxarrays
+ndvi_cube = mapCube(ndvi_out, (b8, b4), indims=(in_dims, in_dims),
+    outdims=OutDims("x", outtype=Float64))
+```
+
+and we check again the data output matches
+
+```@example yaxarrays
+ndvi_compute.data == ndvi_cube.data
+```
+
+## compute index by named dims
 
 As usual we can also just feed a properly constructed `YAXArray` to the `compute_index` function. Let's built the array:
 
@@ -34,14 +91,18 @@ index_N = findfirst(yaxa.bands.val .== "B08")
 new_bands_dim = Dim{:Variables}(["R", "N"])
 
 nr_data = cat(yaxa[:, :, index_R], yaxa[:, :, index_N], dims=3)
+nothing # hide
+```
+```@ansi yaxarrays
 new_yaxa = YAXArray((yaxa.x, yaxa.y, new_bands_dim), nr_data)
 ```
 
-!!!warn Please notice how the `Dim` is called `Variables`. This is needed for the internal computation to work properly.
+!!! warning
+    Please notice how the `Dim` is called `Variables`. This is needed for the internal computation to work properly. Also, note that this does not work for out of memory datasets.
 
 Now that we have our `YAXArray` with the correctly names `Dim`s we can use it direcly into `compute_index`:
 
-```@example yaxarrays
+```@ansi yaxarrays
 ndvi = compute_index(
     "NDVI", new_yaxa
 )
@@ -63,8 +124,8 @@ kNDVI.reference
 
 Onto the calculations:
 
-```@example yaxarrays
-knn = YAXArray((yaxa.x, yaxa.y), fill(1.0, 300, 300))
+```@ansi yaxarrays
+knn = YAXArray((yaxa.x, yaxa.y), fill(1.0, 300, 300));
 knr = compute_kernel(
     RBF;
     a = Float64.(yaxa[bands = At("B08")]),
@@ -82,23 +143,27 @@ sigma = yaxa[bands = At("B08")].+yaxa[bands = At("B04")] ./ 2
 kernel_dims = Dim{:Variables}(["a", "b", "sigma"])
 
 params = concatenatecubes([a, b, sigma], kernel_dims)
+nothing # hide
+```
 
+```@ansi yaxarrays
 knr = compute_kernel(RBF, params)
 ```
 
 We can finally compute the kNDVI:
 
-```@example yaxarrays
+```@ansi yaxarrays
 kndvi = compute_index("kNDVI"; kNN = knn, kNR=knr)
 ```
 
 Let's plot it!
 
 ```@example yaxarrays
-using GLMakie
-fig = Figure(resolution = (500, 500))
-ax = Axis(fig[1, 1])
-image!(ax, kndvi.data, colormap=:haline)
-ylims!(300, 0)
+using CairoMakie
+fig, ax, plt = heatmap(kndvi; colormap=:haline,
+    axis = (; aspect=DataAspect()),
+    figure = (; size=(600, 400)))
+Colorbar(fig[1,2], plt)
+colsize!(fig.layout, 1, Aspect(1, 1.0))
 fig
 ```
