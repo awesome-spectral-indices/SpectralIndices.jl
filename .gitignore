@@ -11,5 +11,7 @@ deps/src/
 
 docs/build/
 docs/site/
-
+docs/node_modules
+docs/package-lock.json
+.vscode
 Manifest.toml
