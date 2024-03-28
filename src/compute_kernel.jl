@@ -73,9 +73,7 @@ result = linear(df)
 linear(a::Number, b::Number) = a * b
 linear(a::AbstractArray, b::AbstractArray) = a .* b
 
-function linear(
-    params::Dict{String,U}
-) where {U<:Union{<:Number,<:AbstractArray}}
+function linear(params::Dict{String,U}) where {U<:Union{<:Number,<:AbstractArray}}
     result = linear(params["a"], params["b"])
     return result
 end
@@ -137,9 +135,7 @@ function poly(a::V, b::V, c::V, p::V) where {V<:AbstractArray}
     return @. (a * b + c)^p
 end
 
-function poly(
-    params::Dict{String,P}
-) where {P<:Union{<:Number,<:AbstractArray}}
+function poly(params::Dict{String,P}) where {P<:Union{<:Number,<:AbstractArray}}
     result = poly(params["a"], params["b"], params["c"], params["p"])
     return result
 end
@@ -193,25 +189,17 @@ df = DataFrame(; a=[1, 2, 3], b=[4, 5, 6], sigma=[0.5, 0.5, 0.5])
 result = RBF(df)
 ```
 """
-function RBF(
-    a::Number,
-    b::Number,
-    sigma::Number
-)
+function RBF(a::Number, b::Number, sigma::Number)
     T = eltype(a)
     return exp((T(-1.0) * (a - b)^T(2.0)) / (T(2.0) * sigma^T(2.0)))
 end
 
-function RBF(
-    a::V, b::V, sigma::V
-) where {V<:AbstractArray}
+function RBF(a::V, b::V, sigma::V) where {V<:AbstractArray}
     T = eltype(a)
     return @. exp((T(-1.0) * (a - b)^T(2.0)) / (T(2.0) * sigma^T(2.0)))
 end
 
-function RBF(
-    params::Dict{String,V}
-) where {V<:Union{<:Number,<:AbstractArray}}
+function RBF(params::Dict{String,V}) where {V<:Union{<:Number,<:AbstractArray}}
     return RBF(params["a"], params["b"], params["sigma"])
 end
 

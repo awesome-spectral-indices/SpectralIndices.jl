@@ -29,9 +29,7 @@ function SpectralIndices.compute_index(
 end
 
 function SpectralIndices.compute_index(
-    index::Vector{String},
-    params::DataFrame;
-    indices=SpectralIndices._create_indices(),
+    index::Vector{String}, params::DataFrame; indices=SpectralIndices._create_indices()
 )
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()
@@ -42,7 +40,6 @@ function SpectralIndices.compute_index(
     # Return the combined DataFrame with columns named after each index
     return result_dfs
 end
-
 
 function SpectralIndices.linear(params::DataFrame)
     result = linear(params[!, "a"], params[!, "b"])

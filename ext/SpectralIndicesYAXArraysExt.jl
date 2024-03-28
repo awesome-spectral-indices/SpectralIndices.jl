@@ -44,15 +44,13 @@ function SpectralIndices.compute_index(
 )
     SpectralIndices._check_params(indices[index], params)
     params = SpectralIndices._order_params(indices[index], params)
-    T = eltype(params)
+    T = eltype(first(params))
     result = SpectralIndices._compute_index(T, indices[index], params...)
     return result
 end
 
 function SpectralIndices.compute_index(
-    index::Vector{String},
-    params::YAXArray;
-    indices=SpectralIndices._create_indices(),
+    index::Vector{String}, params::YAXArray; indices=SpectralIndices._create_indices()
 )
     results = []
     for (nidx, idx) in enumerate(index)

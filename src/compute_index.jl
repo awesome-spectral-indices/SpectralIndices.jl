@@ -67,9 +67,7 @@ function compute_index(
     return results
 end
 
-function compute_index(
-    index::Vector{String}, params=nothing, online::Bool=false; kwargs...
-)
+function compute_index(index::Vector{String}, params=nothing, online::Bool=false; kwargs...)
     indices = _create_indices(online)
     names = keys(indices)
     for idx in index
@@ -84,12 +82,10 @@ function compute_index(
     return results
 end
 
-function compute_index(
-    index::String, params::Dict; indices=indices
-)
+function compute_index(index::String, params::Dict; indices=indices)
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
-    T = eltype(values(params))
+    T = eltype(first(values(params)))
     result = _compute_index(T, indices[index], params...)
 
     return result
@@ -97,9 +93,7 @@ end
 
 # TODO: return results in a matrix columnswise
 #multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
-function compute_index(
-    index::Vector{String}, params::Dict; indices=indices
-)
+function compute_index(index::Vector{String}, params::Dict; indices=indices)
     results = []
     for (nidx, idx) in enumerate(index)
         result = compute_index(idx, params; indices=indices)
@@ -123,20 +117,16 @@ function _compute_index(
     return idx.(T, prms...)
 end
 
-function compute_index(
-    index::String, params::NamedTuple; indices=indices
-)
+function compute_index(index::String, params::NamedTuple; indices=indices)
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
-    T = eltype(values(params))
+    T = eltype(first(values(params)))
     result = _compute_index(T, indices[index], params...)
     result_nt = (; Dict(Symbol(index) => result)...)
     return result_nt
 end
 
-function compute_index(
-    index::Vector{String}, params::NamedTuple; indices=indices
-)
+function compute_index(index::Vector{String}, params::NamedTuple; indices=indices)
     results_dict = Dict{Symbol,Any}()
     for idx in index
         result_nt = compute_index(idx, params; indices=indices)
