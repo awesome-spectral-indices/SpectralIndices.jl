@@ -89,6 +89,14 @@ function SpectralIndices.load_dataset(dataset::String, ::Type{T}) where {T<:Data
         end
     end
 
+    for col_name in names(df)
+        first_non_missing = findfirst(x -> !ismissing(x), df[!, col_name])
+        if !isnothing(first_non_missing)
+            target_type = typeof(df[first_non_missing, col_name])
+            df[!, col_name] = convert(Vector{target_type}, df[!, col_name])
+        end
+    end
+
     select!(df, Not(:index))
 
     return df

@@ -86,6 +86,7 @@ function compute_index(index::String, params::Dict; indices=indices)
     _check_params(indices[index], params)
     params = _order_params(indices[index], params)
     T = eltype(first(values(params)))
+    @show first(values(params))
     result = _compute_index(T, indices[index], params...)
 
     return result
