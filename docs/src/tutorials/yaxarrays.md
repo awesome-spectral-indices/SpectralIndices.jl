@@ -9,7 +9,7 @@ using YAXArrays, DimensionalData
 using SpectralIndices
 ```
 
-```@ansi yaxarrays
+```@example yaxarrays
 yaxa = load_dataset("sentinel", YAXArray)
 ```
 
@@ -17,7 +17,7 @@ As it is possible to observe we have a `YAXArray` object with three dimensions: 
 
 The data is stored as `Int64`, so let us convert it to `Float` and rescale it:
 
-```@ansi yaxarrays
+```@example yaxarrays
 yaxa = yaxa./10000
 ```
 
@@ -32,7 +32,7 @@ nothing # hide
 
 now, let's compute the index
 
-```@ansi yaxarrays
+```@example yaxarrays
 ndvi_compute = compute_index("NDVI"; N=b8, R=b4)
 ```
 
@@ -46,7 +46,7 @@ ndvi_p = NDVI.compute $Float64
 ```
 now, we can compute the index
 
-```@ansi yaxarrays
+```@example yaxarrays
 ndvi_map = map(ndvi_p, b8, b4)
 ```
 Let's check that we have the same output:
@@ -70,7 +70,7 @@ out_dims = OutDims("x") # dito
 nothing # hide
 ```
 
-```@ansi yaxarrays
+```@example yaxarrays
 ndvi_cube = mapCube(ndvi_out, (b8, b4), indims=(in_dims, in_dims),
     outdims=OutDims("x", outtype=Float64))
 ```
@@ -81,7 +81,7 @@ and we check again the data output matches
 ndvi_compute.data == ndvi_cube.data
 ```
 
-## compute index by named dims
+## Computing index by named dims
 
 As usual we can also just feed a properly constructed `YAXArray` to the `compute_index` function. Let's built the array:
 
@@ -93,7 +93,7 @@ new_bands_dim = Dim{:Variables}(["R", "N"])
 nr_data = cat(yaxa[:, :, index_R], yaxa[:, :, index_N], dims=3)
 nothing # hide
 ```
-```@ansi yaxarrays
+```@example yaxarrays
 new_yaxa = YAXArray((yaxa.x, yaxa.y, new_bands_dim), nr_data)
 ```
 
@@ -102,7 +102,7 @@ new_yaxa = YAXArray((yaxa.x, yaxa.y, new_bands_dim), nr_data)
 
 Now that we have our `YAXArray` with the correctly names `Dim`s we can use it direcly into `compute_index`:
 
-```@ansi yaxarrays
+```@example yaxarrays
 ndvi = compute_index(
     "NDVI", new_yaxa
 )
@@ -124,7 +124,7 @@ kNDVI.reference
 
 Onto the calculations:
 
-```@ansi yaxarrays
+```@example yaxarrays
 knn = YAXArray((yaxa.x, yaxa.y), fill(1.0, 300, 300));
 knr = compute_kernel(
     RBF;
@@ -134,7 +134,7 @@ knr = compute_kernel(
 )
 ```
 
-As always, you can decide to build an `YAXArray` and feed that to the `compute_kernel` function if you prefer:
+As always, you can decide to build a `YAXArray` and feed that to the `compute_kernel` function if you prefer:
 
 ```@example yaxarrays
 a = Float64.(yaxa[bands = At("B08")])
@@ -146,13 +146,13 @@ params = concatenatecubes([a, b, sigma], kernel_dims)
 nothing # hide
 ```
 
-```@ansi yaxarrays
+```@example yaxarrays
 knr = compute_kernel(RBF, params)
 ```
 
 We can finally compute the kNDVI:
 
-```@ansi yaxarrays
+```@example yaxarrays
 kndvi = compute_index("kNDVI"; kNN = knn, kNR=knr)
 ```
 

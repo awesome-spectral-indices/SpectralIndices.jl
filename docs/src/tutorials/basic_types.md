@@ -148,11 +148,11 @@ The package can compute indices at custom precision
 
 ```@example basic
 T = Float32
-savi = compute_index(T, "SAVI"; N=T(nir), R=T(red), L=T(0.5))
+savi = compute_index("SAVI"; N=T(nir), R=T(red), L=T(0.5))
 ```
 ```@example basic
 T = Float16
-savi = compute_index(T, "SAVI"; N=T(nir), R=T(red), L=T(0.5))
+savi = compute_index("SAVI"; N=T(nir), R=T(red), L=T(0.5))
 ```
 
 ## Computing Multiple Indices
