@@ -29,11 +29,8 @@ end
         else
             params = Dict(band => rand(T) for band in idx.bands)
         end
-        #default
-        result = compute_index(idx_name, params)
-        @test length(result) == 1
         #type extension
-        result = compute_index(T, idx_name, params)
+        result = compute_index(idx_name, params)
         @test result isa T
         @test length(result) == 1
     end
@@ -44,8 +41,6 @@ end
             params = Dict(band => rand(T) for band in idx.bands)
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
-        @test length(result) == 1
-        result = compute_index(T, idx_name; convert_to_kwargs(params)...)
         @test result isa T
         @test length(result) == 1
     end
@@ -57,9 +52,6 @@ end
             params = Dict(band => rand(T, 10) for band in idx.bands)
         end
         result = compute_index(idx_name, params)
-        @test result isa AbstractArray
-        @test length(result) == 10
-        result = compute_index(T, idx_name, params)
         @test result isa AbstractArray
         @test eltype(result) == T
         @test length(result) == 10
@@ -73,9 +65,6 @@ end
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
         @test result isa AbstractArray
-        @test length(result) == 10
-        result = compute_index(T, idx_name; convert_to_kwargs(params)...)
-        @test result isa AbstractArray
         @test eltype(result) == T
         @test length(result) == 10
     end
@@ -88,9 +77,6 @@ end
         end
         result = compute_index(idx_name, params)
         @test result isa Matrix
-        @test size(result) == (10, 10)
-        result = compute_index(T, idx_name, params)
-        @test result isa Matrix
         @test eltype(result) == T
         @test size(result) == (10, 10)
     end
@@ -101,9 +87,6 @@ end
             params = Dict(band => rand(T, 10, 10) for band in idx.bands)
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
-        @test result isa Matrix
-        @test size(result) == (10, 10)
-        result = compute_index(T, idx_name; convert_to_kwargs(params)...)
         @test result isa Matrix
         @test eltype(result) == T
         @test size(result) == (10, 10)
@@ -118,9 +101,6 @@ end
         end
         result = compute_index(idx_name, params)
         @test result isa NamedTuple
-        @test size(first(result)) == (10,)
-        result = compute_index(T, idx_name, params)
-        @test result isa NamedTuple
         @test eltype(values(result)[1]) == T
         @test size(first(result)) == (10,)
     end
@@ -132,9 +112,6 @@ end
             params = NamedTuple(band_tuples)
         end
         result = compute_index(idx_name; params...)
-        @test result isa AbstractArray
-        @test size(result) == (10,)
-        result = compute_index(T, idx_name; params...)
         @test result isa AbstractArray
         @test eltype(values(result)[1]) == T
         @test size(result) == (10,)
@@ -171,8 +148,6 @@ msi = custom_key_combinations(indices, 2, 200)
             end
         end
         result = compute_index(idxs, params)
-        @test length(result) == 2
-        result = compute_index(T, idxs, params)
         @test eltype(first(result)) == T
         @test length(result) == 2
     end
@@ -191,8 +166,6 @@ msi = custom_key_combinations(indices, 2, 200)
             end
         end
         result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test length(result) == 2
-        result = compute_index(T, idxs; convert_to_kwargs(params)...)
         @test eltype(first(result)) == T
         @test length(result) == 2
     end
@@ -211,10 +184,6 @@ msi = custom_key_combinations(indices, 2, 200)
             end
         end
         result = compute_index(idxs, params)
-        @test result isa AbstractArray
-        @test length(result) == 2
-        @test length(first(result)) == 10
-        result = compute_index(T, idxs, params)
         @test result isa AbstractArray
         @test length(result) == 2
         @test length(first(result)) == 10
@@ -238,10 +207,6 @@ msi = custom_key_combinations(indices, 2, 200)
         @test result isa AbstractArray
         @test length(result) == 2
         @test length(first(result)) == 10
-        result = compute_index(T, idxs; convert_to_kwargs(params)...)
-        @test result isa AbstractArray
-        @test length(result) == 2
-        @test length(first(result)) == 10
         @test eltype(first(result)) == T
     end
 
@@ -262,10 +227,6 @@ msi = custom_key_combinations(indices, 2, 200)
         @test first(result) isa Matrix
         @test length(result) == 2
         @test size(first(result)) == (10, 10)
-        result = compute_index(T, idxs, params)
-        @test first(result) isa Matrix
-        @test length(result) == 2
-        @test size(first(result)) == (10, 10)
         @test eltype(first(result)) == T
     end
 
@@ -283,10 +244,6 @@ msi = custom_key_combinations(indices, 2, 200)
             end
         end
         result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test first(result) isa Matrix
-        @test length(result) == 2
-        @test size(first(result)) == (10, 10)
-        result = compute_index(T, idxs; convert_to_kwargs(params)...)
         @test first(result) isa Matrix
         @test length(result) == 2
         @test size(first(result)) == (10, 10)
@@ -311,9 +268,6 @@ msi = custom_key_combinations(indices, 2, 200)
         result = compute_index(idxs, params)
         @test result isa NamedTuple
         @test size(first(values(result))) == (10,)
-        result = compute_index(T, idxs, params)
-        @test result isa NamedTuple
-        @test size(first(values(result))) == (10,)
         @test eltype(first(values(result))) == T
     end
 
@@ -333,9 +287,6 @@ msi = custom_key_combinations(indices, 2, 200)
         # Convert the aggregated dict to NamedTuple for kwargs
         params = NamedTuple{Tuple(Symbol.(keys(dict_params)))}(values(dict_params))
         result = compute_index(idxs; params...)
-        @test result isa AbstractArray
-        @test size(first(result)) == (10,)
-        result = compute_index(T, idxs; params...)
         @test result isa AbstractArray
         @test size(first(result)) == (10,)
         @test eltype(first(values(result))) == T

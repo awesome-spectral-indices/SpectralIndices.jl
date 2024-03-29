@@ -26,9 +26,6 @@ end
         result = compute_index(idx_name, params)
         @test result isa DataFrame
         @test names(result) == [idx_name]
-        result = compute_index(T, idx_name, params)
-        @test result isa DataFrame
-        @test names(result) == [idx_name]
         @test first(eltype.(eachcol(result))) == T
     end
 
@@ -39,9 +36,6 @@ end
             params = DataFrame([band => rand(T, 10) for band in idx.bands])
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
-        @test result isa DataFrame
-        @test names(result) == [idx_name]
-        result = compute_index(T, idx_name; convert_to_kwargs(params)...)
         @test result isa DataFrame
         @test names(result) == [idx_name]
         @test first(eltype.(eachcol(result))) == T
@@ -79,9 +73,6 @@ msi = custom_key_combinations(indices, 2, 200)
         result = compute_index(idxs, params)
         @test result isa DataFrame
         @test names(result) == idxs
-        result = compute_index(T, idxs, params)
-        @test result isa DataFrame
-        @test names(result) == idxs
         @test first(eltype.(eachcol(result))) == T
     end
 
@@ -99,9 +90,6 @@ msi = custom_key_combinations(indices, 2, 200)
             end
         end
         result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test result isa DataFrame
-        @test names(result) == idxs
-        result = compute_index(T, idxs; convert_to_kwargs(params)...)
         @test result isa DataFrame
         @test names(result) == idxs
         @test first(eltype.(eachcol(result))) == T
