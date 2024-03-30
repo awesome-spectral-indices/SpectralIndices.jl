@@ -73,7 +73,7 @@ function compute_index(
     return results
 end
 
-function compute_index(index::Vector{AbstractSpectralIndex},
+function compute_index(index::Vector{<:AbstractSpectralIndex},
     params=nothing,
     online::Bool=false;
     kwargs...
@@ -108,7 +108,7 @@ end
 
 # TODO: return results in a matrix columnswise
 #multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
-function compute_index(index::Vector{AbstractSpectralIndex}, params::Dict; indices=indices)
+function compute_index(index::Vector{<:AbstractSpectralIndex}, params::Dict; indices=indices)
     results = []
     for (nidx, idx) in enumerate(index)
         result = compute_index(idx, params; indices=indices)
@@ -143,7 +143,7 @@ function compute_index(index::AbstractSpectralIndex, params::NamedTuple; indices
     return result_nt
 end
 
-function compute_index(index::Vector{AbstractSpectralIndex}, params::NamedTuple; indices=indices)
+function compute_index(index::Vector{<:AbstractSpectralIndex}, params::NamedTuple; indices=indices)
     results_dict = Dict{Symbol,Any}()
     for idx in index
         result_nt = compute_index(idx, params; indices=indices)

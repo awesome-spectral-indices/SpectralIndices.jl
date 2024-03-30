@@ -54,7 +54,7 @@ function compute_index(index::AbstractSpectralIndex,
 end
 
 function compute_index(
-    index::Vector{AbstractSpectralIndex}, params::YAXArray; indices=_create_indices()
+    index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices=_create_indices()
 )
     results = []
     for (nidx, idx) in enumerate(index)

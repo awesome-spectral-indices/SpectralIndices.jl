@@ -31,7 +31,7 @@ function compute_index(
 end
 
 function compute_index(
-    index::Vector{AbstractSpectralIndex}, params::DataFrame; indices=_create_indices()
+    index::Vector{<:AbstractSpectralIndex}, params::DataFrame; indices=_create_indices()
 )
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()

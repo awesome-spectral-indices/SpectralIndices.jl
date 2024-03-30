@@ -122,6 +122,7 @@ end
     GC.gc()
 end
 
+
 msi = custom_key_combinations(indices, 2, 200)
 
 @testset "Built-in types compute_index $T multiple indices tests: $idxs" for idxs in msi,
