@@ -3,8 +3,11 @@ module SpectralIndicesYAXArraysExt
 using SpectralIndices
 using YAXArrays
 using DimensionalData
+import SpectralIndices: _check_params, _create_params, _order_params,
+    AbstractSpectralIndex, compute_index, _create_indices,
+    linear, poly, RBF, load_dataset, _load_json
 
-function SpectralIndices._check_params(index, params::YAXArray)
+function _check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in index.bands
         if !(band in params.Variables)
             throw(
@@ -16,7 +19,7 @@ function SpectralIndices._check_params(index, params::YAXArray)
     end
 end
 
-function SpectralIndices._order_params(index, params::YAXArray)
+function _order_params(index::AbstractSpectralIndex, params::YAXArray)
     new_params = []
     for (bidx, band) in enumerate(index.bands)
         push!(new_params, params[Variable=At(band)])
@@ -25,7 +28,7 @@ function SpectralIndices._order_params(index, params::YAXArray)
     return new_params
 end
 
-function SpectralIndices._create_params(kw_args::Pair{Symbol,<:YAXArray}...)
+function _create_params(kw_args::Pair{Symbol,<:YAXArray}...)
     params_yaxa = []
     names_yaxa = []
     for (key, value) in kw_args
@@ -39,18 +42,19 @@ end
 
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
-function SpectralIndices.compute_index(
-    index::String, params::YAXArray; indices=SpectralIndices._create_indices()
+function compute_index(index::AbstractSpectralIndex,
+    params::YAXArray;
+    indices=_create_indices()
 )
-    SpectralIndices._check_params(indices[index], params)
-    params = SpectralIndices._order_params(indices[index], params)
+    _check_params(index, params)
+    params = _order_params(index, params)
     T = eltype(first(params))
-    result = SpectralIndices._compute_index(T, indices[index], params...)
+    result = _compute_index(T, index, params...)
     return result
 end
 
-function SpectralIndices.compute_index(
-    index::Vector{String}, params::YAXArray; indices=SpectralIndices._create_indices()
+function compute_index(
+    index::Vector{AbstractSpectralIndex}, params::YAXArray; indices=_create_indices()
 )
     results = []
     for (nidx, idx) in enumerate(index)
@@ -62,18 +66,18 @@ function SpectralIndices.compute_index(
     return result
 end
 
-function SpectralIndices._compute_index(
-    ::Type{T}, idx::SpectralIndices.AbstractSpectralIndex, prms::YAXArray...
+function _compute_index(
+    ::Type{T}, idx::AbstractSpectralIndex, prms::YAXArray...
 ) where {T<:Number}
     return idx.(T, prms...)
 end
 
-function SpectralIndices.linear(params::YAXArray)
-    return SpectralIndices.linear(params[Variable=At("a")], params[Variable=At("b")])
+function linear(params::YAXArray)
+    return linear(params[Variable=At("a")], params[Variable=At("b")])
 end
 
-function SpectralIndices.poly(params::YAXArray)
-    return SpectralIndices.poly(
+function poly(params::YAXArray)
+    return poly(
         params[Variable=At("a")],
         params[Variable=At("b")],
         params[Variable=At("c")],
@@ -81,13 +85,13 @@ function SpectralIndices.poly(params::YAXArray)
     )
 end
 
-function SpectralIndices.RBF(params::YAXArray)
-    return SpectralIndices.RBF(
+function RBF(params::YAXArray)
+    return RBF(
         params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
     )
 end
 
-function SpectralIndices.load_dataset(dataset::String, ::Type{T}) where {T<:YAXArray}
+function load_dataset(dataset::String, ::Type{T}) where {T<:YAXArray}
     datasets = Dict("sentinel" => "S2_10m.json")
 
     if dataset in keys(datasets)
@@ -96,7 +100,7 @@ function SpectralIndices.load_dataset(dataset::String, ::Type{T}) where {T<:YAXA
         error("Dataset name not valid. Datasets available for YAXArrays: sentinel")
     end
 
-    ds = SpectralIndices._load_json(datasets[dataset])
+    ds = _load_json(datasets[dataset])
     matrices = [hcat(ds[i]...) for i in 1:length(ds)]
     data_3d = cat(matrices...; dims=3)
     x_dim = Dim{:x}(1:300)
