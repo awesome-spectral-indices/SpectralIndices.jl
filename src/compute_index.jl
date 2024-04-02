@@ -76,6 +76,7 @@ end
 function compute_index(index::Vector{<:AbstractSpectralIndex},
     params=nothing,
     online::Bool=false;
+    indices=_create_indices(online),
     kwargs...
 )
 
@@ -86,9 +87,12 @@ function compute_index(index::Vector{<:AbstractSpectralIndex},
     return compute_index(index, params; indices=indices)
 end
 
-function compute_index(index::Vector{String}, params=nothing, online::Bool=false; kwargs...)
-    #TODO @MartinuzziFrancesco decide on an approach for the indices
-    indices = _create_indices(online)
+function compute_index(index::Vector{String},
+    params=nothing,
+    online::Bool=false;
+    indices = _create_indices(online),
+    kwargs...)
+
     names = keys(indices)
     for idx in index
         @assert idx in names "$index is not a valid Spectral Index!"
