@@ -107,6 +107,7 @@ function compute_index(index::AbstractSpectralIndex, params::Dict; indices=indic
     params = _order_params(index, params)
     T = eltype(first(values(params)))
     result = _compute_index(T, index, params...)
+
     return result
 end
 
