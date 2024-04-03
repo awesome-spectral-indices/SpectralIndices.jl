@@ -12,13 +12,13 @@ using SpectralIndices
     test_dir = mktempdir()
     try
         # Define the file location within the test directory
-        test_fileloc = joinpath(test_dir, "spectral-indices-dict.json")
+        test_fileloc = test_dir
 
         # Run the _get_indices function with online = true
         indices = SpectralIndices._get_indices(true; fileloc=test_fileloc)
 
         # Test if the file was downloaded and parsed successfully
-        @test isfile(test_fileloc)
+        @test isfile(joinpath(test_dir, "spectral-indices-dict.json"))
         @test !isempty(indices)
         @test indices isa Dict
 
