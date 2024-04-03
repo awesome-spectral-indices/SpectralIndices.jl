@@ -29,8 +29,9 @@ end
         else
             params = Dict(band => rand(T) for band in idx.bands)
         end
-        #type extension
         result = compute_index(idx_name, params)
+        #result_idx = compute_index(idx, params)
+        #@test result == result_idx
         @test result isa T
         @test length(result) == 1
     end
@@ -41,6 +42,8 @@ end
             params = Dict(band => rand(T) for band in idx.bands)
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
+        #result_idx = compute_index(idx; convert_to_kwargs(params)...)
+        #@test result == result_idx
         @test result isa T
         @test length(result) == 1
     end
@@ -118,6 +121,7 @@ end
     end
     GC.gc()
 end
+
 
 msi = custom_key_combinations(indices, 2, 200)
 
