@@ -2,8 +2,16 @@ module SpectralIndicesDataFramesExt
 
 using SpectralIndices
 using DataFrames
-import SpectralIndices: _create_params, AbstractSpectralIndex, compute_index,
-    _create_indices, linear, poly, RBF, load_dataset, _load_json
+import SpectralIndices:
+    _create_params,
+    AbstractSpectralIndex,
+    compute_index,
+    _create_indices,
+    linear,
+    poly,
+    RBF,
+    load_dataset,
+    _load_json
 
 function _create_params(kw_args::Pair{Symbol,DataFrame}...)
     combined_df = DataFrame()
@@ -21,9 +29,8 @@ function compute_index(
 )
     # Convert DataFrame to a dictionary for each row and compute the index
     results = [
-        compute_index(
-            index, Dict(zip(names(params), row)); indices=indices
-        ) for row in eachrow(params)
+        compute_index(index, Dict(zip(names(params), row)); indices=indices) for
+        row in eachrow(params)
     ]
 
     # Return the results as a DataFrame with the column named after the index
