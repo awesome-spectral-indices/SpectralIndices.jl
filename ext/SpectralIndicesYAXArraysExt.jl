@@ -3,9 +3,18 @@ module SpectralIndicesYAXArraysExt
 using SpectralIndices
 using YAXArrays
 using DimensionalData
-import SpectralIndices: _check_params, _create_params, _order_params,
-    AbstractSpectralIndex, compute_index, _create_indices,
-    linear, poly, RBF, load_dataset, _load_json
+import SpectralIndices:
+    _check_params,
+    _create_params,
+    _order_params,
+    AbstractSpectralIndex,
+    compute_index,
+    _create_indices,
+    linear,
+    poly,
+    RBF,
+    load_dataset,
+    _load_json
 
 function _check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in index.bands
@@ -42,9 +51,8 @@ end
 
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
-function compute_index(index::AbstractSpectralIndex,
-    params::YAXArray;
-    indices=_create_indices()
+function compute_index(
+    index::AbstractSpectralIndex, params::YAXArray; indices=_create_indices()
 )
     _check_params(index, params)
     params = _order_params(index, params)

@@ -54,9 +54,12 @@ julia> compute_index(
 ```
 """
 function compute_index(
-    index::AbstractSpectralIndex, params=nothing, online::Bool=false; indices=indices, kwargs...
+    index::AbstractSpectralIndex,
+    params=nothing,
+    online::Bool=false;
+    indices=indices,
+    kwargs...,
 )
-
     if isnothing(params)
         params = _create_params(kwargs...)
     end
@@ -73,13 +76,13 @@ function compute_index(
     return results
 end
 
-function compute_index(index::Vector{<:AbstractSpectralIndex},
+function compute_index(
+    index::Vector{<:AbstractSpectralIndex},
     params=nothing,
     online::Bool=false;
     indices=_create_indices(online),
-    kwargs...
+    kwargs...,
 )
-
     if isnothing(params)
         params = _create_params(kwargs...)
     end
@@ -87,12 +90,13 @@ function compute_index(index::Vector{<:AbstractSpectralIndex},
     return compute_index(index, params; indices=indices)
 end
 
-function compute_index(index::Vector{String},
+function compute_index(
+    index::Vector{String},
     params=nothing,
     online::Bool=false;
-    indices = _create_indices(online),
-    kwargs...)
-
+    indices=_create_indices(online),
+    kwargs...,
+)
     names = keys(indices)
     for idx in index
         @assert idx in names "$index is not a valid Spectral Index!"
@@ -113,7 +117,9 @@ end
 
 # TODO: return results in a matrix columnswise
 #multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
-function compute_index(index::Vector{<:AbstractSpectralIndex}, params::Dict; indices=indices)
+function compute_index(
+    index::Vector{<:AbstractSpectralIndex}, params::Dict; indices=indices
+)
     results = []
     for (nidx, idx) in enumerate(index)
         result = compute_index(idx, params; indices=indices)
@@ -124,17 +130,15 @@ function compute_index(index::Vector{<:AbstractSpectralIndex}, params::Dict; ind
 end
 
 #_compute_index(idx::AbstractSpectralIndex, prms::Number...) = idx(prms...)
-function _compute_index(::Type{T}, 
-    idx::AbstractSpectralIndex, 
-    prms::Number...
+function _compute_index(
+    ::Type{T}, idx::AbstractSpectralIndex, prms::Number...
 ) where {T<:Number}
     return idx(T, prms...)
 end
 
 #_compute_index(idx::AbstractSpectralIndex, prms::AbstractArray...) = idx.(prms...)
-function _compute_index(::Type{T},
-    idx::AbstractSpectralIndex,
-    prms::AbstractArray...
+function _compute_index(
+    ::Type{T}, idx::AbstractSpectralIndex, prms::AbstractArray...
 ) where {T<:Number}
     return idx.(T, prms...)
 end
@@ -148,7 +152,9 @@ function compute_index(index::AbstractSpectralIndex, params::NamedTuple; indices
     return result_nt
 end
 
-function compute_index(index::Vector{<:AbstractSpectralIndex}, params::NamedTuple; indices=indices)
+function compute_index(
+    index::Vector{<:AbstractSpectralIndex}, params::NamedTuple; indices=indices
+)
     results_dict = Dict{Symbol,Any}()
     for idx in index
         result_nt = compute_index(idx, params; indices=indices)
