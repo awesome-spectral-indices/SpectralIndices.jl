@@ -68,6 +68,9 @@ using DataFrames
 # Compute NDVI with direct parameter input
 result = compute_index("NDVI", N = 0.643, R = 0.175)
 
+# Compute NDVI with direct parameter input and direct NDVI call
+result = compute_index(NDVI, N = 0.643, R = 0.175)
+
 # Compute multiple indices with array inputs
 multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
 
