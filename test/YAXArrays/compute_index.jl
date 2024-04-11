@@ -5,6 +5,7 @@ using DimensionalData
 using Random
 using Combinatorics
 using StatsBase
+include("../test_utils.jl")
 Random.seed!(17)
 
 floats = [Float64, Float32, Float16]
