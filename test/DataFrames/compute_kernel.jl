@@ -2,6 +2,8 @@ using Test
 using SpectralIndices
 using DataFrames
 
+floats = [Float64, Float32, Float16]
+
 function convert_to_kwargs(df::DataFrame)
     kwargs = [(Symbol(band) => DataFrame(band => df[:, band])) for band in names(df)]
     return kwargs

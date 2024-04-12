@@ -5,28 +5,27 @@ using Test
     include("qa.jl")
 end
 
-@safetestset "Utils" begin
-    include("utils.jl")
-    include("DataFrames/datasets.jl")
-    include("YAXArrays/datasets.jl")
+@testset "Utils" begin
+    @safetestset "General utils" include("utils.jl")
+    @safetestset "DataFrames datasets" include("DataFrames/datasets.jl")
+    @safetestset "YAXArrays datasets" include("YAXArrays/datasets.jl")
 end
 
-@safetestset "Axioms" begin
-    include("indices.jl")
-    include("platforms.jl")
-    include("bands.jl")
-    include("constants.jl")
+@testset "Axioms" begin
+    @safetestset "Indices" include("indices.jl")
+    @safetestset "Platforms" include("platforms.jl")
+    @safetestset "Bands" include("bands.jl")
+    @safetestset "Constants" include("constants.jl")
 end
 
-@safetestset "Compute Indices" begin
-    include("test_utils.jl")
-    include("compute_index.jl")
-    include("DataFrames/compute_index.jl")
-    include("YAXArrays/compute_index.jl")
+@testset "Compute Indices" begin
+    @safetestset "Built-in types" include("compute_index.jl")
+    @safetestset "DataFrames" include("DataFrames/compute_index.jl")
+    @safetestset "YAXArrays" include("YAXArrays/compute_index.jl")
 end
 
-@safetestset "Compute Kernels" begin
-    include("compute_kernel.jl")
-    include("DataFrames/compute_kernel.jl")
-    include("YAXArrays/compute_kernel.jl")
+@testset "Compute Kernels" begin
+    @safetestset "Built-in types" include("compute_kernel.jl")
+    @safetestset "DataFrames" include("DataFrames/compute_kernel.jl")
+    @safetestset "YAXArrays" include("YAXArrays/compute_kernel.jl")
 end
