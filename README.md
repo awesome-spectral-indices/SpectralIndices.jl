@@ -101,6 +101,10 @@ array_result = compute(NDVI, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
 
 For more advanced usage and detailed documentation, please refer to the documentation.
 
+## Code Structure
+
+![fig1](https://github.com/awesome-spectral-indices/SpectralIndices.jl/assets/10376688/fb680f5a-7130-49fc-ae20-386fed3777ed)
+
 ## Contributing 🤝
 
 Contributions to SpectralIndices.jl are welcome! If you would like to contribute, please see our Contribution Guidelines for more information.
