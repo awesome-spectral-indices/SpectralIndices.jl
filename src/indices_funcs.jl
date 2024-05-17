@@ -696,11 +696,11 @@ end
 
 indices_funcs["OSAVI"] = OSAVI_func
 
-function sNIRvNDVIxLSWI_func(::Type{TFL}, N, R, S2) where {TFL <: Number}
+function sNIRvNDVILSWIP_func(::Type{TFL}, N, R, S2) where {TFL <: Number}
     return ((N - R)/(N + R)) * ((N - S2)/(N + S2)) * N
 end
 
-indices_funcs["sNIRvNDVILSWIP"] = sNIRvNDVIxLSWI_func
+indices_funcs["sNIRvNDVILSWIP"] = sNIRvNDVILSWIP_func
 
 function AFRI2100_func(::Type{TFL}, N, S2; const1::Number=TFL(0.5), const2::Number=TFL(0.5)) where {TFL <: Number}
     return (N - const1 * S2) / (N + const2 * S2)
@@ -1254,11 +1254,11 @@ end
 
 indices_funcs["NDSII"] = NDSII_func
 
-function sNIRvNDVIxLSWI_func(::Type{TFL}, N, R, S2) where {TFL <: Number}
+function sNIRvNDVILSWIS_func(::Type{TFL}, N, R, S2) where {TFL <: Number}
     return (((N - R)/(N + R)) + ((N - S2)/(N + S2))) * N
 end
 
-indices_funcs["sNIRvNDVILSWIS"] = sNIRvNDVIxLSWI_func
+indices_funcs["sNIRvNDVILSWIS"] = sNIRvNDVILSWIS_func
 
 function NIRvH2_func(::Type{TFL}, N, R, k, lambdaN, lambdaR) where {TFL <: Number}
     return N - R - k * (lambdaN - lambdaR)
