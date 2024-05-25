@@ -20,7 +20,7 @@ SpectralIndicesYAXArraysExt = ["YAXArrays", "DimensionalData"]
 [compat]
 DataFrames = "1"
 Dates = "1"
-DimensionalData = "0.26"
+DimensionalData = "0.26, 0.27"
 Downloads = "1"
 JSON = "0.21"
 YAXArrays = "0.5"
