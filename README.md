@@ -126,6 +126,23 @@ If you have any questions, issues, or feature requests, please open an issue or 
 If you use SpectralIndices.jl in your research, please consider citing it using the following DOI:
 
 ```bibtex
+@article{martinuzzi2024spectral,
+  title = {SpectralIndices.jl: Streamlining spectral indices access and computation for Earth system research},
+  volume = {XLVIII-4/W12-2024},
+  ISSN = {2194-9034},
+  url = {http://dx.doi.org/10.5194/isprs-archives-XLVIII-4-W12-2024-89-2024},
+  DOI = {10.5194/isprs-archives-xlviii-4-w12-2024-89-2024},
+  journal = {The International Archives of the Photogrammetry,  Remote Sensing and Spatial Information Sciences},
+  publisher = {Copernicus GmbH},
+  author = {Martinuzzi,  Francesco and Mahecha,  Miguel D. and Montero,  David and Alonso,  Lazaro and Mora,  Karin},
+  year = {2024},
+  month = jun,
+  pages = {89–95}
+}
+```
+Also consider citing the paper introducing the Awesome Spectral Indices collection:
+
+```bibtex
 @article{montero2023standardized,
   title={A standardized catalogue of spectral indices to advance the use of remote sensing in Earth system research},
   author={Montero, David and Aybar, C{\'e}sar and Mahecha, Miguel D and Martinuzzi, Francesco and S{\"o}chting, Maximilian and Wieneke, Sebastian},
