@@ -48,6 +48,12 @@ end
 
 indices_funcs["MBI"] = MBI_func
 
+function CRI700_func(::Type{TFL}, B, RE1; const1::Number=TFL(1.0), const2::Number=TFL(1.0)) where {TFL <: Number}
+    return (const1 / B) - (const2 / RE1)
+end
+
+indices_funcs["CRI700"] = CRI700_func
+
 function WRI_func(::Type{TFL}, G, R, N, S1) where {TFL <: Number}
     return (G + R)/(N + S1)
 end
@@ -263,6 +269,12 @@ function NDBaI_func(::Type{TFL}, S1, T) where {TFL <: Number}
 end
 
 indices_funcs["NDBaI"] = NDBaI_func
+
+function CRI550_func(::Type{TFL}, B, G; const1::Number=TFL(1.0), const2::Number=TFL(1.0)) where {TFL <: Number}
+    return (const1 / B) - (const2 / G)
+end
+
+indices_funcs["CRI550"] = CRI550_func
 
 function SAVIT_func(::Type{TFL}, L, N, R, T; const1::Number=TFL(1.0), const2::Number=TFL(10000.0), const3::Number=TFL(10000.0)) where {TFL <: Number}
     return (const1 + L) * (N - (R * T / const2)) / (N + (R * T / const3) + L)
@@ -1272,17 +1284,17 @@ end
 
 indices_funcs["NBRT2"] = NBRT2_func
 
-function DVIplus_func(::Type{TFL}, lambdaN, lambdaR, lambdaG, G, N, R; const1::Number=TFL(1.0)) where {TFL <: Number}
-    return ((lambdaN - lambdaR)/(lambdaN - lambdaG)) * G + (const1 - ((lambdaN - lambdaR)/(lambdaN - lambdaG))) * N - R
-end
-
-indices_funcs["DVIplus"] = DVIplus_func
-
 function CVI_func(::Type{TFL}, N, R, G; const1::Number=TFL(2.0)) where {TFL <: Number}
     return (N * R) / (G ^ const1)
 end
 
 indices_funcs["CVI"] = CVI_func
+
+function DVIplus_func(::Type{TFL}, lambdaN, lambdaR, lambdaG, G, N, R; const1::Number=TFL(1.0)) where {TFL <: Number}
+    return ((lambdaN - lambdaR)/(lambdaN - lambdaG)) * G + (const1 - ((lambdaN - lambdaR)/(lambdaN - lambdaG))) * N - R
+end
+
+indices_funcs["DVIplus"] = DVIplus_func
 
 function RI4XS_func(::Type{TFL}, R, G; const1::Number=TFL(2.0), const2::Number=TFL(4.0)) where {TFL <: Number}
     return (R^const1)/(G^const2)

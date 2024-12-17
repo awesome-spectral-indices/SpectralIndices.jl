@@ -19,11 +19,6 @@ include("compute_index.jl")
 include("compute_kernel.jl")
 include("datasets.jl")
 
-if !isdefined(Base, :get_extension)
-    include("../ext/SpectralIndicesDataFramesExt.jl")
-    include("../ext/SpectralIndicesYAXArraysExt.jl")
-end
-
 indices = _create_indices()
 bands = _create_bands()
 constants = _create_constants()
