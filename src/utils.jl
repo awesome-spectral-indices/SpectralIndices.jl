@@ -1,7 +1,7 @@
 """
-    _load_json(file::String = "spectral-indices-dict.json")
+    load_json(file::String = "spectral-indices-dict.json")
 
-Load a specified JSON file from the data folder.
+Load a specified JSON file from the `data` folder.
 
 # Arguments
 
@@ -15,13 +15,13 @@ Load a specified JSON file from the data folder.
 
 ```julia
 # Load the default JSON file
-data = _load_json()
+data = load_json()
 
 # Load a specific JSON file
-data = _load_json("my-custom-indices.json")
+data = load_json("my-custom-indices.json")
 ```
 """
-function _load_json(filename::String="spectral-indices-dict.json")
+function load_json(filename::String="spectral-indices-dict.json")
     fileloc = joinpath(dirname(@__FILE__), "..", "data", filename)
     if isfile(fileloc)
         return JSON.parsefile(fileloc)
@@ -31,7 +31,7 @@ function _load_json(filename::String="spectral-indices-dict.json")
 end
 
 """
-    _get_indices(online::Bool = false)
+    get_indices(online::Bool = false)
 
 Retrieve the JSON data of spectral indices.
 
@@ -47,14 +47,14 @@ Retrieve the JSON data of spectral indices.
 
 ```julia
 # Retrieve the spectral indices from the local copy (offline)
-indices = _get_indices()
+indices = get_indices()
 
 # Retrieve the most recent spectral indices from the online repository
-indices = _get_indices(true)
+indices = get_indices(true)
 '''
 ```
 """
-function _get_indices(
+function get_indices(
     online::Bool=false;
     filename="spectral-indices-dict.json",
     fileloc=joinpath(dirname(@__FILE__), "..", "data"),
@@ -67,13 +67,13 @@ function _get_indices(
         )
         indices = JSON.parsefile(indices_loc)
     else
-        indices = _load_json()
+        indices = load_json()
     end
 
     return indices["SpectralIndices"]
 end
 
-function _create_indexfun(
+function create_indexfun(
     index_dict::Dict{String,Any}=_get_indices();
     filename::String="indices_funcs.jl",
     fileloc=joinpath(dirname(@__FILE__), filename),

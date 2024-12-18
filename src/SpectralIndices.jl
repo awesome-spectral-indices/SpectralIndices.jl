@@ -1,5 +1,6 @@
 module SpectralIndices
 
+using Compat: @compat #for @compat public
 using Dates
 using Downloads
 using JSON
@@ -19,10 +20,19 @@ include("compute_index.jl")
 include("compute_kernel.jl")
 include("datasets.jl")
 
-indices = _create_indices()
-bands = _create_bands()
-constants = _create_constants()
+indices = create_indices()
+bands = create_bands()
+constants = create_constants()
 
+@compat(public, (create_indices,
+    create_bands,
+    create_constants,
+    load_json,
+    check_params,
+    create_params,
+    order_params))
+
+export get_indices, create_indexfun
 export get_datasets, load_dataset
 export SpectralIndex, indices, compute
 export PlatformBand, Band
@@ -32,7 +42,7 @@ export compute_kernel, linear, poly, RBF
 export bands
 export constants
 
-function _export_index(si::SpectralIndex)
+function export_index(si::SpectralIndex)
     @eval begin
         export $(Symbol(si.short_name))
         const $(Symbol(si.short_name)) = $si
@@ -40,7 +50,7 @@ function _export_index(si::SpectralIndex)
 end
 
 for (name, instance) in indices
-    _export_index(indices[name])
+    export_index(indices[name])
 end
 
 end #module

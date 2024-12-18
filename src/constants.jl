@@ -60,8 +60,8 @@ function Base.show(io::IO, ::MIME"text/plain", c::Constant)
     return println(io, "* Current value: $(c.value)")
 end
 
-function _create_constants()
-    constants = _load_json("constants.json")
+function create_constants()
+    constants = load_json("constants.json")
     constants_class = Dict{String,Constant}()
 
     for (key, value) in constants

@@ -4,19 +4,19 @@ using SpectralIndices
 using YAXArrays
 using DimensionalData
 import SpectralIndices:
-    _check_params,
-    _create_params,
-    _order_params,
+    check_params,
+    create_params,
+    order_params,
     AbstractSpectralIndex,
     compute_index,
-    _create_indices,
+    create_indices,
     linear,
     poly,
     RBF,
     load_dataset,
-    _load_json
+    load_json
 
-function _check_params(index::AbstractSpectralIndex, params::YAXArray)
+function check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in index.bands
         if !(band in params.Variables)
             throw(
@@ -28,7 +28,7 @@ function _check_params(index::AbstractSpectralIndex, params::YAXArray)
     end
 end
 
-function _order_params(index::AbstractSpectralIndex, params::YAXArray)
+function order_params(index::AbstractSpectralIndex, params::YAXArray)
     new_params = []
     for (bidx, band) in enumerate(index.bands)
         push!(new_params, params[Variable=At(band)])
@@ -37,7 +37,7 @@ function _order_params(index::AbstractSpectralIndex, params::YAXArray)
     return new_params
 end
 
-function _create_params(kw_args::Pair{Symbol,<:YAXArray}...)
+function create_params(kw_args::Pair{Symbol,<:YAXArray}...)
     params_yaxa = []
     names_yaxa = []
     for (key, value) in kw_args
@@ -52,17 +52,17 @@ end
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
 function compute_index(
-    index::AbstractSpectralIndex, params::YAXArray; indices=_create_indices()
+    index::AbstractSpectralIndex, params::YAXArray; indices = create_indices()
 )
-    _check_params(index, params)
-    params = _order_params(index, params)
+    check_params(index, params)
+    params = order_params(index, params)
     T = eltype(first(params))
     result = _compute_index(T, index, params...)
     return result
 end
 
 function compute_index(
-    index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices=_create_indices()
+    index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices = create_indices()
 )
     results = []
     for (nidx, idx) in enumerate(index)
@@ -108,7 +108,7 @@ function load_dataset(dataset::String, ::Type{T}) where {T<:YAXArray}
         error("Dataset name not valid. Datasets available for YAXArrays: sentinel")
     end
 
-    ds = _load_json(datasets[dataset])
+    ds = load_json(datasets[dataset])
     matrices = [hcat(ds[i]...) for i in 1:length(ds)]
     data_3d = cat(matrices...; dims=3)
     x_dim = Dim{:x}(1:300)

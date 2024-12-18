@@ -87,7 +87,7 @@ function Base.show(io::IO, ::MIME"text/plain", b::Band)
 end
 
 function _create_bands()
-    bands_dict = _load_json("bands.json")
+    bands_dict = load_json("bands.json")
     bands_class = Dict{String,Band}()
 
     for (key, value) in bands_dict

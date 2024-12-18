@@ -55,20 +55,20 @@ julia> compute_index(
 """
 function compute_index(
     index::AbstractSpectralIndex,
-    params=nothing,
-    online::Bool=false;
-    indices=indices,
+    params = nothing,
+    online::Bool = false;
+    indices = indices,
     kwargs...,
 )
     if isnothing(params)
-        params = _create_params(kwargs...)
+        params = create_params(kwargs...)
     end
 
     return compute_index(index, params; indices=indices)
 end
 
 function compute_index(
-    index::String, params=nothing, online::Bool=false; indices=indices, kwargs...
+    index::String, params = nothing, online::Bool = false; indices=indices, kwargs...
 )
     names = keys(indices)
     @assert index in names "$index is not a valid Spectral Index!"
@@ -84,7 +84,7 @@ function compute_index(
     kwargs...,
 )
     if isnothing(params)
-        params = _create_params(kwargs...)
+        params = create_params(kwargs...)
     end
 
     return compute_index(index, params; indices=indices)
@@ -92,9 +92,9 @@ end
 
 function compute_index(
     index::Vector{String},
-    params=nothing,
-    online::Bool=false;
-    indices=_create_indices(online),
+    params = nothing,
+    online::Bool = false;
+    indices = create_indices(online),
     kwargs...,
 )
     names = keys(indices)
@@ -106,9 +106,9 @@ function compute_index(
     return results
 end
 
-function compute_index(index::AbstractSpectralIndex, params::Dict; indices=indices)
-    _check_params(index, params)
-    params = _order_params(index, params)
+function compute_index(index::AbstractSpectralIndex, params::Dict; indices = indices)
+    check_params(index, params)
+    params = order_params(index, params)
     T = eltype(first(values(params)))
     result = _compute_index(T, index, params...)
 
@@ -144,8 +144,8 @@ function _compute_index(
 end
 
 function compute_index(index::AbstractSpectralIndex, params::NamedTuple; indices=indices)
-    _check_params(index, params)
-    params = _order_params(index, params)
+    check_params(index, params)
+    params = order_params(index, params)
     T = eltype(first(values(params)))
     result = _compute_index(T, index, params...)
     result_nt = (; Dict(Symbol(index.short_name) => result)...)
@@ -167,7 +167,7 @@ function compute_index(
 end
 
 """
-    _check_params(index::String, params::Dict, indices::Dict)
+    check_params(index::String, params::Dict, indices::Dict)
 
 Check if the parameters dictionary contains all required bands for spectral index computation.
 
@@ -190,10 +190,10 @@ parameters = Dict("N" => 0.6, "R" => 0.3, "G" => 0.7)
 indices = _get_indices()
 
 # Check if parameters contain required bands
-_check_params(index_name, parameters, indices)
+check_params(index_name, parameters, indices)
 ```
 """
-function _check_params(index::AbstractSpectralIndex, params::Dict)
+function check_params(index::AbstractSpectralIndex, params::Dict)
     for band in index.bands
         if !(band in keys(params))
             throw(
@@ -205,7 +205,7 @@ function _check_params(index::AbstractSpectralIndex, params::Dict)
     end
 end
 
-function _order_params(index::AbstractSpectralIndex, params)
+function order_params(index::AbstractSpectralIndex, params)
     T = eltype(params)
     new_params = T[]
     for (bidx, band) in enumerate(index.bands)
@@ -215,7 +215,7 @@ function _order_params(index::AbstractSpectralIndex, params)
     return new_params
 end
 
-function _order_params(index::AbstractSpectralIndex, params::Dict)
+function order_params(index::AbstractSpectralIndex, params::Dict)
     T = eltype(values(params))
     new_params = T[]
     for (bidx, band) in enumerate(index.bands)
@@ -225,12 +225,12 @@ function _order_params(index::AbstractSpectralIndex, params::Dict)
     return new_params
 end
 
-function _create_params(kw_args...)
+function create_params(kw_args...)
     params = Dict(String(k) => v for (k, v) in kw_args)
     return params
 end
 
-function _check_params(index::AbstractSpectralIndex, params::NamedTuple)
+function check_params(index::AbstractSpectralIndex, params::NamedTuple)
     for band in index.bands
         if !(Symbol(band) in keys(params))
             throw(
@@ -242,7 +242,7 @@ function _check_params(index::AbstractSpectralIndex, params::NamedTuple)
     end
 end
 
-function _order_params(index::AbstractSpectralIndex, params::NamedTuple)
+function order_params(index::AbstractSpectralIndex, params::NamedTuple)
     T = eltype(values(params))
     new_params = T[]
     for (bidx, band) in enumerate(index.bands)
