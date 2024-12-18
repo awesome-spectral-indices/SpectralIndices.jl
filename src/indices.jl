@@ -160,5 +160,5 @@ end
 
 function create_indices(online::Bool=false)
     indices_dict = get_indices(online)
-    return spectral_indices(indices_dict)
+    return _spectral_indices(indices_dict)
 end
