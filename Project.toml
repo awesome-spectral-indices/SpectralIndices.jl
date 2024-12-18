@@ -23,7 +23,7 @@ Dates = "1"
 DimensionalData = "0.26, 0.27, 0.28"
 Downloads = "1"
 JSON = "0.21"
-YAXArrays = "0.5"
+YAXArrays = "0.5, 0.6"
 julia = "1.10"
 
 [extras]
