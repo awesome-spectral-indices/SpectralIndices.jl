@@ -7,3 +7,13 @@ DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
 PartialFunctions = "570af359-4316-4cb7-8c74-252c00c2016b"
 SpectralIndices = "df0093a1-273d-40bc-819a-796ec3476907"
 YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
+
+[compat]
+CairoMakie = "0.12"
+DataFrames = "1"
+DimensionalData = "0.28"
+Documenter = "1.8"
+DocumenterVitepress = "0.1"
+PartialFunctions = "1.2"
+SpectralIndices = "0.2"
+YAXArrays = "0.5"
