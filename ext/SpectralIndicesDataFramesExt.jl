@@ -3,17 +3,17 @@ module SpectralIndicesDataFramesExt
 using SpectralIndices
 using DataFrames
 import SpectralIndices:
-    _create_params,
+    create_params,
     AbstractSpectralIndex,
     compute_index,
-    _create_indices,
+    create_indices,
     linear,
     poly,
     RBF,
     load_dataset,
-    _load_json
+    load_json
 
-function _create_params(kw_args::Pair{Symbol,DataFrame}...)
+function create_params(kw_args::Pair{Symbol,DataFrame}...)
     combined_df = DataFrame()
 
     for pair in kw_args
@@ -25,7 +25,7 @@ function _create_params(kw_args::Pair{Symbol,DataFrame}...)
 end
 
 function compute_index(
-    index::AbstractSpectralIndex, params::DataFrame; indices=_create_indices()
+    index::AbstractSpectralIndex, params::DataFrame; indices = create_indices()
 )
     # Convert DataFrame to a dictionary for each row and compute the index
     results = [
@@ -38,7 +38,7 @@ function compute_index(
 end
 
 function compute_index(
-    index::Vector{<:AbstractSpectralIndex}, params::DataFrame; indices=_create_indices()
+    index::Vector{<:AbstractSpectralIndex}, params::DataFrame; indices = create_indices()
 )
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()
@@ -77,7 +77,7 @@ function load_dataset(dataset::String, ::Type{T}) where {T<:DataFrame}
         error("Dataset name not valid. Datasets available for DataFrames: spectral")
     end
 
-    ds = _load_json(datasets[dataset])
+    ds = load_json(datasets[dataset])
     all_indices = Set{Int}()
     for val in values(ds)
         for idx in keys(val)

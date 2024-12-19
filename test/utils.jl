@@ -1,12 +1,12 @@
 using SpectralIndices
 
 # Test correctness
-@test SpectralIndices._load_json("spectral-indices-dict.json") isa Dict
+@test SpectralIndices.load_json("spectral-indices-dict.json") isa Dict
 # Test missing
-@test_throws ErrorException SpectralIndices._load_json("non_existing_file.json")
+@test_throws ErrorException SpectralIndices.load_json("non_existing_file.json")
 
 # Test offline
-@test SpectralIndices._get_indices() isa Dict
+@test SpectralIndices.get_indices() isa Dict
 # Test online
 @testset "Download Indices Test" begin
     test_dir = mktempdir()
@@ -15,7 +15,7 @@ using SpectralIndices
         test_fileloc = test_dir
 
         # Run the _get_indices function with online = true
-        indices = SpectralIndices._get_indices(true; fileloc=test_fileloc)
+        indices = SpectralIndices.get_indices(true; fileloc=test_fileloc)
 
         # Test if the file was downloaded and parsed successfully
         @test isfile(joinpath(test_dir, "spectral-indices-dict.json"))
@@ -44,6 +44,6 @@ end
 
 params = Dict("N" => 0.6, "R" => 0.3)
 # Test correctness
-@test SpectralIndices._check_params(NDVI, params) === nothing
+@test SpectralIndices.check_params(NDVI, params) === nothing
 # Test missing
-@test_throws ArgumentError SpectralIndices._check_params(NDVI, Dict("N" => 0.6))
+@test_throws ArgumentError SpectralIndices.check_params(NDVI, Dict("N" => 0.6))

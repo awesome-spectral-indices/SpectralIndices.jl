@@ -21,7 +21,7 @@ result = compute_kernel(linear; params=Dict("a" => 1, "b" => 2))
 """
 function compute_kernel(kernel, params=nothing; kwargs...)
     if isnothing(params)
-        params = _create_params(kwargs...)
+        params = create_params(kwargs...)
     end
 
     results = kernel(params)
