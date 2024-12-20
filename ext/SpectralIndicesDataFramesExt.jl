@@ -25,7 +25,7 @@ function create_params(kw_args::Pair{Symbol,DataFrame}...)
 end
 
 function compute_index(
-    index::AbstractSpectralIndex, params::DataFrame; indices = create_indices()
+    index::AbstractSpectralIndex, params::DataFrame; indices=create_indices()
 )
     # Convert DataFrame to a dictionary for each row and compute the index
     results = [
@@ -38,7 +38,7 @@ function compute_index(
 end
 
 function compute_index(
-    index::Vector{<:AbstractSpectralIndex}, params::DataFrame; indices = create_indices()
+    index::Vector{<:AbstractSpectralIndex}, params::DataFrame; indices=create_indices()
 )
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()

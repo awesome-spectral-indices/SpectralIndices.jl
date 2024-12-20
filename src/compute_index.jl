@@ -55,9 +55,9 @@ julia> compute_index(
 """
 function compute_index(
     index::AbstractSpectralIndex,
-    params = nothing,
-    online::Bool = false;
-    indices = indices,
+    params=nothing,
+    online::Bool=false;
+    indices=indices,
     kwargs...,
 )
     if isnothing(params)
@@ -68,7 +68,7 @@ function compute_index(
 end
 
 function compute_index(
-    index::String, params = nothing, online::Bool = false; indices=indices, kwargs...
+    index::String, params=nothing, online::Bool=false; indices=indices, kwargs...
 )
     names = keys(indices)
     @assert index in names "$index is not a valid Spectral Index!"
@@ -92,9 +92,9 @@ end
 
 function compute_index(
     index::Vector{String},
-    params = nothing,
-    online::Bool = false;
-    indices = create_indices(online),
+    params=nothing,
+    online::Bool=false;
+    indices=create_indices(online),
     kwargs...,
 )
     names = keys(indices)
@@ -106,7 +106,7 @@ function compute_index(
     return results
 end
 
-function compute_index(index::AbstractSpectralIndex, params::Dict; indices = indices)
+function compute_index(index::AbstractSpectralIndex, params::Dict; indices=indices)
     check_params(index, params)
     params = order_params(index, params)
     T = eltype(first(values(params)))

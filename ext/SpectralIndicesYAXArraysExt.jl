@@ -52,7 +52,7 @@ end
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
 function compute_index(
-    index::AbstractSpectralIndex, params::YAXArray; indices = create_indices()
+    index::AbstractSpectralIndex, params::YAXArray; indices=create_indices()
 )
     check_params(index, params)
     params = order_params(index, params)
@@ -62,7 +62,7 @@ function compute_index(
 end
 
 function compute_index(
-    index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices = create_indices()
+    index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices=create_indices()
 )
     results = []
     for (nidx, idx) in enumerate(index)
