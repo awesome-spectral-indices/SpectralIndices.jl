@@ -24,7 +24,7 @@ data = load_json("my-custom-indices.json")
 function load_json(filename::String="spectral-indices-dict.json")
     fileloc = joinpath(dirname(@__FILE__), "..", "data", filename)
     if isfile(fileloc)
-        return JSON.parsefile(fileloc)
+        return parsefile(fileloc)
     else
         error("The JSON file is not in the SpectralIndices/data folder")
     end
@@ -61,11 +61,11 @@ function get_indices(
 )
     final_file = joinpath(fileloc, filename)
     if online
-        indices_loc = Downloads.download(
+        indices_loc = download(
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
             final_file,
         )
-        indices = JSON.parsefile(indices_loc)
+        indices = parsefile(indices_loc)
     else
         indices = load_json()
     end

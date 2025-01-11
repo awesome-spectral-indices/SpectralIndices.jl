@@ -1,3 +1,5 @@
+abstract type AbstractPlatformBand end
+
 struct PlatformBand{S<:String,W<:Number,B<:Number} <: AbstractPlatformBand
     platform::S
     band::S

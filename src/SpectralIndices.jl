@@ -1,12 +1,9 @@
 module SpectralIndices
 
-using Compat: @compat #for @compat public
-using Dates
-using Downloads
-using JSON
-
-abstract type AbstractSpectralIndex end
-abstract type AbstractPlatformBand end
+using Compat: @compat
+using Dates: Date
+using Downloads: download
+using JSON: parsefile
 
 indices_funcs = Dict()
 include("utils.jl")

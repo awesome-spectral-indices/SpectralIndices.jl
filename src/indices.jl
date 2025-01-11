@@ -4,6 +4,7 @@ struct SpectralIndices{T <: Dict{String, AbstractSpectralIndex}, O}
     origin::O
 end
 =#
+abstract type AbstractSpectralIndex end
 
 struct SpectralIndex{S<:String,B,D<:Date,P,F} <: AbstractSpectralIndex
     short_name::S
