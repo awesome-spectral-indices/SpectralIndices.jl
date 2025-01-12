@@ -9,7 +9,7 @@ custom_index = Dict(
     "formula" => "(C - I) / (C + I)",
     "date_of_addition" => "1984-01-01",
     "contributor" => "John Doe",
-    "platforms" => ["Landsat 8", "MODIS"],
+    "platforms" => ["Landsat 8", "MODIS"]
 )
 
 custom_index_func(C, I) = (C - I) / (C + I)
@@ -27,7 +27,7 @@ si = SpectralIndex(custom_index, custom_index_func)
     @test si.platforms == ["Landsat 8", "MODIS"]
 
     computed_index = si(0.6, 0.2)
-    @test computed_index ≈ 0.5 atol = 0.01
+    @test computed_index≈0.5 atol=0.01
 
     C_vals = fill(0.6, 5)
     I_vals = fill(0.2, 5)

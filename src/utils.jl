@@ -54,16 +54,13 @@ indices = get_indices(true)
 '''
 ```
 """
-function get_indices(
-    online::Bool=false;
-    filename="spectral-indices-dict.json",
-    fileloc=joinpath(dirname(@__FILE__), "..", "data"),
-)
+function get_indices(online::Bool=false; filename::String="spectral-indices-dict.json",
+        fileloc::String=joinpath(dirname(@__FILE__), "..", "data"))
     final_file = joinpath(fileloc, filename)
     if online
         indices_loc = Downloads.download(
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
-            final_file,
+            final_file
         )
         indices = parsefile(indices_loc)
     else
@@ -73,11 +70,9 @@ function get_indices(
     return indices["SpectralIndices"]
 end
 
-function create_indexfun(
-    index_dict::Dict{String,Any}=_get_indices();
-    filename::String="indices_funcs.jl",
-    fileloc=joinpath(dirname(@__FILE__), filename),
-)
+function create_indexfun(index_dict::Dict{String, Any}=_get_indices();
+        filename::String="indices_funcs.jl",
+        fileloc::String=joinpath(dirname(@__FILE__), filename))
     open(fileloc, "w") do file
         write(file, "indices_funcs = Dict()\n\n")
 
@@ -92,16 +87,15 @@ function create_indexfun(
             default_values = []
             formula = replace(
                 formula,
-                r"\b\d+(\.\d+)?\b" =>
-                    match -> begin
-                        const_name = "const$(counter)"
-                        default_value = match
-                        push!(const_defs, "$const_name::Number=TFL($default_value)")
-                        push!(untyped_const_defs, "$const_name=$const_name")
-                        push!(default_values, default_value)
-                        counter += 1
-                        return const_name
-                    end,
+                r"\b\d+(\.\d+)?\b" => match -> begin
+                    const_name = "const$(counter)"
+                    default_value = match
+                    push!(const_defs, "$const_name::Number=TFL($default_value)")
+                    push!(untyped_const_defs, "$const_name=$const_name")
+                    push!(default_values, default_value)
+                    counter += 1
+                    return const_name
+                end
             )
 
             bands = index_info["bands"]

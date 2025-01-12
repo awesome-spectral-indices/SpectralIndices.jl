@@ -14,12 +14,12 @@ makedocs(;
     format=DocumenterVitepress.MarkdownVitepress(;
         repo="github.com/awesome-spectral-indices/SpectralIndices.jl", # this must be the full URL!
         devbranch="main",
-        devurl="dev",
+        devurl="dev"
     ),
     draft=false,
     source="src",
     build="build",
-    pages=pages,
+    pages=pages
 )
 
 deploydocs(;
@@ -27,5 +27,5 @@ deploydocs(;
     target="build", # this is where Vitepress stores its output
     branch="gh-pages",
     devbranch="main",
-    push_preview=true,
+    push_preview=true
 )

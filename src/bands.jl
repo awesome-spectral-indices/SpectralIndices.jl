@@ -1,4 +1,4 @@
-struct Band{S<:String,F<:Number,P<:Dict{String,PlatformBand}}
+struct Band{S <: String, F <: Number, P <: Dict{String, PlatformBand}}
     short_name::S
     long_name::S
     common_name::S
@@ -54,14 +54,14 @@ julia> bands["B"].long_name
 
 ```
 """
-function Band(band::Dict{String,Any})
+function Band(band::Dict{String, Any})
     short_name = band["short_name"]
     long_name = band["long_name"]
     common_name = band["common_name"]
     min_wavelength = band["min_wavelength"]
     max_wavelength = band["max_wavelength"]
 
-    platforms = Dict{String,PlatformBand}()
+    platforms = Dict{String, PlatformBand}()
 
     for (platform, platform_info) in band["platforms"]
         if isa(platform_info, PlatformBand)
@@ -88,7 +88,7 @@ end
 
 function create_bands()
     bands_dict = load_json("bands.json")
-    bands_class = Dict{String,Band}()
+    bands_class = Dict{String, Band}()
 
     for (key, value) in bands_dict
         bands_class[key] = Band(value)

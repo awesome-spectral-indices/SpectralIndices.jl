@@ -20,8 +20,8 @@
 [julia-img]: https://img.shields.io/badge/julia-v1.10+-blue.svg
 [julia-url]: https://julialang.org/
 
-[style-img]: https://img.shields.io/badge/code%20style-blue-4495d1.svg
-[style-url]: https://github.com/invenia/BlueStyle
+[style-img]: https://img.shields.io/static/v1?label=code%20style&message=SciML&color=9558b2&labelColor=389826
+[style-url]: https://github.com/SciML/SciMLStyle
 
 [aqua-img]: https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg
 [aqua-url]: https://github.com/JuliaTesting/Aqua.jl

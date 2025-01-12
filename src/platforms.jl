@@ -1,6 +1,6 @@
 abstract type AbstractPlatformBand end
 
-struct PlatformBand{S<:String,W<:Number,B<:Number} <: AbstractPlatformBand
+struct PlatformBand{S <: String, W <: Number, B <: Number} <: AbstractPlatformBand
     platform::S
     band::S
     name::S
@@ -36,7 +36,7 @@ platform_band_dict = Dict(
     "band" => "B2",
     "name" => "Blue",
     "wavelength" => 492.4,
-    "bandwidth" => 66.0,
+    "bandwidth" => 66.0
 )
 
 platform_band = PlatformBand(platform_band_dict)

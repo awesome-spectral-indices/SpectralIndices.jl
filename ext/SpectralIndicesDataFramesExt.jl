@@ -3,17 +3,17 @@ module SpectralIndicesDataFramesExt
 using SpectralIndices
 using DataFrames
 import SpectralIndices:
-    create_params,
-    AbstractSpectralIndex,
-    compute_index,
-    create_indices,
-    linear,
-    poly,
-    RBF,
-    load_dataset,
-    load_json
+                        create_params,
+                        AbstractSpectralIndex,
+                        compute_index,
+                        create_indices,
+                        linear,
+                        poly,
+                        RBF,
+                        load_dataset,
+                        load_json
 
-function create_params(kw_args::Pair{Symbol,DataFrame}...)
+function create_params(kw_args::Pair{Symbol, DataFrame}...)
     combined_df = DataFrame()
 
     for pair in kw_args
@@ -25,20 +25,19 @@ function create_params(kw_args::Pair{Symbol,DataFrame}...)
 end
 
 function compute_index(
-    index::AbstractSpectralIndex, params::DataFrame; indices = create_indices()
+        index::AbstractSpectralIndex, params::DataFrame; indices=create_indices()
 )
     # Convert DataFrame to a dictionary for each row and compute the index
-    results = [
-        compute_index(index, Dict(zip(names(params), row)); indices=indices) for
-        row in eachrow(params)
-    ]
+    results = [compute_index(index, Dict(zip(names(params), row)); indices=indices)
+               for
+               row in eachrow(params)]
 
     # Return the results as a DataFrame with the column named after the index
     return DataFrame(Symbol(index.short_name) => results)
 end
 
 function compute_index(
-    index::Vector{<:AbstractSpectralIndex}, params::DataFrame; indices = create_indices()
+        index::Vector{<:AbstractSpectralIndex}, params::DataFrame; indices=create_indices()
 )
     # Similar conversion and computation for a vector of indices
     result_dfs = DataFrame()
@@ -68,7 +67,7 @@ function RBF(params::DataFrame)
     return result_df
 end
 
-function load_dataset(dataset::String, ::Type{T}) where {T<:DataFrame}
+function load_dataset(dataset::String, ::Type{T}) where {T <: DataFrame}
     datasets = Dict("spectral" => "spectral.json")
 
     if dataset in keys(datasets)
@@ -88,7 +87,7 @@ function load_dataset(dataset::String, ::Type{T}) where {T<:DataFrame}
     df = DataFrame(; index=all_indices)
 
     for col_name in keys(ds)
-        df[!, col_name] = Vector{Union{Missing,Any}}(missing, length(all_indices))
+        df[!, col_name] = Vector{Union{Missing, Any}}(missing, length(all_indices))
     end
 
     for (col_name, col_data) in ds

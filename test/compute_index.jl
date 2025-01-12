@@ -20,8 +20,8 @@ end
 #end
 
 @testset "Built-in types compute_index $T single index tests: $idx_name" for (
-        idx_name, idx
-    ) in indices,
+    idx_name, idx
+) in indices,
     T in floats
 
     @testset "Single Values as Params" begin

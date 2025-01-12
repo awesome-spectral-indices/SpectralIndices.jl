@@ -11,8 +11,8 @@ using SpectralIndices
         "common_name" => "Blue",
         "min_wavelength" => 450.0,
         "max_wavelength" => 495.0,
-        "platforms" =>
-            Dict("sentinel2a" => dummy_platform_band, "sentinel2b" => dummy_platform_band),
+        "platforms" => Dict(
+            "sentinel2a" => dummy_platform_band, "sentinel2b" => dummy_platform_band)
     )
     sample_band = Band(sample_band_dict)
 
