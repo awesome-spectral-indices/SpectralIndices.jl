@@ -61,7 +61,7 @@ function get_indices(
 )
     final_file = joinpath(fileloc, filename)
     if online
-        indices_loc = download(
+        indices_loc = Downloads.download(
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
             final_file,
         )

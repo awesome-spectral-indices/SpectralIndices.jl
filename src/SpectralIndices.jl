@@ -1,8 +1,8 @@
 module SpectralIndices
 
 using Compat: @compat
-using Dates: Date
-using Downloads: download
+using Dates: Date, @dateformat_str
+using Downloads: Downloads
 using JSON: parsefile
 
 indices_funcs = Dict()
