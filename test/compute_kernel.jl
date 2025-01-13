@@ -30,8 +30,8 @@ floats = [Float64, Float32, Float16]
         @test RBF(a, b, sigma) ≈ expected_number_result
         @test eltype(RBF(a, b, sigma)) == T
 
-        expected_array_result =
-            T.(exp.((-1.0 .* ((a_v .- b_v) .^ 2.0)) ./ (2.0 .* (sigma_v .^ 2.0))))
+        expected_array_result = T.(exp.((-1.0 .* ((a_v .- b_v) .^ 2.0)) ./
+                                        (2.0 .* (sigma_v .^ 2.0))))
         @test all(RBF(a_v, b_v, sigma_v) .≈ expected_array_result)
         @test eltype(RBF(a_v, b_v, sigma_v)) == T
     end

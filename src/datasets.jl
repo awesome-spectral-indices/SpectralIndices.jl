@@ -22,17 +22,15 @@ get_datasets(; datasets=["custom_dataset.json"], data_loc="path/to/custom/direct
 
 This is particularly useful for setting up local environments with necessary data files for further processing or analysis.
 """
-function get_datasets(;
-    datasets = ["S2_10m.json", "spectral.json"],
-    data_loc = joinpath(dirname(@__FILE__), "..", "data"),
-)
+function get_datasets(; datasets=["S2_10m.json", "spectral.json"],
+        data_loc=joinpath(dirname(@__FILE__), "..", "data"))
     for ds in datasets
         file_dest = joinpath(data_loc, ds)
         try
             Downloads.download(
                 "https://raw.githubusercontent.com/awesome-spectral-indices/spyndex/main/spyndex/data/" *
                 ds,
-                file_dest,
+                file_dest
             )
         catch e
             @warn "Failed to download dataset $ds: $e"

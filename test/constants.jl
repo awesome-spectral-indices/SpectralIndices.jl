@@ -8,7 +8,7 @@ using SpectralIndices
         "Sample Short Name",
         "Sample Standard",
         "Sample Default",
-        "Sample Value",
+        "Sample Value"
     )
 
     # Test Machine-readable Output

@@ -1,12 +1,9 @@
 module SpectralIndices
 
-using Compat: @compat #for @compat public
-using Dates
-using Downloads
-using JSON
-
-abstract type AbstractSpectralIndex end
-abstract type AbstractPlatformBand end
+using Compat: @compat
+using Dates: Date, @dateformat_str
+using Downloads: Downloads
+using JSON: parsefile
 
 indices_funcs = Dict()
 include("utils.jl")
@@ -24,13 +21,14 @@ indices = create_indices()
 bands = create_bands()
 constants = create_constants()
 
-@compat(public, (create_indices,
-    create_bands,
-    create_constants,
-    load_json,
-    check_params,
-    create_params,
-    order_params))
+@compat(public,
+    (create_indices,
+        create_bands,
+        create_constants,
+        load_json,
+        check_params,
+        create_params,
+        order_params))
 
 export get_indices, create_indexfun
 export get_datasets, load_dataset

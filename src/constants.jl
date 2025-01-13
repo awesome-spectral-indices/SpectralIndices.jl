@@ -1,5 +1,5 @@
 
-struct Constant{S<:String,D,V}
+struct Constant{S <: String, D, V}
     description::S
     long_name::S
     short_name::S
@@ -34,7 +34,7 @@ constant_dict = Dict(
 constant = Constant(constant_dict)
 ```
 """
-function Constant(constant::Dict{String,Any})
+function Constant(constant::Dict{String, Any})
     description = constant["description"]
     short_name = constant["short_name"]
     default = constant["default"]
@@ -62,7 +62,7 @@ end
 
 function create_constants()
     constants = load_json("constants.json")
-    constants_class = Dict{String,Constant}()
+    constants_class = Dict{String, Constant}()
 
     for (key, value) in constants
         constants_class[key] = Constant(value)

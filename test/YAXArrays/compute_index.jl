@@ -19,8 +19,7 @@ end
 xdim = Dim{:x}(range(1, 10; length=10))
 ydim = Dim{:x}(range(1, 10; length=15))
 
-@testset "YAXArrays compute_index $T single index tests: $idx_name" for (idx_name, idx) in
-                                                                        indices,
+@testset "YAXArrays compute_index $T single index tests: $idx_name" for (idx_name, idx) in indices,
     T in floats
 
     @testset "as Params" begin

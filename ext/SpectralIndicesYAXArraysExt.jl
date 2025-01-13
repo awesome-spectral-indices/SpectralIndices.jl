@@ -4,25 +4,25 @@ using SpectralIndices
 using YAXArrays
 using DimensionalData
 import SpectralIndices:
-    check_params,
-    create_params,
-    order_params,
-    AbstractSpectralIndex,
-    compute_index,
-    create_indices,
-    linear,
-    poly,
-    RBF,
-    load_dataset,
-    load_json
+                        check_params,
+                        create_params,
+                        order_params,
+                        AbstractSpectralIndex,
+                        compute_index,
+                        create_indices,
+                        linear,
+                        poly,
+                        RBF,
+                        load_dataset,
+                        load_json
 
 function check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in index.bands
         if !(band in params.Variables)
             throw(
                 ArgumentError(
-                    "'$band' is missing in the parameters for $index computation!"
-                ),
+                "'$band' is missing in the parameters for $index computation!"
+            ),
             )
         end
     end
@@ -37,7 +37,7 @@ function order_params(index::AbstractSpectralIndex, params::YAXArray)
     return new_params
 end
 
-function create_params(kw_args::Pair{Symbol,<:YAXArray}...)
+function create_params(kw_args::Pair{Symbol, <:YAXArray}...)
     params_yaxa = []
     names_yaxa = []
     for (key, value) in kw_args
@@ -52,7 +52,7 @@ end
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
 function compute_index(
-    index::AbstractSpectralIndex, params::YAXArray; indices = create_indices()
+        index::AbstractSpectralIndex, params::YAXArray; indices=create_indices()
 )
     check_params(index, params)
     params = order_params(index, params)
@@ -62,7 +62,7 @@ function compute_index(
 end
 
 function compute_index(
-    index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices = create_indices()
+        index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices=create_indices()
 )
     results = []
     for (nidx, idx) in enumerate(index)
@@ -75,8 +75,8 @@ function compute_index(
 end
 
 function _compute_index(
-    ::Type{T}, idx::AbstractSpectralIndex, prms::YAXArray...
-) where {T<:Number}
+        ::Type{T}, idx::AbstractSpectralIndex, prms::YAXArray...
+) where {T <: Number}
     return idx.(T, prms...)
 end
 
@@ -89,7 +89,7 @@ function poly(params::YAXArray)
         params[Variable=At("a")],
         params[Variable=At("b")],
         params[Variable=At("c")],
-        params[Variable=At("p")],
+        params[Variable=At("p")]
     )
 end
 
@@ -99,7 +99,7 @@ function RBF(params::YAXArray)
     )
 end
 
-function load_dataset(dataset::String, ::Type{T}) where {T<:YAXArray}
+function load_dataset(dataset::String, ::Type{T}) where {T <: YAXArray}
     datasets = Dict("sentinel" => "S2_10m.json")
 
     if dataset in keys(datasets)
