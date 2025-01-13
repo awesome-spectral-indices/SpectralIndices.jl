@@ -1,7 +1,7 @@
 name = "SpectralIndices"
 uuid = "df0093a1-273d-40bc-819a-796ec3476907"
 authors = ["MartinuzziFrancesco <martinuzzi.francesco@gmail.com>"]
-version = "0.2.12"
+version = "0.2.13"
 
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
