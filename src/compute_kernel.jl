@@ -9,14 +9,20 @@ Compute a specified kernel using either provided parameters or keyword arguments
   - `params`: (Optional) A `Dict`, `DataFrame`, or `YAXArray` containing parameters for the kernel computation.
   - `kwargs...`: Keyword arguments that will be converted to parameters if `params` is not provided.
 
-# Returns
-
-  - The result of the kernel computation, the type of which depends on the input type.
-
 # Examples
 
-```julia
-result = compute_kernel(linear; params=Dict("a" => 1, "b" => 2))
+```jldoctest
+julia> params = (N=fill(0.2, 3), R=fill(0.1, 3), L=fill(0.5, 3))
+(N = [0.2, 0.2, 0.2], R = [0.1, 0.1, 0.1], L = [0.5, 0.5, 0.5])
+
+julia> compute_index("NDVI", params)
+(NDVI = [0.3333333333333333, 0.3333333333333333, 0.3333333333333333],)
+
+julia> params = (N=fill(0.2f0, 3), R=fill(0.1f0, 3), L=fill(0.5f0, 3))
+(N = Float32[0.2, 0.2, 0.2], R = Float32[0.1, 0.1, 0.1], L = Float32[0.5, 0.5, 0.5])
+
+julia> compute_index("NDVI", params)
+(NDVI = Float32[0.3333333, 0.3333333, 0.3333333],)
 ```
 """
 function compute_kernel(kernel, params=nothing; kwargs...)

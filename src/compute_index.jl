@@ -1,52 +1,45 @@
 """
-    compute_index(index::String, params::Dict=Dict(), online::Bool=false; kwargs...) -> Any
+    compute_index(index, params, [online]; kwargs...) -> Any
 
-Computes one or more Spectral Indices from a predefined list,
-based on the provided index name, parameters, and optional keyword arguments.
+Computes one or more Spectral Indices.
 
-# Parameters
+# Arguments
 
   - `index`: Name of the spectral index or a list of index names to compute.
   - `params`: (Optional) Dictionary of parameters used as inputs for the
     computation. If not provided, parameters can be passed using keyword arguments.
   - `online`: (Optional) Flag indicating whether to retrieve the most recent
-    list of indices online.
+    list of indices online. Default is `false`.
   - `kwargs`: Additional parameters used as inputs for the computation,
     provided as keyword pairs.
 
-# Returns
-
-  - Computed Spectral Indices, the type of return value depends on the input
-    parameters.
-
 # Examples
 
-```julia-repl
+```jldoctest
 julia> compute_index("NDVI"; N=0.643, R=0.175)
+0.5721271393643031
 
-```
-
-```julia-repl
 julia> compute_index("NDVI"; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)))
+5×5 Matrix{Float64}:
+ 0.572127  0.572127  0.572127  0.572127  0.572127
+ 0.572127  0.572127  0.572127  0.572127  0.572127
+ 0.572127  0.572127  0.572127  0.572127  0.572127
+ 0.572127  0.572127  0.572127  0.572127  0.572127
+ 0.572127  0.572127  0.572127  0.572127  0.572127
 
-```
-
-```julia-repl
 julia> compute_index("NDVI"; N=fill(0.643, 5), R=fill(0.175, 5))
+5-element Vector{Float64}:
+ 0.5721271393643031
+ 0.5721271393643031
+ 0.5721271393643031
+ 0.5721271393643031
+ 0.5721271393643031
 
-```
-
-```julia-repl
-julia> compute_index(["NDVI", "SAVI"]; N=fill(0.643, 5), R=fill(0.175, 5), L=fill(0.5, 5))
-
-```
-
-```julia-repl
 julia> compute_index(["NDVI", "SAVI"]; N=0.643, R=0.175, L=0.5)
+2-element Vector{Any}:
+ 0.5721271393643031
+ 0.5326251896813354
 
-```
-
-```julia-repl
 julia> compute_index(
            ["NDVI", "SAVI"]; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)), L=fill(0.5, (5, 5))
        )
@@ -156,21 +149,6 @@ Check if the parameters dictionary contains all required bands for spectral inde
   - `index::String`: The name of the spectral index to check.
   - `params::Dict`: The parameters dictionary to check for required bands.
   - `indices::Dict`: The dictionary containing information about spectral indices.
-
-# Returns
-
-  - `None`
-
-# Examples
-
-```julia
-# Check parameters for the NDVI index
-index_name = "NDVI"
-parameters = Dict("N" => 0.6, "R" => 0.3, "G" => 0.7)
-indices = _get_indices()
-
-# Check if parameters contain required bands
-check_params(index_name, parameters, indices)
 ```
 """
 function check_params(index::AbstractSpectralIndex, params::Dict)
