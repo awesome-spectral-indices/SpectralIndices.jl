@@ -1,25 +1,14 @@
 """
-    load_json(file::String = "spectral-indices-dict.json")
+    load_json(file = "spectral-indices-dict.json")
 
 Load a specified JSON file from the `data` folder.
 
 # Arguments
 
-  - `file::String = "spectral-indices-dict.json"`: The name of the JSON file to be loaded.
+  - `file::String = "spectral-indices-dict.json"`: The name of the
+    JSON file to be loaded.
 
-# Returns
 
-  - `object`: The parsed JSON content from the specified file.
-
-# Examples
-
-```julia
-# Load the default JSON file
-data = load_json()
-
-# Load a specific JSON file
-data = load_json("my-custom-indices.json")
-```
 """
 function load_json(filename::String="spectral-indices-dict.json")
     fileloc = joinpath(dirname(@__FILE__), "..", "data", filename)
@@ -31,28 +20,16 @@ function load_json(filename::String="spectral-indices-dict.json")
 end
 
 """
-    get_indices(online::Bool = false)
+    get_indices([online])
 
 Retrieve the JSON data of spectral indices.
 
 # Arguments
 
-  - `online::Bool = false`: Whether to retrieve the most recent list of indices directly from the GitHub repository (online) or from the local copy (offline).
+  - `online`: Whether to retrieve the most recent
+    list of indices directly from the GitHub repository (online)
+    or from the local copy (offline). Default is `false`.
 
-# Returns
-
-  - `dict`: A dictionary containing the spectral indices data.
-
-# Examples
-
-```julia
-# Retrieve the spectral indices from the local copy (offline)
-indices = get_indices()
-
-# Retrieve the most recent spectral indices from the online repository
-indices = get_indices(true)
-'''
-```
 """
 function get_indices(online::Bool=false; filename::String="spectral-indices-dict.json",
         fileloc::String=joinpath(dirname(@__FILE__), "..", "data"))

@@ -11,18 +11,36 @@ Compute a specified kernel using either provided parameters or keyword arguments
 
 # Examples
 
-```jldoctest
-julia> params = (N=fill(0.2, 3), R=fill(0.1, 3), L=fill(0.5, 3))
-(N = [0.2, 0.2, 0.2], R = [0.1, 0.1, 0.1], L = [0.5, 0.5, 0.5])
+The behaviour of `compute_kernel` is identical to [`compute_index`](@ref).
+The function takes as keywork arguments the parameters needed for computation:
 
-julia> compute_index("NDVI", params)
-(NDVI = [0.3333333333333333, 0.3333333333333333, 0.3333333333333333],)
+```jldoctest computekernel
+julia> using SpectralIndices
 
-julia> params = (N=fill(0.2f0, 3), R=fill(0.1f0, 3), L=fill(0.5f0, 3))
-(N = Float32[0.2, 0.2, 0.2], R = Float32[0.1, 0.1, 0.1], L = Float32[0.5, 0.5, 0.5])
+julia> knr = compute_kernel(RBF;
+    a=fill(0.1, 5), b=fill(0.2, 5), sigma=fill(0.3, 5))
+5-element Vector{Float64}:
+ 0.9459594689067654
+ 0.9459594689067654
+ 0.9459594689067654
+ 0.9459594689067654
+ 0.9459594689067654
 
-julia> compute_index("NDVI", params)
-(NDVI = Float32[0.3333333, 0.3333333, 0.3333333],)
+```
+
+Additionally it can also take The a positional argument `params`, which can be
+a `Dict`, a `DataFrame`, or `YAXArray`. Let us demonstrate with a `Dict`:
+
+```jldoctest computekernel
+julia> params = Dict("a" => 0.1, "b" => 0.2, "sigma" => 0.3)
+Dict{String, Float64} with 3 entries:
+  "sigma" => 0.3
+  "b"     => 0.2
+  "a"     => 0.1
+
+julia> knr = compute_kernel(RBF, params)
+0.9459594689067654
+
 ```
 """
 function compute_kernel(kernel, params=nothing; kwargs...)

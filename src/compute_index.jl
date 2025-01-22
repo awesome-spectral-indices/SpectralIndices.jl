@@ -16,6 +16,8 @@ Computes one or more Spectral Indices.
 # Examples
 
 ```jldoctest
+julia> using SpectralIndices
+
 julia> compute_index("NDVI"; N=0.643, R=0.175)
 0.5721271393643031
 

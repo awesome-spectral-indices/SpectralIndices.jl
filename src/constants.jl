@@ -27,11 +27,26 @@ Create a `Constant` object from a dictionary.
 
 # Example
 
-```julia
-constant_dict = Dict(
-    "description" => "Speed of light in vacuum", "short_name" => "c", "default" => 299792458
-)
-constant = Constant(constant_dict)
+```jldoctest
+julia> using SpectralIndices
+
+julia> constant_dict = Dict(
+           "description" => "Speed of light in vacuum",
+           "short_name" => "c",
+           "default" => 299792458
+       )
+Dict{String, Any} with 3 entries:
+  "short_name"  => "c"
+  "default"     => 299792458
+  "description" => "Speed of light in vacuum"
+
+julia> constant = Constant(constant_dict)
+c: Speed of light in vacuum
+* Description: Speed of light in vacuum
+* Standard: c
+* Default value: 299792458
+* Current value: 299792458
+
 ```
 """
 function Constant(constant::Dict{String, Any})
