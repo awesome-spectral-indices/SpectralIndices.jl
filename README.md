@@ -5,7 +5,7 @@
 </p>
 
 | **Documentation** | **Build Status** | **Julia** | **Testing** |
-|:-----------------:|:----------------:|:---------:|:---------|
+|:-----------------:|:----------------:|:---------:|:-----------:|
 | [![docs][docs-img]][docs-url] | [![CI][ci-img]][ci-url] [![codecov][cc-img]][cc-url] | [![Julia][julia-img]][julia-url] [![Code Style: Blue][style-img]][style-url] | [![Aqua QA][aqua-img]][aqua-url] |
 
 [docs-img]: https://img.shields.io/badge/docs-stable-blue.svg
