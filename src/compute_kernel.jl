@@ -17,8 +17,7 @@ The function takes as keywork arguments the parameters needed for computation:
 ```jldoctest computekernel
 julia> using SpectralIndices
 
-julia> knr = compute_kernel(RBF;
-    a=fill(0.1, 5), b=fill(0.2, 5), sigma=fill(0.3, 5))
+julia> knr = compute_kernel(RBF; a=fill(0.1, 5), b=fill(0.2, 5), sigma=fill(0.3, 5))
 5-element Vector{Float64}:
  0.9459594689067654
  0.9459594689067654

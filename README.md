@@ -88,19 +88,6 @@ To compute at custom Float precision input the bands at the chosen precision and
 result = compute_index(Float32, "NDVI", N = Float32(0.643), R = Float32(0.175))
 ```
 
-### Using `compute`
-```julia
-# Define a SpectralIndex instance
-
-# Compute using the instance with keyword arguments
-result = compute(NDVI, N = 0.643, R = 0.175) #NDVI is autmatically in namespace with the import of SpectraIndices.jl
-
-# Compute with array inputs
-array_result = compute(NDVI, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
-```
-
-For more advanced usage and detailed documentation, please refer to the documentation.
-
 ## Code Structure
 
 ![fig1](https://github.com/awesome-spectral-indices/SpectralIndices.jl/assets/10376688/fb680f5a-7130-49fc-ae20-386fed3777ed)

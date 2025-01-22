@@ -29,7 +29,6 @@ Awesome Spectral Indices list.
         the band (in nm).
       + `"platforms"`: A dictionary of platform information associated
         with this band.
-
 """
 function Band(band::Dict{String, Any})
     short_name = band["short_name"]

@@ -42,10 +42,10 @@ julia> compute_index(["NDVI", "SAVI"]; N=0.643, R=0.175, L=0.5)
  0.5721271393643031
  0.5326251896813354
 
-julia> compute_index(
-           ["NDVI", "SAVI"]; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)), L=fill(0.5, (5, 5))
-       )
-
+julia> compute_index(["NDVI", "SAVI"]; N=fill(0.643, (2, 2)), R=fill(0.175, (2, 2)), L=fill(0.5, (2,2)))
+2-element Vector{Any}:
+ [0.5721271393643031 0.5721271393643031; 0.5721271393643031 0.5721271393643031]
+ [0.5326251896813354 0.5326251896813354; 0.5326251896813354 0.5326251896813354]
 ```
 """
 function compute_index(index::AbstractSpectralIndex, params=nothing, online::Bool=false;
@@ -151,6 +151,8 @@ Check if the parameters dictionary contains all required bands for spectral inde
   - `index::String`: The name of the spectral index to check.
   - `params::Dict`: The parameters dictionary to check for required bands.
   - `indices::Dict`: The dictionary containing information about spectral indices.
+
+```
 ```
 """
 function check_params(index::AbstractSpectralIndex, params::Dict)
