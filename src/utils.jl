@@ -13,7 +13,7 @@ Load a specified JSON file from the `data` folder.
 function load_json(filename::String="spectral-indices-dict.json")
     fileloc = joinpath(dirname(@__FILE__), "..", "data", filename)
     if isfile(fileloc)
-        return parsefile(fileloc)
+        return parsefile(fileloc; null=missing, allownan=true)
     else
         error("The JSON file is not in the SpectralIndices/data folder")
     end
@@ -35,19 +35,22 @@ function get_indices(online::Bool=false; filename::String="spectral-indices-dict
         fileloc::String=joinpath(dirname(@__FILE__), "..", "data"))
     final_file = joinpath(fileloc, filename)
     if online
+        println("Starting download to: ", final_file)
         indices_loc = Downloads.download(
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
             final_file
         )
-        indices = parsefile(indices_loc)
+        @assert indices_loc isa String && !isempty(indices_loc) "Download did not return a valid file path."
+        indices = parsefile(indices_loc; null=missing, allownan=true)
     else
         indices = load_json()
     end
+    @assert indices isa Dict{String, Any}
 
     return indices["SpectralIndices"]
 end
 
-function create_indexfun(index_dict::Dict{String, Any}=_get_indices();
+function create_indexfun(index_dict::Dict{String, Any}=get_indices();
         filename::String="indices_funcs.jl",
         fileloc::String=joinpath(dirname(@__FILE__), filename))
     open(fileloc, "w") do file
