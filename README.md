@@ -5,7 +5,7 @@
 </p>
 
 | **Documentation** | **Build Status** | **Julia** | **Testing** |
-|:-----------------:|:----------------:|:---------:|:---------|
+|:-----------------:|:----------------:|:---------:|:-----------:|
 | [![docs][docs-img]][docs-url] | [![CI][ci-img]][ci-url] [![codecov][cc-img]][cc-url] | [![Julia][julia-img]][julia-url] [![Code Style: Blue][style-img]][style-url] | [![Aqua QA][aqua-img]][aqua-url] |
 
 [docs-img]: https://img.shields.io/badge/docs-stable-blue.svg
@@ -87,19 +87,6 @@ To compute at custom Float precision input the bands at the chosen precision and
 # Compute NDVI with direct parameter input
 result = compute_index(Float32, "NDVI", N = Float32(0.643), R = Float32(0.175))
 ```
-
-### Using `compute`
-```julia
-# Define a SpectralIndex instance
-
-# Compute using the instance with keyword arguments
-result = compute(NDVI, N = 0.643, R = 0.175) #NDVI is autmatically in namespace with the import of SpectraIndices.jl
-
-# Compute with array inputs
-array_result = compute(NDVI, N = fill(0.643, (5, 5)), R = fill(0.175, (5, 5)))
-```
-
-For more advanced usage and detailed documentation, please refer to the documentation.
 
 ## Code Structure
 

@@ -46,15 +46,32 @@ A `SpectralIndex` object containing the specified index information.
 
 # Examples
 
-```julia-repl
+SpectralIndices.jl's indices are loaded in two different ways.
+The first one is through the `Dict` `indices`:
+
+```jldoctest indices
+julia> using SpectralIndices
+
 julia> indices["NIRv"]
+NIRv: Near-Infrared Reflectance of Vegetation
+* Application Domain: vegetation
+* Bands/Parameters: Any["N", "R"]
+* Formula: ((N-R)/(N+R))*N
+* Reference: https://doi.org/10.1126/sciadv.1602244
 
 ```
 
-Or, accessing directly the provided Dict of spectral indices:
+Additioanlly, SpectralIndices.jl loads into memory all the short names
+of the indices, so you can easily access them on your REPL:
 
-```julia-repl
-NIRv
+```jldoctest indices
+julia> NDVI
+NDVI: Normalized Difference Vegetation Index
+* Application Domain: vegetation
+* Bands/Parameters: Any["N", "R"]
+* Formula: (N-R)/(N+R)
+* Reference: https://ntrs.nasa.gov/citations/19740022614
+
 ```
 """
 function SpectralIndex(index::Dict, func::Function)

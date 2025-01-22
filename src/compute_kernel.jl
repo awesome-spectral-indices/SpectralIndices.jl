@@ -9,14 +9,37 @@ Compute a specified kernel using either provided parameters or keyword arguments
   - `params`: (Optional) A `Dict`, `DataFrame`, or `YAXArray` containing parameters for the kernel computation.
   - `kwargs...`: Keyword arguments that will be converted to parameters if `params` is not provided.
 
-# Returns
-
-  - The result of the kernel computation, the type of which depends on the input type.
-
 # Examples
 
-```julia
-result = compute_kernel(linear; params=Dict("a" => 1, "b" => 2))
+The behaviour of `compute_kernel` is identical to [`compute_index`](@ref).
+The function takes as keywork arguments the parameters needed for computation:
+
+```jldoctest computekernel
+julia> using SpectralIndices
+
+julia> knr = compute_kernel(RBF; a=fill(0.1, 5), b=fill(0.2, 5), sigma=fill(0.3, 5))
+5-element Vector{Float64}:
+ 0.9459594689067654
+ 0.9459594689067654
+ 0.9459594689067654
+ 0.9459594689067654
+ 0.9459594689067654
+
+```
+
+Additionally it can also take The a positional argument `params`, which can be
+a `Dict`, a `DataFrame`, or `YAXArray`. Let us demonstrate with a `Dict`:
+
+```jldoctest computekernel
+julia> params = Dict("a" => 0.1, "b" => 0.2, "sigma" => 0.3)
+Dict{String, Float64} with 3 entries:
+  "sigma" => 0.3
+  "b"     => 0.2
+  "a"     => 0.1
+
+julia> knr = compute_kernel(RBF, params)
+0.9459594689067654
+
 ```
 """
 function compute_kernel(kernel, params=nothing; kwargs...)

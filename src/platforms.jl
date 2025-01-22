@@ -11,8 +11,8 @@ end
 """
     PlatformBand(platform_band::Dict{String, Any})
 
-This struct provides information about a specific band for a specific sensor or
-platform.
+This struct provides information about a specific band for a
+specific sensor or platform.
 
 # Arguments
 
@@ -21,36 +21,45 @@ platform.
       + `"platform"`: Name of the platform or sensor.
       + `"band"`: Band number or name for the specific platform.
       + `"name"`: Description or name of the band for the specific platform.
-      + `"wavelength"`: Center wavelength of the band (in nm) for the specific platform.
+      + `"wavelength"`: Center wavelength of the band (in nm) for the
+        specific platform.
       + `"bandwidth"`: Bandwidth of the band (in nm) for the specific platform.
-
-# Returns
-
-A `PlatformBand` object containing the specified band information.
 
 # Examples
 
-```julia-repl
-platform_band_dict = Dict(
-    "platform" => "Sentinel-2A",
-    "band" => "B2",
-    "name" => "Blue",
-    "wavelength" => 492.4,
-    "bandwidth" => 66.0
-)
+```jldoctest platforms
+julia> using SpectralIndices
 
-platform_band = PlatformBand(platform_band_dict)
+julia> platform_band_dict = Dict(
+           "platform" => "Sentinel-2A",
+           "band" => "B2",
+           "name" => "Blue",
+           "wavelength" => 492.4,
+           "bandwidth" => 66.0
+       )
+Dict{String, Any} with 5 entries:
+  "name"       => "Blue"
+  "wavelength" => 492.4
+  "platform"   => "Sentinel-2A"
+  "bandwidth"  => 66.0
+  "band"       => "B2"
+
+julia> platform_band = PlatformBand(platform_band_dict)
+Platform: Sentinel-2A, Band: Blue
+* Band: B2
+* Center Wavelength (nm): 492.4
+* Bandwidth (nm): 66.0
+
 ```
 
-Or, accessing directly the provided Dict of platforms:
+Additionally, SpectralIndices.jl provides already computed platforms as a `Dict`:
 
-```julia-repl
+```jldoctest platforms
 julia> bands["B"].platforms["sentinel2a"]
-
-```
-
-```julia-repl
-julia> bands["B"].platforms["sentinel2a"].wavelength
+Platform: Sentinel-2A, Band: Blue
+* Band: B2
+* Center Wavelength (nm): 492.4
+* Bandwidth (nm): 66.0
 
 ```
 """
