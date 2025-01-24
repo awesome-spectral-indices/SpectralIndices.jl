@@ -40,7 +40,7 @@ function get_indices(online::Bool=false; filename::String="spectral-indices-dict
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
             final_file
         )
-        @assert indices_loc isa String && !isempty(indices_loc) "Download did not return a valid file path."
+        @assert indices_loc isa String&&!isempty(indices_loc) "Download did not return a valid file path."
         indices = parsefile(indices_loc; null=missing, allownan=true)
     else
         indices = load_json()
