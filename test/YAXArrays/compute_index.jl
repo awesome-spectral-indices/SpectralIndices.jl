@@ -23,11 +23,13 @@ ydim = Dim{:x}(range(1, 10; length=15))
     T in floats
 
     @testset "as Params" begin
-        if idx_name == "AVI" || idx_name == "TVI"
+        if idx_name == "AVI" || idx_name == "TVI" || idx_name == "TSAVI"
             nyx = YAXArray((xdim, ydim), fill(T(0.2), 10, 15))
             ryx = YAXArray((xdim, ydim), fill(T(0.1), 10, 15))
-            bandsnames = Dim{:Variables}(["N", "R"])
-            params = concatenatecubes([nyx, ryx], bandsnames)
+            slayx = YAXArray((xdim, ydim), fill(T(0.3), 10, 15))
+            slbyx = YAXArray((xdim, ydim), fill(T(0.4), 10, 15))
+            bandsnames = Dim{:Variables}(["sla", "N", "R", "slb"])
+            params = concatenatecubes([slayx, nyx, ryx, slbyx], bandsnames)
         else
             bands_dim = Dim{:Variables}(idx.bands)
             data = cat([fill(rand(T), 10, 15, 1) for _ in idx.bands]...; dims=3)
@@ -40,11 +42,13 @@ ydim = Dim{:x}(range(1, 10; length=15))
     end
 
     @testset "as Kwargs" begin
-        if idx_name == "AVI" || idx_name == "TVI"
+        if idx_name == "AVI" || idx_name == "TVI" || idx_name == "TSAVI"
             nyx = YAXArray((xdim, ydim), fill(T(0.2), 10, 15))
             ryx = YAXArray((xdim, ydim), fill(T(0.1), 10, 15))
-            bandsnames = Dim{:Variables}(["N", "R"])
-            params = concatenatecubes([nyx, ryx], bandsnames)
+            slayx = YAXArray((xdim, ydim), fill(T(0.3), 10, 15))
+            slbyx = YAXArray((xdim, ydim), fill(T(0.4), 10, 15))
+            bandsnames = Dim{:Variables}(["sla", "N", "R", "slb"])
+            params = concatenatecubes([slayx, nyx, ryx, slbyx], bandsnames)
         else
             bands_dim = Dim{:Variables}(idx.bands)
             data = cat([fill(rand(T), 10, 15, 1) for _ in idx.bands]...; dims=3)
@@ -63,9 +67,9 @@ msi = custom_key_combinations(indices, 2, 200)
 @testset "YAXArrays compute_index $T multiple indices tests: $idxs" for idxs in msi,
     T in floats
 
-    if idxs[1] in ["AVI", "TVI"] && length(idxs) > 1
+    if idxs[1] in ["AVI", "TVI", "TSAVI"] && length(idxs) > 1
         for i in 2:length(idxs)
-            if !(idxs[i] in ["AVI", "TVI"])
+            if !(idxs[i] in ["AVI", "TVI", "TSAVI"])
                 idxs[1], idxs[i] = idxs[i], idxs[1]
                 break
             end
@@ -78,8 +82,8 @@ msi = custom_key_combinations(indices, 2, 200)
 
         for idx_name in idxs
             idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                for band in ["N", "R"]
+            if idx_name == "AVI" || idx_name == "TVI" || idx_name == "TSAVI"
+                for band in ["sla", "N", "R", "slb"]
                     value = band == "N" ? T(0.2) : T(0.1)
                     push!(yaxa_names, string(band))
                     data = fill(value, 10, 15)
@@ -108,8 +112,8 @@ msi = custom_key_combinations(indices, 2, 200)
 
         for idx_name in idxs
             idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                for band in ["N", "R"]
+            if idx_name == "AVI" || idx_name == "TVI" || idx_name == "TSAVI"
+                for band in ["sla", "N", "R", "slb"]
                     value = band == "N" ? T(0.2) : T(0.1)
                     push!(yaxa_names, string(band))
                     data = fill(value, 10, 15)

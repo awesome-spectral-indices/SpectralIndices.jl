@@ -1,6 +1,8 @@
 using SpectralIndices
-using JuliaFormatter: JuliaFormatter
 using Aqua: Aqua
+using Documenter: Documenter
+#using JET: JET
 
 Aqua.test_all(SpectralIndices; ambiguities=false, deps_compat=(check_extras = false))
-#@test JuliaFormatter.format(SpectralIndices; verbose=false, overwrite=false)
+#JET.test_package(SpectralIndices)
+Documenter.doctest(SpectralIndices)
