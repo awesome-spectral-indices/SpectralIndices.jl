@@ -33,6 +33,9 @@ Retrieve the JSON data of spectral indices.
 """
 function get_indices(online::Bool=false; filename::String="spectral-indices-dict.json",
         fileloc::String=joinpath(dirname(@__FILE__), "..", "data"))
+    @assert isdir(fileloc) """
+        Output directory does not exist: $fileloc
+    """
     final_file = joinpath(fileloc, filename)
     if online
         println("Starting download to: ", final_file)
