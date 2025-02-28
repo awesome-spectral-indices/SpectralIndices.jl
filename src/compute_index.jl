@@ -66,7 +66,7 @@ function compute_index(index::String, params=nothing, online::Bool=false;
 end
 
 function compute_index(index::Vector{<:AbstractSpectralIndex}, params=nothing,
-        online::Bool=false; indices=_create_indices(online), kwargs...)
+        online::Bool=false; indices=create_indices(online), kwargs...)
     if isnothing(params)
         params = create_params(kwargs...)
     end
