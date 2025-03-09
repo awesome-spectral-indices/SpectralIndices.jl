@@ -6,7 +6,7 @@
 
 | **Documentation** | **Build Status** | **Julia** | **Testing** |
 |:-----------------:|:----------------:|:---------:|:-----------:|
-| [![docs][docs-img]][docs-url] | [![CI][ci-img]][ci-url] [![codecov][cc-img]][cc-url] | [![Julia][julia-img]][julia-url] [![Code Style: Blue][style-img]][style-url] | [![Aqua QA][aqua-img]][aqua-url] [![JET][jet-img]][jet-url] |
+| [![docs][docs-img]][docs-url] | [![CI][ci-img]][ci-url] | [![Julia][julia-img]][julia-url] [![Code Style: Blue][style-img]][style-url] | [![Aqua QA][aqua-img]][aqua-url] [![JET][jet-img]][jet-url] [![codecov][cc-img]][cc-url] |
 
 [docs-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-url]: https://awesome-spectral-indices.github.io/SpectralIndices.jl/dev/
@@ -58,9 +58,6 @@ Pkg.add("SpectralIndices")
 
 ## Usage 🛠️
 
-You can compute spectral indices either by specifying the index and its parameters or using predefined SpectralIndex instances.
-
-### Using `compute_index`
 ```julia
 using SpectralIndices
 using DataFrames
