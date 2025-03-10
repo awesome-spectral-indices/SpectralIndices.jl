@@ -12,10 +12,11 @@ JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 [weakdeps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
+GeoDataFrames = "62cb38b5-d8d2-4862-a48e-6a340996859f"
 YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 
 [extensions]
-SpectralIndicesDataFramesExt = "DataFrames"
+SpectralIndicesDataFramesExt = ["DataFrames", "GeoDataFrames"]
 SpectralIndicesYAXArraysExt = ["YAXArrays", "DimensionalData"]
 
 [compat]
