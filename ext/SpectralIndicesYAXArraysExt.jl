@@ -31,7 +31,7 @@ end
 function order_params(index::AbstractSpectralIndex, params::YAXArray)
     new_params = []
     for (bidx, band) in enumerate(index.bands)
-        push!(new_params, params[Variable=At(band)])
+        push!(new_params, params[Variable = At(band)])
     end
 
     return new_params
@@ -81,21 +81,21 @@ function _compute_index(
 end
 
 function linear(params::YAXArray)
-    return linear(params[Variable=At("a")], params[Variable=At("b")])
+    return linear(params[Variable = At("a")], params[Variable = At("b")])
 end
 
 function poly(params::YAXArray)
     return poly(
-        params[Variable=At("a")],
-        params[Variable=At("b")],
-        params[Variable=At("c")],
-        params[Variable=At("p")]
+        params[Variable = At("a")],
+        params[Variable = At("b")],
+        params[Variable = At("c")],
+        params[Variable = At("p")]
     )
 end
 
 function RBF(params::YAXArray)
     return RBF(
-        params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
+        params[Variable = At("a")], params[Variable = At("b")], params[Variable = At("sigma")]
     )
 end
 
