@@ -77,7 +77,8 @@ end
 function _compute_index(
         ::Type{T}, idx::AbstractSpectralIndex, prms::YAXArray...
 ) where {T <: Number}
-    return idx.(T, prms...)
+    f = (args...) -> idx(T, args...)
+    return f.(prms...)
 end
 
 function linear(params::YAXArray)

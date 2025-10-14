@@ -22,12 +22,12 @@ SpectralIndicesYAXArraysExt = ["YAXArrays", "DimensionalData"]
 Compat = "4.16.0"
 DataFrames = "1"
 Dates = "1"
-DimensionalData = "0.26, 0.27, 0.28"
+DimensionalData = "0.29"
 Documenter = "1.8.0"
 Downloads = "1.6.0"
 JET = "0.9.12"
 JSON = "0.21"
-YAXArrays = "0.6"
+YAXArrays = "0.7"
 julia = "1.10"
 
 [extras]

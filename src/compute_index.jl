@@ -49,7 +49,7 @@ julia> compute_index(["NDVI", "SAVI"]; N=fill(0.643, (2, 2)), R=fill(0.175, (2, 
 ```
 """
 function compute_index(index::AbstractSpectralIndex, params=nothing, online::Bool=false;
-        indices=indices, kwargs...)
+        indices=create_indices(online), kwargs...)
     if isnothing(params)
         params = create_params(kwargs...)
     end
@@ -57,13 +57,24 @@ function compute_index(index::AbstractSpectralIndex, params=nothing, online::Boo
     return compute_index(index, params; indices=indices)
 end
 
-function compute_index(index::String, params=nothing, online::Bool=false;
-        indices=indices, kwargs...)
-    names = keys(indices)
-    @assert index in names "$index is not a valid Spectral Index!"
-    results = compute_index(indices[index], params; indices=indices, kwargs...)
-    return results
+function compute_index(index::AbstractSpectralIndex, params::NamedTuple, online::Bool=false; indices=create_indices(online))
+    check_params(index, params)
+    params = order_params(index, params)
+    T = _infer_type(params)
+    result = _compute_index(T, index, params...)
+
+    return (; Dict(Symbol(index.short_name) => result)...)
 end
+
+function compute_index(index::AbstractSpectralIndex, params::Dict, online::Bool=false; indices=create_indices(online))
+    check_params(index, params)
+    params = order_params(index, params)
+    T = _infer_type(params)
+
+    return _compute_index(T, index, params...)
+end
+
+### mutliple indices
 
 function compute_index(index::Vector{<:AbstractSpectralIndex}, params=nothing,
         online::Bool=false; indices=create_indices(online), kwargs...)
@@ -72,6 +83,41 @@ function compute_index(index::Vector{<:AbstractSpectralIndex}, params=nothing,
     end
 
     return compute_index(index, params; indices=indices)
+end
+
+function compute_index(index::Vector{<:AbstractSpectralIndex}, params::NamedTuple, online::Bool=false;
+        indices=create_indices(online))
+    results_dict = Dict{Symbol, Any}()
+    for idx in index
+        result_nt = compute_index(idx, params; indices=indices)
+        # TODO @MartinuzziFrancesco: there has to be a better way
+        results_dict[fieldnames(typeof(result_nt))[1]] = first(result_nt)
+    end
+
+    # Convert the dictionary to a named tuple
+    return (; results_dict...)
+end
+
+# TODO: return results in a matrix columnswise
+#multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
+function compute_index(index::Vector{<:AbstractSpectralIndex}, params::Dict, online::Bool=false;
+        indices=create_indices(online))
+    results = []
+    for (nidx, idx) in enumerate(index)
+        result = compute_index(idx, params; indices=indices)
+        push!(results, result)
+    end
+
+    return results
+end
+
+### strings
+
+function compute_index(index::String, params=nothing, online::Bool=false;
+        indices=create_indices(online), kwargs...)
+    check_index_name(index, indices)
+
+    return compute_index(indices[index], params; indices=indices, kwargs...)
 end
 
 function compute_index(index::Vector{String}, params=nothing, online::Bool=false;
@@ -85,28 +131,6 @@ function compute_index(index::Vector{String}, params=nothing, online::Bool=false
     return results
 end
 
-function compute_index(index::AbstractSpectralIndex, params::Dict; indices=indices)
-    check_params(index, params)
-    params = order_params(index, params)
-    T = eltype(first(values(params)))
-    result = _compute_index(T, index, params...)
-
-    return result
-end
-
-# TODO: return results in a matrix columnswise
-#multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
-function compute_index(index::Vector{<:AbstractSpectralIndex}, params::Dict;
-        indices=indices)
-    results = []
-    for (nidx, idx) in enumerate(index)
-        result = compute_index(idx, params; indices=indices)
-        push!(results, result)
-    end
-
-    return results
-end
-
 #_compute_index(idx::AbstractSpectralIndex, prms::Number...) = idx(prms...)
 function _compute_index(::Type{T}, idx::AbstractSpectralIndex,
         prms::Number...) where {T <: Number}
@@ -117,28 +141,6 @@ end
 function _compute_index(::Type{T}, idx::AbstractSpectralIndex,
         prms::AbstractArray...) where {T <: Number}
     return idx.(T, prms...)
-end
-
-function compute_index(index::AbstractSpectralIndex, params::NamedTuple; indices=indices)
-    check_params(index, params)
-    params = order_params(index, params)
-    T = eltype(first(values(params)))
-    result = _compute_index(T, index, params...)
-    result_nt = (; Dict(Symbol(index.short_name) => result)...)
-    return result_nt
-end
-
-function compute_index(index::Vector{<:AbstractSpectralIndex}, params::NamedTuple;
-        indices=indices)
-    results_dict = Dict{Symbol, Any}()
-    for idx in index
-        result_nt = compute_index(idx, params; indices=indices)
-        # TODO @MartinuzziFrancesco: there has to be a better way
-        results_dict[fieldnames(typeof(result_nt))[1]] = first(result_nt)
-    end
-
-    # Convert the dictionary to a named tuple
-    return (; results_dict...)
 end
 
 """
@@ -167,31 +169,6 @@ function check_params(index::AbstractSpectralIndex, params::Dict)
     end
 end
 
-function order_params(index::AbstractSpectralIndex, params)
-    T = eltype(params)
-    new_params = T[]
-    for (bidx, band) in enumerate(index.bands)
-        push!(new_params, params[band])
-    end
-
-    return new_params
-end
-
-function order_params(index::AbstractSpectralIndex, params::Dict)
-    T = eltype(values(params))
-    new_params = T[]
-    for (bidx, band) in enumerate(index.bands)
-        push!(new_params, params[band])
-    end
-
-    return new_params
-end
-
-function create_params(kw_args...)
-    params = Dict(String(k) => v for (k, v) in kw_args)
-    return params
-end
-
 function check_params(index::AbstractSpectralIndex, params::NamedTuple)
     for band in index.bands
         if !(Symbol(band) in keys(params))
@@ -204,13 +181,39 @@ function check_params(index::AbstractSpectralIndex, params::NamedTuple)
     end
 end
 
-function order_params(index::AbstractSpectralIndex, params::NamedTuple)
-    T = eltype(values(params))
-    new_params = T[]
-    for (bidx, band) in enumerate(index.bands)
-        band_symbol = Symbol(band)
-        push!(new_params, params[band_symbol])
-    end
+function check_params(::AbstractSpectralIndex, params)
+    return
+end
 
-    return new_params
+function order_params(index::AbstractSpectralIndex, params::Dict)
+
+    return tuple((params[band] for band in index.bands)...)
+end
+
+function order_params(index::AbstractSpectralIndex, params::NamedTuple)
+
+    return tuple((getfield(params, Symbol(band)) for band in index.bands)...)
+end
+
+function create_params(kw_args...)
+
+    return Dict(String(k) => v for (k, v) in kw_args)
+end
+
+function _infer_type(prms)
+    ts = _gen_eltype(prms)
+    T  = promote_type(float.(ts)...)
+    if any(t -> !(t <: AbstractFloat), ts)
+        @warn "Non-floating input bands detected ($(ts)). \n
+        Promoting computation to $(T) to avoid integer arithmetic."
+    end
+    return T
+end
+
+_gen_eltype(params) = eltype.(params)
+_gen_eltype(params::Union{NamedTuple, Dict}) = mapreduce(eltype, promote_type, values(params))
+
+function check_index_name(index, indices)
+    names = keys(indices)
+    @assert index in names "$index is not a valid Spectral Index!"
 end

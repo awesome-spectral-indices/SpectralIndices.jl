@@ -36,17 +36,19 @@ This method is direct but not the recommended approach for computing indices. Wh
 NDVI.bands
 ```
 
-### Using the `compute` Function
+### Using `compute_index`
 
 
-A more flexible way to calculate indices is through the `compute` function. This function accepts the `SpectralIndex` struct and parameters as either a dictionary or keyword arguments:
+A more flexible way to calculate indices is through the `compute_index` function.
+This function accepts the `SpectralIndex` struct and parameters as either a
+dictionary or keyword arguments:
 
 ```@example basic
 params = Dict(
     "N" => nir,
     "R" => red
 )
-ndvi = compute(NDVI, params)
+ndvi = compute_index(NDVI, params)
 ```
 
 !!! warning
@@ -55,20 +57,18 @@ ndvi = compute(NDVI, params)
 Additionally you can pass the values as kwargs as follows:
 
 ```@example basic
-ndvi = compute(NDVI; N=nir, R=red)
+ndvi = compute_index(NDVI; N=nir, R=red)
 ```
 
 Order of keyword arguments does not affect the outcome:
 
 ```@example basic
-ndvi1 = compute(NDVI; N=nir, R=red)
-ndvi2 = compute(NDVI; R=red, N=nir)
+ndvi1 = compute_index(NDVI; N=nir, R=red)
+ndvi2 = compute_index(NDVI; R=red, N=nir)
 ndvi1 == ndvi2
 ```
 
-### Using `compute_index`
-
-Lastly, you can use `compute_index` to compute it. The precedure is identical to what has been shown so far for `compute`, but the specification of the index is done by passing its name in a `String`:
+Additionally, you can also pass the indexas a `String`:
 
 ```@example basic
 params = Dict(
