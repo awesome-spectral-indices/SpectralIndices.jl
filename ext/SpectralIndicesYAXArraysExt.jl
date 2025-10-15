@@ -14,7 +14,8 @@ import SpectralIndices:
                         poly,
                         RBF,
                         load_dataset,
-                        load_json
+                        load_json,
+                        _infer_type
 
 function check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in index.bands
@@ -27,6 +28,8 @@ function check_params(index::AbstractSpectralIndex, params::YAXArray)
         end
     end
 end
+
+_gen_eltype(params::YAXArray) = eltype.(first(params))
 
 function order_params(index::AbstractSpectralIndex, params::YAXArray)
     new_params = []
@@ -56,7 +59,7 @@ function compute_index(
 )
     check_params(index, params)
     params = order_params(index, params)
-    T = eltype(first(params))
+    T = _infer_type(params)
     result = _compute_index(T, index, params...)
     return result
 end
@@ -111,7 +114,7 @@ function load_dataset(dataset::String, ::Type{T}) where {T <: YAXArray}
 
     ds = load_json(datasets[dataset])
     matrices = [hcat(ds[i]...) for i in 1:length(ds)]
-    data_3d = cat(matrices...; dims=3)
+    data_3d = Float64.(cat(matrices...; dims=3))
     x_dim = Dim{:x}(1:300)
     y_dim = Dim{:y}(1:300)
     bands = Dim{:bands}(["B02", "B03", "B04", "B08"])
