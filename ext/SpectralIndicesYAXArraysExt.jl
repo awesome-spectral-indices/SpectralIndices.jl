@@ -88,6 +88,9 @@ function linear(params::YAXArray)
     return linear(params[Variable=At("a")], params[Variable=At("b")])
 end
 
+linear(a::YAXArray, b::YAXArray) = a .* b
+
+
 function poly(params::YAXArray)
     return poly(
         params[Variable=At("a")],
@@ -97,10 +100,19 @@ function poly(params::YAXArray)
     )
 end
 
+function poly(a::YAXArray, b::YAXArray, c::YAXArray, p::YAXArray)
+    return @. (a * b + c)^p
+end
+
 function RBF(params::YAXArray)
     return RBF(
         params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
     )
+end
+
+function RBF(a::YAXArray, b::YAXArray, sigma::YAXArray)
+    T = eltype(a)
+    return exp.((T(-1.0) .* (a .- b) .^ T(2.0)) ./ (T(2.0) .* sigma .^ T(2.0)))
 end
 
 function load_dataset(dataset::String, ::Type{T}) where {T <: YAXArray}
