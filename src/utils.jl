@@ -13,8 +13,8 @@ Load a specified JSON file from the `data` folder.
 function load_json(filename::String="spectral-indices-dict.json")
     fileloc = joinpath(dirname(@__FILE__), "..", "data", filename)
     if isfile(fileloc)
-        return Dict(parsefile(
-            fileloc; null=missing, allownan=true, dicttype=Dict{String, Any}))
+        return parsefile(
+            fileloc; null=missing, allownan=true, dicttype=Dict{String, Any})
     else
         error("The JSON file is not in the SpectralIndices/data folder")
     end
