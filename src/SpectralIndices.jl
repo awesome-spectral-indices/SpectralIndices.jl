@@ -23,12 +23,12 @@ constants = create_constants()
 
 @compat(public,
     (create_indices,
-    create_bands,
-    create_constants,
-    load_json,
-    check_params,
-    create_params,
-    order_params))
+        create_bands,
+        create_constants,
+        load_json,
+        check_params,
+        create_params,
+        order_params))
 
 export get_indices, create_indexfun
 export get_datasets, load_dataset

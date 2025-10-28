@@ -14,8 +14,7 @@ function convert_to_kwargs(df::DataFrame)
     return kwargs
 end
 
-@testset "DataFrames compute_index $T single index tests: $idx_name" for (idx_name, idx) in
-                                                                         indices,
+@testset "DataFrames compute_index $T single index tests: $idx_name" for (idx_name, idx) in indices,
     T in floats
 
     @testset "as Params" begin

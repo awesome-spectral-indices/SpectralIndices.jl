@@ -219,7 +219,7 @@ end
 
 function RBF(a::V, b::V, sigma::V) where {V <: AbstractArray}
     T = eltype(a)
-    return @. exp((T(-1.0) * (a - b)^T(2.0)) / (T(2.0) * sigma^T(2.0)))
+    return exp.((T(-1.0) .* (a .- b) .^ T(2.0)) ./ (T(2.0) .* sigma .^ T(2.0)))
 end
 
 function RBF(params::Dict{String, V}) where {V <: Union{<:Number, <:AbstractArray}}
