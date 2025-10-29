@@ -172,15 +172,3 @@ We can finally compute the kNDVI:
 ```@example yaxarrays
 kndvi = compute_index("kNDVI"; kNN = knn, kNR=knr)
 ```
-
-Let's plot it!
-
-```@example yaxarrays
-using CairoMakie
-fig, ax, plt = heatmap(kndvi; colormap=:haline,
-    axis = (; aspect=DataAspect()),
-    figure = (; size=(600, 400)))
-Colorbar(fig[1,2], plt)
-colsize!(fig.layout, 1, Aspect(1, 1.0))
-fig
-```
