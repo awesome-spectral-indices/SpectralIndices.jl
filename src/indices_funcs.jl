@@ -46,6 +46,13 @@ end
 
 indices_funcs["SR"] = SR_func
 
+function FWEI_func(::Type{TFL}, B, G, R, N; const1::Number=TFL(3.0),
+        const2::Number=TFL(3.0)) where {TFL <: Number}
+    return (((B + G + R) / const1) - N) / (((B + G + R) / const2) + N)
+end
+
+indices_funcs["FWEI"] = FWEI_func
+
 function MBI_func(::Type{TFL}, S1, S2, N; const1::Number=TFL(0.5)) where {TFL <: Number}
     return ((S1 - S2 - N) / (S1 + S2 + N)) + const1
 end
@@ -64,6 +71,13 @@ function WRI_func(::Type{TFL}, G, R, N, S1) where {TFL <: Number}
 end
 
 indices_funcs["WRI"] = WRI_func
+
+function STI4RE_func(
+        ::Type{TFL}, gamma, S1, S2, N, RE3; const1::Number=TFL(1)) where {TFL <: Number}
+    return gamma * S1 / S2 + (const1 - gamma) * N / RE3
+end
+
+indices_funcs["STI4RE"] = STI4RE_func
 
 function NDISIg_func(::Type{TFL}, T, G, N, S1; const1::Number=TFL(3.0),
         const2::Number=TFL(3.0)) where {TFL <: Number}
@@ -147,6 +161,13 @@ end
 
 indices_funcs["NDSInw"] = NDSInw_func
 
+function NDTI4RE_func(
+        ::Type{TFL}, gamma, S1, S2, N, RE3; const1::Number=TFL(1)) where {TFL <: Number}
+    return gamma * (S1 - S2) / (S1 + S2) + (const1 - gamma) * (N - RE3) / (N + RE3)
+end
+
+indices_funcs["NDTI4RE"] = NDTI4RE_func
+
 function DSWI3_func(::Type{TFL}, S1, R) where {TFL <: Number}
     return S1 / R
 end
@@ -165,11 +186,15 @@ function GEMI_func(::Type{TFL}, N, R; const1::Number=TFL(2.0), const2::Number=TF
         const9::Number=TFL(2.0), const10::Number=TFL(2.0), const11::Number=TFL(2),
         const12::Number=TFL(1.5), const13::Number=TFL(0.5), const14::Number=TFL(0.5),
         const15::Number=TFL(0.125), const16::Number=TFL(1)) where {TFL <: Number}
-    return ((const1 * ((N^const2) - (R^const3)) + const4 * N + const5 * R) /
-            (N + R + const6)) * (const7 -
-            const8 *
-            ((const9 * ((N^const10) - (R^const11)) + const12 * N + const13 * R) /
-             (N + R + const14))) - ((R - const15) / (const16 - R))
+    return ((const1 * ((N^const2) - (R^const3)) + const4 * N +
+             const5 * R) / (N + R +
+             const6)) * (const7 -
+            const8 * ((const9 * ((N^const10) - (R^const11)) +
+              const12 * N +
+              const13 * R) / (N + R +
+              const14))) - ((R -
+             const15) / (const16 -
+                         R))
 end
 
 indices_funcs["GEMI"] = GEMI_func
@@ -246,8 +271,8 @@ indices_funcs["SeLI"] = SeLI_func
 
 function NDPI_func(::Type{TFL}, N, alpha, R, S1; const1::Number=TFL(1.0),
         const2::Number=TFL(1.0)) where {TFL <: Number}
-    return (N - (alpha * R + (const1 - alpha) * S1)) /
-           (N + (alpha * R + (const2 - alpha) * S1))
+    return (N -
+            (alpha * R + (const1 - alpha) * S1)) / (N + (alpha * R + (const2 - alpha) * S1))
 end
 
 indices_funcs["NDPI"] = NDPI_func
@@ -255,8 +280,8 @@ indices_funcs["NDPI"] = NDPI_func
 function NDGI_func(::Type{TFL}, lambdaN, lambdaR, lambdaG, G, N, R;
         const1::Number=TFL(1.0), const2::Number=TFL(1.0)) where {TFL <: Number}
     return (((lambdaN - lambdaR) / (lambdaN - lambdaG)) * G +
-            (const1 - ((lambdaN - lambdaR) / (lambdaN - lambdaG))) * N - R) /
-           (((lambdaN - lambdaR) / (lambdaN - lambdaG)) * G +
+            (const1 - ((lambdaN - lambdaR) / (lambdaN - lambdaG))) * N -
+            R) / (((lambdaN - lambdaR) / (lambdaN - lambdaG)) * G +
             (const2 - ((lambdaN - lambdaR) / (lambdaN - lambdaG))) * N + R)
 end
 
@@ -292,6 +317,12 @@ function TVI_func(::Type{TFL}, N, R; const1::Number=TFL(0.5),
 end
 
 indices_funcs["TVI"] = TVI_func
+
+function SNDTI_func(::Type{TFL}, L, S1, S2; const1::Number=TFL(1.0)) where {TFL <: Number}
+    return (const1 + L) * (S1 - S2) / (S1 + S2 + L)
+end
+
+indices_funcs["SNDTI"] = SNDTI_func
 
 function RNDVI_func(::Type{TFL}, R, N) where {TFL <: Number}
     return (R - N) / (R + N)
@@ -397,6 +428,13 @@ end
 
 indices_funcs["OCVI"] = OCVI_func
 
+function RVI4RE_func(::Type{TFL}, alpha, RE3, RE2, beta, R, RE1; const1::Number=TFL(1),
+        const2::Number=TFL(1)) where {TFL <: Number}
+    return (alpha * RE3 + (const1 - alpha) * RE2) / (beta * R + (const2 - beta) * RE1)
+end
+
+indices_funcs["RVI4RE"] = RVI4RE_func
+
 function NormG_func(::Type{TFL}, G, N, R) where {TFL <: Number}
     return G / (N + G + R)
 end
@@ -409,6 +447,12 @@ function BLFEI_func(::Type{TFL}, G, R, S2, S1; const1::Number=TFL(3.0),
 end
 
 indices_funcs["BLFEI"] = BLFEI_func
+
+function MVI_func(::Type{TFL}, N, G, S1) where {TFL <: Number}
+    return (N - G) / (S1 - G)
+end
+
+indices_funcs["MVI"] = MVI_func
 
 function DVI_func(::Type{TFL}, N, R) where {TFL <: Number}
     return N - R
@@ -531,6 +575,12 @@ end
 
 indices_funcs["ExR"] = ExR_func
 
+function NDTillI_func(::Type{TFL}, S1, S2) where {TFL <: Number}
+    return (S1 - S2) / (S1 + S2)
+end
+
+indices_funcs["NDTillI"] = NDTillI_func
+
 function CIG_func(::Type{TFL}, N, G; const1::Number=TFL(1.0)) where {TFL <: Number}
     return (N / G) - const1
 end
@@ -556,6 +606,13 @@ function SI_func(::Type{TFL}, B, G, R; const1::Number=TFL(1.0),
 end
 
 indices_funcs["SI"] = SI_func
+
+function CRSWIR_func(
+        ::Type{TFL}, S1, N2, S2, lambdaS2, lambdaN2, lambdaS1) where {TFL <: Number}
+    return S1 / (N2 + ((S2 - N2) / (lambdaS2 - lambdaN2)) * (lambdaS1 - lambdaN2))
+end
+
+indices_funcs["CRSWIR"] = CRSWIR_func
 
 function mSR705_func(::Type{TFL}, RE2, A) where {TFL <: Number}
     return (RE2 - A) / (RE2 + A)
@@ -685,8 +742,9 @@ indices_funcs["NBR"] = NBR_func
 function EMBI_func(
         ::Type{TFL}, S1, S2, N, G; const1::Number=TFL(0.5), const2::Number=TFL(0.5),
         const3::Number=TFL(0.5), const4::Number=TFL(1.5)) where {TFL <: Number}
-    return ((((S1 - S2 - N) / (S1 + S2 + N)) + const1) - ((G - S1) / (G + S1)) - const2) /
-           ((((S1 - S2 - N) / (S1 + S2 + N)) + const3) + ((G - S1) / (G + S1)) + const4)
+    return ((((S1 - S2 - N) / (S1 + S2 + N)) + const1) - ((G - S1) / (G + S1)) -
+            const2) / ((((S1 - S2 - N) / (S1 + S2 + N)) + const3) + ((G - S1) / (G + S1)) +
+            const4)
 end
 
 indices_funcs["EMBI"] = EMBI_func
@@ -753,6 +811,18 @@ function DSWI4_func(::Type{TFL}, G, R) where {TFL <: Number}
 end
 
 indices_funcs["DSWI4"] = DSWI4_func
+
+function IRGBVI_func(
+        ::Type{TFL}, G, R, B; const1::Number=TFL(5.0), const2::Number=TFL(2.0),
+        const3::Number=TFL(2.0), const4::Number=TFL(2.0), const5::Number=TFL(5.0),
+        const6::Number=TFL(2.0), const7::Number=TFL(5.0), const8::Number=TFL(2.0),
+        const9::Number=TFL(2.0), const10::Number=TFL(2.0),
+        const11::Number=TFL(5.0), const12::Number=TFL(2.0)) where {TFL <: Number}
+    return (const1 * (G^const2) - const3 * (R^const4) - const5 * (B^const6)) /
+           (const7 * (G^const8) + const9 * (R^const10) + const11 * (B^const12))
+end
+
+indices_funcs["IRGBVI"] = IRGBVI_func
 
 function VVVHR_func(::Type{TFL}, VV, VH) where {TFL <: Number}
     return VV / VH
@@ -846,6 +916,22 @@ end
 
 indices_funcs["kVARI"] = kVARI_func
 
+function FDI_func(::Type{TFL}, N, RE2, S1, lambdaN, lambdaR, lambdaS1;
+        const1::Number=TFL(10)) where {TFL <: Number}
+    return N - (RE2 + const1 * (S1 - RE2) * (lambdaN - lambdaR) / (lambdaS1 - lambdaR))
+end
+
+indices_funcs["FDI"] = FDI_func
+
+function SNDTI4RE_func(::Type{TFL}, gamma, S1, S2, N, RE3; const1::Number=TFL(2.0),
+        const2::Number=TFL(1.0), const3::Number=TFL(1),
+        const4::Number=TFL(2.0), const5::Number=TFL(1.0)) where {TFL <: Number}
+    return gamma * ((S1 - S2) * const1) / (S1 + S2 + const2) +
+           (const3 - gamma) * ((N - RE3) * const4) / (N + RE3 + const5)
+end
+
+indices_funcs["SNDTI4RE"] = SNDTI4RE_func
+
 function BWDRVI_func(::Type{TFL}, alpha, N, B) where {TFL <: Number}
     return (alpha * N - B) / (alpha * N + B)
 end
@@ -898,6 +984,12 @@ function MCARI_func(::Type{TFL}, RE1, R, G; const1::Number=TFL(0.2)) where {TFL 
 end
 
 indices_funcs["MCARI"] = MCARI_func
+
+function NPCI_func(::Type{TFL}, R, A) where {TFL <: Number}
+    return (R - A) / (R + A)
+end
+
+indices_funcs["NPCI"] = NPCI_func
 
 function MLSWI26_func(::Type{TFL}, N, S1; const1::Number=TFL(1.0),
         const2::Number=TFL(1.0)) where {TFL <: Number}
@@ -1027,6 +1119,12 @@ end
 
 indices_funcs["RENDVI"] = RENDVI_func
 
+function STI_func(::Type{TFL}, S1, S2) where {TFL <: Number}
+    return S1 / S2
+end
+
+indices_funcs["STI"] = STI_func
+
 function NSDSI2_func(::Type{TFL}, S1, S2) where {TFL <: Number}
     return (S1 - S2) / S2
 end
@@ -1118,8 +1216,9 @@ indices_funcs["DpRVIHH"] = DpRVIHH_func
 
 function NDISImndwi_func(::Type{TFL}, T, G, S1, N; const1::Number=TFL(3.0),
         const2::Number=TFL(3.0)) where {TFL <: Number}
-    return (T - (((G - S1) / (G + S1)) + N + S1) / const1) /
-           (T + (((G - S1) / (G + S1)) + N + S1) / const2)
+    return (T -
+            (((G - S1) / (G + S1)) + N + S1) /
+            const1) / (T + (((G - S1) / (G + S1)) + N + S1) / const2)
 end
 
 indices_funcs["NDISImndwi"] = NDISImndwi_func
@@ -1162,8 +1261,9 @@ indices_funcs["NSTv1"] = NSTv1_func
 
 function NDISIndwi_func(::Type{TFL}, T, G, N, S1; const1::Number=TFL(3.0),
         const2::Number=TFL(3.0)) where {TFL <: Number}
-    return (T - (((G - N) / (G + N)) + N + S1) / const1) /
-           (T + (((G - N) / (G + N)) + N + S1) / const2)
+    return (T -
+            (((G - N) / (G + N)) + N + S1) /
+            const1) / (T + (((G - N) / (G + N)) + N + S1) / const2)
 end
 
 indices_funcs["NDISIndwi"] = NDISIndwi_func
@@ -1207,8 +1307,10 @@ indices_funcs["MNDVI"] = MNDVI_func
 
 function sNIRvNDPI_func(::Type{TFL}, N, alpha, R, S2; const1::Number=TFL(1.0),
         const2::Number=TFL(1.0)) where {TFL <: Number}
-    return (N - (alpha * R + (const1 - alpha) * S2)) /
-           (N + (alpha * R + (const2 - alpha) * S2)) * N
+    return (N -
+            (alpha * R + (const1 - alpha) * S2)) /
+           (N + (alpha * R + (const2 - alpha) * S2)) *
+           N
 end
 
 indices_funcs["sNIRvNDPI"] = sNIRvNDPI_func
@@ -1429,6 +1531,18 @@ end
 
 indices_funcs["AFRI1600"] = AFRI1600_func
 
+function NDVI4RE_func(::Type{TFL}, alpha, RE3, RE2, beta, R, RE1; const1::Number=TFL(1),
+        const2::Number=TFL(1), const3::Number=TFL(1),
+        const4::Number=TFL(1)) where {TFL <: Number}
+    return ((alpha * RE3 + (const1 - alpha) * RE2) -
+            (beta * R +
+             (const2 - beta) *
+             RE1)) / ((alpha * RE3 + (const3 - alpha) * RE2) +
+            (beta * R + (const4 - beta) * RE1))
+end
+
+indices_funcs["NDVI4RE"] = NDVI4RE_func
+
 function SR705_func(::Type{TFL}, RE2, RE1) where {TFL <: Number}
     return RE2 / RE1
 end
@@ -1445,6 +1559,12 @@ function IBI_func(
 end
 
 indices_funcs["IBI"] = IBI_func
+
+function MI_func(::Type{TFL}, N, S1) where {TFL <: Number}
+    return (N - S1) / (N * S1)
+end
+
+indices_funcs["MI"] = MI_func
 
 function VARI700_func(
         ::Type{TFL}, RE1, R, B; const1::Number=TFL(1.7), const2::Number=TFL(0.7),
@@ -1551,6 +1671,19 @@ function GLI_func(::Type{TFL}, G, R, B; const1::Number=TFL(2.0),
 end
 
 indices_funcs["GLI"] = GLI_func
+
+function SAVI4RE_func(::Type{TFL}, alpha, RE3, RE2, beta, R, RE1; const1::Number=TFL(2.0),
+        const2::Number=TFL(1), const3::Number=TFL(1), const4::Number=TFL(1),
+        const5::Number=TFL(1), const6::Number=TFL(1)) where {TFL <: Number}
+    return const1 *
+           ((alpha * RE3 + (const2 - alpha) * RE2) -
+            (beta * R +
+             (const3 - beta) *
+             RE1)) / ((alpha * RE3 + (const4 - alpha) * RE2) +
+            (beta * R + (const5 - beta) * RE1 + const6))
+end
+
+indices_funcs["SAVI4RE"] = SAVI4RE_func
 
 function VI700_func(::Type{TFL}, RE1, R) where {TFL <: Number}
     return (RE1 - R) / (RE1 + R)

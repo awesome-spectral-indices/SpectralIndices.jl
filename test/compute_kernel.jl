@@ -5,7 +5,9 @@ floats = [Float64, Float32, Float16]
 
 @testset "Tests for linear, poly, and RBF functions for $T" for T in floats
     a, b, c, p, sigma = T(2), T(3), T(1), T(2), T(5)
-    a_v, b_v, c_v, p_v, sigma_v = T.([1, 2, 3]),
+    a_v, b_v,
+    c_v,
+    p_v, sigma_v = T.([1, 2, 3]),
     T.([4, 5, 6]), T.([1, 1, 1]), T.([2, 2, 2]),
     T.([5, 5, 5])
 

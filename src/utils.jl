@@ -13,7 +13,8 @@ Load a specified JSON file from the `data` folder.
 function load_json(filename::String="spectral-indices-dict.json")
     fileloc = joinpath(dirname(@__FILE__), "..", "data", filename)
     if isfile(fileloc)
-        return parsefile(fileloc; null=missing, allownan=true)
+        return parsefile(
+            fileloc; null=missing, allownan=true, dicttype=Dict{String, Any})
     else
         error("The JSON file is not in the SpectralIndices/data folder")
     end
@@ -92,7 +93,7 @@ function create_indexfun(index_dict::Dict{String, Any}=get_indices();
                 "function $(short_name)_func(::Type{TFL}, $bands_args; $kwargs) where {TFL <: Number}"
             end
 
-            #untyped_func_signature = isempty(const_defs) ? 
+            #untyped_func_signature = isempty(const_defs) ?
             #    "function $(short_name)_func($bands_args)" :
             #    "function $(short_name)_func($bands_args; $kwargs)"
 

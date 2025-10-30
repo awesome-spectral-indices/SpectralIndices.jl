@@ -14,7 +14,8 @@ import SpectralIndices:
                         poly,
                         RBF,
                         load_dataset,
-                        load_json
+                        load_json,
+                        _infer_type
 
 function check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in index.bands
@@ -27,6 +28,8 @@ function check_params(index::AbstractSpectralIndex, params::YAXArray)
         end
     end
 end
+
+_gen_eltype(params::YAXArray) = eltype.(first(params))
 
 function order_params(index::AbstractSpectralIndex, params::YAXArray)
     new_params = []
@@ -56,7 +59,7 @@ function compute_index(
 )
     check_params(index, params)
     params = order_params(index, params)
-    T = eltype(first(params))
+    T = _infer_type(params)
     result = _compute_index(T, index, params...)
     return result
 end
@@ -77,12 +80,16 @@ end
 function _compute_index(
         ::Type{T}, idx::AbstractSpectralIndex, prms::YAXArray...
 ) where {T <: Number}
-    return idx.(T, prms...)
+    f = (args...) -> idx(T, args...)
+    return f.(prms...)
 end
 
 function linear(params::YAXArray)
     return linear(params[Variable=At("a")], params[Variable=At("b")])
 end
+
+linear(a::YAXArray, b::YAXArray) = a .* b
+
 
 function poly(params::YAXArray)
     return poly(
@@ -93,10 +100,19 @@ function poly(params::YAXArray)
     )
 end
 
+function poly(a::YAXArray, b::YAXArray, c::YAXArray, p::YAXArray)
+    return @. (a * b + c)^p
+end
+
 function RBF(params::YAXArray)
     return RBF(
         params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
     )
+end
+
+function RBF(a::YAXArray, b::YAXArray, sigma::YAXArray)
+    T = eltype(a)
+    return exp.((T(-1.0) .* (a .- b) .^ T(2.0)) ./ (T(2.0) .* sigma .^ T(2.0)))
 end
 
 function load_dataset(dataset::String, ::Type{T}) where {T <: YAXArray}
@@ -110,7 +126,7 @@ function load_dataset(dataset::String, ::Type{T}) where {T <: YAXArray}
 
     ds = load_json(datasets[dataset])
     matrices = [hcat(ds[i]...) for i in 1:length(ds)]
-    data_3d = cat(matrices...; dims=3)
+    data_3d = Float64.(cat(matrices...; dims=3))
     x_dim = Dim{:x}(1:300)
     y_dim = Dim{:y}(1:300)
     bands = Dim{:bands}(["B02", "B03", "B04", "B08"])
