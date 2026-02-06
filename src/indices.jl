@@ -9,7 +9,7 @@ abstract type AbstractSpectralIndex end
 struct SpectralIndex{S <: String, B, D <: Date, P, F} <: AbstractSpectralIndex
     short_name::S
     long_name::S
-    bands::B
+    bands::Val{B}
     application_domain::S
     reference::S
     formula::S
@@ -74,10 +74,10 @@ NDVI: Normalized Difference Vegetation Index
 
 ```
 """
-function SpectralIndex(index::Dict, func::Function)
+function SpectralIndex(index::AbstractDict, func::Function)
     short_name = index["short_name"]
     long_name = index["long_name"]
-    bands = index["bands"]
+    bands = (Symbol.(index["bands"])...,)
     application_domain = index["application_domain"]
     reference = index["reference"]
 
@@ -90,7 +90,7 @@ function SpectralIndex(index::Dict, func::Function)
     return SpectralIndex(
         short_name,
         long_name,
-        bands,
+        Val(bands),
         application_domain,
         reference,
         formula,
@@ -166,11 +166,14 @@ function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
     end
 end
 
-function _spectral_indices(indices_dict::Dict{String, Any}, indices_funcs=indices_funcs;
+function _spectral_indices(
+        indices_dict::AbstractDict{String, Any}, indices_funcs=indices_funcs;
         origin="SpectralIndices")
     indices = Dict{String, AbstractSpectralIndex}()
     for (key, value) in indices_dict
-        indices[key] = SpectralIndex(value, indices_funcs[key])
+        if haskey(indices_funcs, key)
+            indices[key] = SpectralIndex(value, indices_funcs[key])
+        end
     end
     return indices
 end
