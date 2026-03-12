@@ -18,7 +18,7 @@ si = SpectralIndex(custom_index, custom_index_func)
 @testset "SpectralIndex Build Struct Tests" begin
     @test si.short_name == "CI"
     @test si.long_name == "Custom Index"
-    @test si.bands == ["C", "I"]
+    @test si.bands == Val((:C, :I))
     @test si.application_domain == "Vegetation"
     @test si.reference == "Doe et al., 1984"
     @test si.formula == "(C-I)/(C+I)"
@@ -37,26 +37,22 @@ end
 
 @testset "SpectralIndex Show Methods Tests" begin
     # Test Human-readable Output
-    @test begin
-        io_buffer = IOBuffer()
-        show(io_buffer, MIME("text/plain"), si)
-        human_readable_output = String(take!(io_buffer))
-        expected_human_readable_output = """
-        CI: Custom Index
-        * Application Domain: Vegetation
-        * Bands/Parameters: ["C", "I"]
-        * Formula: (C-I)/(C+I)
-        * Reference: Doe et al., 1984
-        """
-        human_readable_output == expected_human_readable_output
-    end
+    io_buffer = IOBuffer()
+    show(io_buffer, MIME("text/plain"), si)
+    human_readable_output = String(take!(io_buffer))
+    expected_human_readable_output = """
+    CI: Custom Index
+    * Application Domain: Vegetation
+    * Bands/Parameters: ("C", "I")
+    * Formula: (C-I)/(C+I)
+    * Reference: Doe et al., 1984
+    """
+    @test human_readable_output == expected_human_readable_output
 
     # Test Machine-readable Output
-    @test begin
-        io_buffer = IOBuffer()
-        show(io_buffer, si)
-        machine_readable_output = String(take!(io_buffer))
-        expected_machine_readable_output = "SpectralIndex(short_name: CI,\nlong_name: Custom Index,\napplication_domain: Vegetation,\nbands: [\"C\", \"I\"],\nformula: (C-I)/(C+I),\nreference: Doe et al., 1984\n)\n"
-        machine_readable_output == expected_machine_readable_output
-    end
+    io_buffer = IOBuffer()
+    show(io_buffer, si)
+    machine_readable_output = String(take!(io_buffer))
+    expected_machine_readable_output = "SpectralIndex(short_name: CI,\nlong_name: Custom Index,\napplication_domain: Vegetation,\nbands: (\"C\", \"I\"),\nformula: (C-I)/(C+I),\nreference: Doe et al., 1984\n)\n"
+    @test machine_readable_output == expected_machine_readable_output
 end

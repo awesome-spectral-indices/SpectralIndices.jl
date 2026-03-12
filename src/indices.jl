@@ -111,7 +111,7 @@ function Base.show(io::IO, si::SpectralIndex)
     println(io, "short_name: $(si.short_name),")
     println(io, "long_name: $(si.long_name),")
     println(io, "application_domain: $(si.application_domain),")
-    println(io, "bands: $(si.bands),")
+    println(io, "bands: $(string.(_band_names(si))),")
     println(io, "formula: $(si.formula),")
     println(io, "reference: $(si.reference)")
     return println(io, ")")
@@ -121,7 +121,7 @@ end
 function Base.show(io::IO, ::MIME"text/plain", si::SpectralIndex)
     println(io, "$(si.short_name): $(si.long_name)")
     println(io, "* Application Domain: $(si.application_domain)")
-    println(io, "* Bands/Parameters: $(si.bands)")
+    println(io, "* Bands/Parameters: $(string.(_band_names(si)))")
     println(io, "* Formula: $(si.formula)")
     return println(io, "* Reference: $(si.reference)")
 end
@@ -165,6 +165,12 @@ function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
         return compute_index(si.short_name, params; kwargs...)
     end
 end
+
+function compute(si::SpectralIndex{<:Any, B}, params::NamedTuple) where {B}
+    si.compute(Float64, params[B])
+end
+
+_band_names(::SpectralIndex{<:Any, B}) where {B} = B
 
 function _spectral_indices(
         indices_dict::AbstractDict{String, Any}, indices_funcs=indices_funcs;

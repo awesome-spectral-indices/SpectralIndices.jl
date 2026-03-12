@@ -18,7 +18,7 @@ import SpectralIndices:
                         _infer_type
 
 function check_params(index::AbstractSpectralIndex, params::YAXArray)
-    for band in index.bands
+    for band in SpectralIndices._band_names(index)
         if !(band in params.Variables)
             throw(
                 ArgumentError(
@@ -33,7 +33,7 @@ _gen_eltype(params::YAXArray) = eltype.(first(params))
 
 function order_params(index::AbstractSpectralIndex, params::YAXArray)
     new_params = []
-    for (bidx, band) in enumerate(index.bands)
+    for (bidx, band) in enumerate(SpectralIndices._band_names(index))
         push!(new_params, params[Variable=At(band)])
     end
 

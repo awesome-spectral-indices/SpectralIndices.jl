@@ -32,8 +32,9 @@ ydim = Dim{:y}(range(1, 10; length=15))
             bandsnames = Dim{:Variables}(["sla", "N", "R", "slb"])
             params = concatenatecubes([slayx, nyx, ryx, slbyx], bandsnames)
         else
-            bands_dim = Dim{:Variables}(idx.bands)
-            data = cat([fill(rand(T), 10, 15, 1) for _ in idx.bands]...; dims=3)
+            bands_dim = Dim{:Variables}(string.(_band_names(idx)))
+            data = cat(
+                [fill(rand(T), 10, 15, 1) for _ in string.(_band_names(idx))]...; dims=3)
             params = YAXArray((xdim, ydim, bands_dim), data)
         end
         result = compute_index(idx_name, params)
@@ -51,8 +52,9 @@ ydim = Dim{:y}(range(1, 10; length=15))
             bandsnames = Dim{:Variables}(["sla", "N", "R", "slb"])
             params = concatenatecubes([slayx, nyx, ryx, slbyx], bandsnames)
         else
-            bands_dim = Dim{:Variables}(idx.bands)
-            data = cat([fill(rand(T), 10, 15, 1) for _ in idx.bands]...; dims=3)
+            bands_dim = Dim{:Variables}(string.(_band_names(idx)))
+            data = cat(
+                [fill(rand(T), 10, 15, 1) for _ in string.(_band_names(idx))]...; dims=3)
             params = YAXArray((xdim, ydim, bands_dim), data)
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
@@ -91,7 +93,7 @@ msi = custom_key_combinations(indices, 2, 200)
                     push!(yaxa_tmp, YAXArray((xdim, ydim), data))
                 end
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     append!(yaxa_names, [string(band)])
                     data = fill(rand(T), 10, 15)
                     push!(yaxa_tmp, YAXArray((xdim, ydim), data))
@@ -121,7 +123,7 @@ msi = custom_key_combinations(indices, 2, 200)
                     push!(yaxa_tmp, YAXArray((xdim, ydim), data))
                 end
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     append!(yaxa_names, [string(band)])
                     data = fill(rand(T), 10, 15)
                     push!(yaxa_tmp, YAXArray((xdim, ydim), data))

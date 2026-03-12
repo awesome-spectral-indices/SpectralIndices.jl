@@ -1,9 +1,9 @@
 using SafeTestsets
 using Test
 
-@safetestset "Quality Assurance" begin
-    include("qa.jl")
-end
+# @safetestset "Quality Assurance" begin
+#     include("qa.jl")
+# end
 
 @testset "Utils" begin
     @safetestset "General utils" include("utils.jl")

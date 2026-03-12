@@ -28,7 +28,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = Dict("N" => T(0.2), "R" => T(0.1))
         else
-            params = Dict(band => rand(T) for band in idx.bands)
+            params = Dict(band => rand(T) for band in _band_names(idx))
         end
         result = compute_index(idx_name, params)
         #result_idx = compute_index(idx, params)
@@ -40,7 +40,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = Dict("N" => T(0.2), "R" => T(0.1))
         else
-            params = Dict(band => rand(T) for band in idx.bands)
+            params = Dict(band => rand(T) for band in _band_names(idx))
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
         #result_idx = compute_index(idx; convert_to_kwargs(params)...)
@@ -53,7 +53,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = Dict("N" => fill(T(0.2), 10), "R" => fill(T(0.1), 10))
         else
-            params = Dict(band => rand(T, 10) for band in idx.bands)
+            params = Dict(band => rand(T, 10) for band in _band_names(idx))
         end
         result = compute_index(idx_name, params)
         @test result isa AbstractArray
@@ -65,7 +65,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = Dict("N" => fill(T(0.2), 10), "R" => fill(T(0.1), 10))
         else
-            params = Dict(band => rand(T, 10) for band in idx.bands)
+            params = Dict(band => rand(T, 10) for band in _band_names(idx))
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
         @test result isa AbstractArray
@@ -77,7 +77,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = Dict("N" => fill(T(0.2), 10, 10), "R" => fill(T(0.1), 10, 10))
         else
-            params = Dict(band => rand(T, 10, 10) for band in idx.bands)
+            params = Dict(band => rand(T, 10, 10) for band in _band_names(idx))
         end
         result = compute_index(idx_name, params)
         @test result isa Matrix
@@ -88,7 +88,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = Dict("N" => fill(T(0.2), 10, 10), "R" => fill(T(0.1), 10, 10))
         else
-            params = Dict(band => rand(T, 10, 10) for band in idx.bands)
+            params = Dict(band => rand(T, 10, 10) for band in _band_names(idx))
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
         @test result isa Matrix
@@ -100,7 +100,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = (N=fill(T(0.2), 10), R=fill(T(0.1), 10))
         else
-            band_tuples = [(Symbol(band) => rand(T, 10)) for band in idx.bands]
+            band_tuples = [(Symbol(band) => rand(T, 10)) for band in _band_names(idx)]
             params = NamedTuple(band_tuples)
         end
         result = compute_index(idx_name, params)
@@ -112,7 +112,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = (N=fill(T(0.2), 10), R=fill(T(0.1), 10))
         else
-            band_tuples = [(Symbol(band) => rand(T, 10)) for band in idx.bands]
+            band_tuples = [(Symbol(band) => rand(T, 10)) for band in _band_names(idx)]
             params = NamedTuple(band_tuples)
         end
         result = compute_index(idx_name; params...)
@@ -146,7 +146,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 params["N"] = T(0.2)
                 params["R"] = T(0.1)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     params[band] = rand(T)
                 end
             end
@@ -164,7 +164,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 params["N"] = T(0.2)
                 params["R"] = T(0.1)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     params[band] = rand(T)
                 end
             end
@@ -182,7 +182,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 params["N"] = fill(T(0.2), 10)
                 params["R"] = fill(T(0.1), 10)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     params[band] = rand(T, 10)
                 end
             end
@@ -202,7 +202,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 params["N"] = fill(T(0.2), 10)
                 params["R"] = fill(T(0.1), 10)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     params[band] = rand(T, 10)
                 end
             end
@@ -222,7 +222,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 params["N"] = fill(T(0.2), 10, 10)
                 params["R"] = fill(T(0.1), 10, 10)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     params[band] = rand(T, 10, 10)
                 end
             end
@@ -242,7 +242,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 params["N"] = fill(T(0.2), 10, 10)
                 params["R"] = fill(T(0.1), 10, 10)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     params[band] = rand(T, 10, 10)
                 end
             end
@@ -262,7 +262,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 dict_params["N"] = fill(T(0.2), 10)
                 dict_params["R"] = fill(T(0.1), 10)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     dict_params[band] = rand(T, 10)
                 end
             end
@@ -283,7 +283,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 dict_params["N"] = fill(T(0.2), 10)
                 dict_params["R"] = fill(T(0.1), 10)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     dict_params[band] = rand(T, 10)
                 end
             end

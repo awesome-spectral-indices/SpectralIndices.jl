@@ -162,8 +162,8 @@ Check if the parameters dictionary contains all required bands for spectral inde
 ```
 """
 function check_params(index::AbstractSpectralIndex, params::Dict)
-    for band in index.bands
-        if !(band in keys(params))
+    for band in _band_names(index)
+        if !(string(band) in keys(params))
             throw(
                 ArgumentError(
                 "'$band' is missing in the parameters for $index computation!"
@@ -174,7 +174,7 @@ function check_params(index::AbstractSpectralIndex, params::Dict)
 end
 
 function check_params(index::AbstractSpectralIndex, params::NamedTuple)
-    for band in index.bands
+    for band in SpectralIndices._band_names(index)
         if !(Symbol(band) in keys(params))
             throw(
                 ArgumentError(
@@ -190,11 +190,11 @@ function check_params(::AbstractSpectralIndex, params)
 end
 
 function order_params(index::AbstractSpectralIndex, params::Dict)
-    return tuple((params[band] for band in index.bands)...)
+    return map(band -> params[band], _band_names(index))
 end
 
 function order_params(index::AbstractSpectralIndex, params::NamedTuple)
-    return tuple((getfield(params, Symbol(band)) for band in index.bands)...)
+    return params[_band_names(index)]
 end
 
 function create_params(kw_args...)

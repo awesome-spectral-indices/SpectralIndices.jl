@@ -20,7 +20,7 @@ using SpectralIndices
         # Test if the file was downloaded and parsed successfully
         @test isfile(joinpath(test_dir, "spectral-indices-dict.json"))
         @test !isempty(indices)
-        @test indices isa Dict
+        @test indices isa AbstractDict
 
     finally
         # Clean up: Delete the test file and directory

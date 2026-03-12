@@ -21,7 +21,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = DataFrame(; N=T.([0.2, 0.2]), R=T.([0.1, 0.1]))
         else
-            params = DataFrame([band => rand(T, 10) for band in idx.bands])
+            params = DataFrame([band => rand(T, 10) for band in _band_names(idx)])
         end
         result = compute_index(idx_name, params)
         @test result isa DataFrame
@@ -33,7 +33,7 @@ end
         if idx_name == "AVI" || idx_name == "TVI"
             params = DataFrame(; N=T.([0.2, 0.2]), R=T.([0.1, 0.1]))
         else
-            params = DataFrame([band => rand(T, 10) for band in idx.bands])
+            params = DataFrame([band => rand(T, 10) for band in _band_names(idx)])
         end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
         @test result isa DataFrame
@@ -65,7 +65,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 params[!, "N"] = fill(T(0.2), 10)
                 params[!, "R"] = fill(T(0.1), 10)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     params[!, band] = rand(T, 10)
                 end
             end
@@ -84,7 +84,7 @@ msi = custom_key_combinations(indices, 2, 200)
                 params[!, "N"] = fill(T(0.2), 10)
                 params[!, "R"] = fill(T(0.1), 10)
             else
-                for band in idx.bands
+                for band in _band_names(idx)
                     params[!, band] = rand(T, 10)
                 end
             end
