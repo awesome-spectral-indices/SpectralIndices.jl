@@ -204,10 +204,6 @@ end
 function _infer_type(prms)
     ts = _gen_eltype(prms)
     T = promote_type(float.(ts)...)
-    if any(t -> !(t <: AbstractFloat), ts)
-        @warn "Non-floating input bands detected ($(ts)). \n
-        Promoting computation to $(T) to avoid integer arithmetic."
-    end
     return T
 end
 
