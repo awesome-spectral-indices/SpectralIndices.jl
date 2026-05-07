@@ -1,7 +1,7 @@
 name = "SpectralIndices"
 uuid = "df0093a1-273d-40bc-819a-796ec3476907"
 authors = ["MartinuzziFrancesco <martinuzzi.francesco@gmail.com>"]
-version = "0.2.16"
+version = "0.2.17"
 
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
@@ -25,7 +25,7 @@ Dates = "1"
 DimensionalData = "0.29"
 Documenter = "1.8.0"
 Downloads = "1.6.0"
-JET = "0.9, 0.10"
+JET = "0.11"
 JSON = "0.21, 1.2"
 YAXArrays = "0.7"
 julia = "1.10"
