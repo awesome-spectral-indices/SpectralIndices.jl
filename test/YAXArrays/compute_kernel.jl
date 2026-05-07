@@ -4,7 +4,7 @@ using YAXArrays
 
 function convert_to_kwargs(yaxarr::YAXArray)
     var_names = lookup(yaxarr, :Variables)
-    kwargs = [(Symbol(var_name) => yaxarr[Variable=At(var_name)])
+    kwargs = [(Symbol(var_name) => yaxarr[Variable = At(var_name)])
               for var_name in var_names]
     return kwargs
 end
