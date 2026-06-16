@@ -12,7 +12,7 @@ floats = [Float64, Float32, Float16]
 
 function convert_to_kwargs(yaxarr::YAXArray)
     var_names = lookup(yaxarr, :Variables)
-    kwargs = [(Symbol(var_name) => yaxarr[Variable=At(var_name)])
+    kwargs = [(Symbol(var_name) => yaxarr[Variable = At(var_name)])
               for var_name in var_names]
     return kwargs
 end
@@ -20,7 +20,8 @@ end
 xdim = Dim{:x}(range(1, 10; length=10))
 ydim = Dim{:y}(range(1, 10; length=15))
 
-@testset "YAXArrays compute_index $T single index tests: $idx_name" for (idx_name, idx) in indices,
+@testset "YAXArrays compute_index $T single index tests: $idx_name" for (idx_name, idx) in
+                                                                        indices,
     T in floats
 
     @testset "as Params" begin
