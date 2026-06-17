@@ -45,7 +45,8 @@ function get_indices(online::Bool=false; filename::String="spectral-indices-dict
             final_file
         )
         @assert indices_loc isa String&&!isempty(indices_loc) "Download did not return a valid file path."
-        indices = parsefile(indices_loc; null=missing, allownan=true)
+        indices = parsefile(indices_loc; null=missing, allownan=true, dicttype=Dict{
+            String, Any})
     else
         indices = load_json()
     end
