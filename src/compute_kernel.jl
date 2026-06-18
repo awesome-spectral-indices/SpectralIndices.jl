@@ -154,7 +154,7 @@ function poly(a::Number, b::Number, c::Number, p::Number)
     return (a * b + c)^p
 end
 
-function poly(a::V, b::V, c::V, p::V) where {V <: AbstractArray}
+function poly(a::AbstractArray, b::AbstractArray, c::AbstractArray, p::AbstractArray)
     return @. (a * b + c)^p
 end
 
@@ -213,13 +213,13 @@ result = RBF(df)
 ```
 """
 function RBF(a::Number, b::Number, sigma::Number)
-    T = eltype(a)
-    return exp((T(-1.0) * (a - b)^T(2.0)) / (T(2.0) * sigma^T(2.0)))
+    T = float(promote_type(typeof(a), typeof(b), typeof(sigma)))
+    return exp((T(-1) * (a - b)^2) / (T(2) * sigma^2))
 end
 
-function RBF(a::V, b::V, sigma::V) where {V <: AbstractArray}
-    T = eltype(a)
-    return exp.((T(-1.0) .* (a .- b) .^ T(2.0)) ./ (T(2.0) .* sigma .^ T(2.0)))
+function RBF(a::AbstractArray, b::AbstractArray, sigma::AbstractArray)
+    T = float(promote_type(eltype(a), eltype(b), eltype(sigma)))
+    return exp.((T(-1) .* (a .- b) .^ 2) ./ (T(2) .* sigma .^ 2))
 end
 
 function RBF(params::Dict{String, V}) where {V <: Union{<:Number, <:AbstractArray}}

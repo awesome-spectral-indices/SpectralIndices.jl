@@ -21,7 +21,7 @@ using SpectralIndices
         io_buffer = IOBuffer()
         show(io_buffer, sample_band)
         output = String(take!(io_buffer))
-        expected_output = "Band(B: Blue)\n"
+        expected_output = "Band(B: Blue)"
         output == expected_output
     end
 
@@ -30,7 +30,7 @@ using SpectralIndices
         io_buffer = IOBuffer()
         show(io_buffer, MIME("text/plain"), sample_band)
         output = String(take!(io_buffer))
-        expected_output = "B: Blue\n"
+        expected_output = "B: Blue"
         output == expected_output
     end
 end

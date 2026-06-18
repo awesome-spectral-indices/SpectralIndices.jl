@@ -15,7 +15,8 @@ import SpectralIndices:
                         RBF,
                         load_dataset,
                         load_json,
-                        _infer_type
+                        _infer_type,
+                        _gen_eltype
 
 function check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in index.bands
@@ -32,8 +33,8 @@ end
 _gen_eltype(params::YAXArray) = eltype.(first(params))
 
 function order_params(index::AbstractSpectralIndex, params::YAXArray)
-    new_params = []
-    for (bidx, band) in enumerate(index.bands)
+    new_params = YAXArray[]
+    for band in index.bands
         push!(new_params, params[Variable = At(band)])
     end
 
@@ -67,8 +68,8 @@ end
 function compute_index(
         index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices=create_indices()
 )
-    results = []
-    for (nidx, idx) in enumerate(index)
+    results = YAXArray[]
+    for idx in index
         res_tmp = compute_index(idx, params; indices=indices)
         push!(results, res_tmp)
     end
@@ -110,8 +111,8 @@ function RBF(params::YAXArray)
 end
 
 function RBF(a::YAXArray, b::YAXArray, sigma::YAXArray)
-    T = eltype(a)
-    return exp.((T(-1.0) .* (a .- b) .^ T(2.0)) ./ (T(2.0) .* sigma .^ T(2.0)))
+    T = float(promote_type(eltype(a), eltype(b), eltype(sigma)))
+    return exp.((T(-1) .* (a .- b) .^ 2) ./ (T(2) .* sigma .^ 2))
 end
 
 function load_dataset(dataset::String, ::Type{T}) where {T <: YAXArray}

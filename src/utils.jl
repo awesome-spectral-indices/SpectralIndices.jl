@@ -39,7 +39,7 @@ function get_indices(online::Bool=false; filename::String="spectral-indices-dict
     """
     final_file = joinpath(fileloc, filename)
     if online
-        println("Starting download to: ", final_file)
+        @info "Starting download" destination = final_file
         indices_loc = Downloads.download(
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
             final_file

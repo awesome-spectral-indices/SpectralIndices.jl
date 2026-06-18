@@ -54,12 +54,12 @@ end
 
 # Machine-readable output
 function Base.show(io::IO, b::Band)
-    return println(io, "Band($(b.short_name): $(b.long_name))")
+    return print(io, "Band($(b.short_name): $(b.long_name))")
 end
 
 # Human-readable output
 function Base.show(io::IO, ::MIME"text/plain", b::Band)
-    return println(io, "$(b.short_name): $(b.long_name)")
+    return print(io, "$(b.short_name): $(b.long_name)")
 end
 
 function create_bands()
