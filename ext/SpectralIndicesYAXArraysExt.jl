@@ -112,7 +112,7 @@ end
 
 function RBF(a::YAXArray, b::YAXArray, sigma::YAXArray)
     T = float(promote_type(eltype(a), eltype(b), eltype(sigma)))
-    return exp.((T(-1) .* (a .- b) .^ 2) ./ (T(2) .* sigma .^ 2))
+    return exp.((T(-1.0) .* (a .- b) .^ T(2.0)) ./ (T(2.0) .* sigma .^ T(2.0)))
 end
 
 function load_dataset(dataset::String, ::Type{T}) where {T <: YAXArray}

@@ -1,3 +1,7 @@
+function _default_indices(online::Bool=false)
+    online ? create_indices(online) : SpectralIndices.indices
+end
+
 """
     compute_index(index, params, [online]; kwargs...) -> Any
 
@@ -48,10 +52,6 @@ julia> compute_index(["NDVI", "SAVI"]; N=fill(0.643, (2, 2)), R=fill(0.175, (2, 
  [0.5326251896813354 0.5326251896813354; 0.5326251896813354 0.5326251896813354]
 ```
 """
-function _default_indices(online::Bool=false)
-    online ? create_indices(online) : SpectralIndices.indices
-end
-
 function compute_index(index::AbstractSpectralIndex, params=nothing, online::Bool=false;
         indices=_default_indices(online), kwargs...)
     if isnothing(params)
