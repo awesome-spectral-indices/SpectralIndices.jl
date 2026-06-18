@@ -100,8 +100,8 @@ function load_dataset(dataset::String, ::Type{T}) where {T <: DataFrame}
         if !isnothing(first_non_missing)
             target_type = typeof(df[first_non_missing, col_name])
             has_missing = any(ismissing, df[!, col_name])
-            T = has_missing ? Union{Missing, target_type} : target_type
-            df[!, col_name] = convert(Vector{T}, df[!, col_name])
+            col_type = has_missing ? Union{Missing, target_type} : target_type
+            df[!, col_name] = convert(Vector{col_type}, df[!, col_name])
         end
     end
 
