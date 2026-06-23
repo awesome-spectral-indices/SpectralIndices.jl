@@ -81,7 +81,7 @@ function compute_index(index::AbstractSpectralIndex, params::Dict,
     return _compute_index(T, index, params...)
 end
 
-### mutliple indices
+### multiple indices
 
 function compute_index(index::Vector{<:AbstractSpectralIndex}, params=nothing,
         online::Bool=false; indices=_default_indices(online), kwargs...)

@@ -11,8 +11,8 @@ Compute a specified kernel using either provided parameters or keyword arguments
 
 # Examples
 
-The behaviour of `compute_kernel` is identical to [`compute_index`](@ref).
-The function takes as keywork arguments the parameters needed for computation:
+The behavior of `compute_kernel` is identical to [`compute_index`](@ref).
+The function takes as keyword arguments the parameters needed for computation:
 
 ```jldoctest computekernel
 julia> using SpectralIndices
@@ -27,7 +27,7 @@ julia> knr = compute_kernel(RBF; a=fill(0.1, 5), b=fill(0.2, 5), sigma=fill(0.3,
 
 ```
 
-Additionally it can also take The a positional argument `params`, which can be
+Additionally it can also take the positional argument `params`, which can be
 a `Dict`, a `DataFrame`, or `YAXArray`. Let us demonstrate with a `Dict`:
 
 ```jldoctest computekernel
