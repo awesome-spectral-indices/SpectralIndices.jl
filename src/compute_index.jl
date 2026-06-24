@@ -56,6 +56,7 @@ function compute_index(index::AbstractSpectralIndex, params=nothing, online::Boo
         indices=_default_indices(online), kwargs...)
     if isnothing(params)
         params = create_params(kwargs...)
+        return compute_index(index, params; indices=indices)
     end
 
     check_params(index, params)
