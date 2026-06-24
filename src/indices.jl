@@ -101,6 +101,35 @@ function SpectralIndex(index::Dict, func::Function)
     )
 end
 
+function SpectralIndex(
+        short_name::String,
+        long_name::String,
+        formula::String,
+        reference::String,
+        application_domain::String,
+        date_of_addition,
+        contributor::String
+    )
+    bands = index["bands"]
+
+    formula = filter(x -> !isspace(x), index["formula"])
+    formula = replace(formula, "**" => "^")
+    platforms = index["platforms"]
+
+    return SpectralIndex(
+        short_name,
+        long_name,
+        bands,
+        application_domain,
+        reference,
+        formula,
+        date_of_addition,
+        contributor,
+        platforms,
+        func
+    )
+end
+
 function (si::SpectralIndex)(args...)
     return si.compute(args...)
 end
