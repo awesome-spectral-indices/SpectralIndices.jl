@@ -25,7 +25,7 @@ NDWI
 NDBI
 ```
 
-We have multiple ways to feed this data to SectralIndices.jl to generate our indices. We will try to cover most of them here.
+We have multiple ways to feed this data to SpectralIndices.jl to generate our indices. We will try to cover most of them here.
 
 ## From `DataFrame` to `DataFrame`
 

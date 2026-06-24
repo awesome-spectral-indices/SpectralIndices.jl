@@ -1,3 +1,7 @@
+function _default_indices(online::Bool=false)
+    online ? create_indices(online) : SpectralIndices.indices
+end
+
 """
     compute_index(index, params, [online]; kwargs...) -> Any
 
@@ -49,16 +53,18 @@ julia> compute_index(["NDVI", "SAVI"]; N=fill(0.643, (2, 2)), R=fill(0.175, (2, 
 ```
 """
 function compute_index(index::AbstractSpectralIndex, params=nothing, online::Bool=false;
-        indices=create_indices(online), kwargs...)
+        indices=_default_indices(online), kwargs...)
     if isnothing(params)
         params = create_params(kwargs...)
+        return compute_index(index, params; indices=indices)
     end
 
+    check_params(index, params)
     return compute_index(index, params; indices=indices)
 end
 
 function compute_index(index::AbstractSpectralIndex, params::NamedTuple,
-        online::Bool=false; indices=create_indices(online))
+        online::Bool=false; indices=_default_indices(online))
     check_params(index, params)
     params = order_params(index, params)
     T = _infer_type(params)
@@ -68,7 +74,7 @@ function compute_index(index::AbstractSpectralIndex, params::NamedTuple,
 end
 
 function compute_index(index::AbstractSpectralIndex, params::Dict,
-        online::Bool=false; indices=create_indices(online))
+        online::Bool=false; indices=_default_indices(online))
     check_params(index, params)
     params = order_params(index, params)
     T = _infer_type(params)
@@ -76,10 +82,10 @@ function compute_index(index::AbstractSpectralIndex, params::Dict,
     return _compute_index(T, index, params...)
 end
 
-### mutliple indices
+### multiple indices
 
 function compute_index(index::Vector{<:AbstractSpectralIndex}, params=nothing,
-        online::Bool=false; indices=create_indices(online), kwargs...)
+        online::Bool=false; indices=_default_indices(online), kwargs...)
     if isnothing(params)
         params = create_params(kwargs...)
     end
@@ -89,25 +95,21 @@ end
 
 function compute_index(
         index::Vector{<:AbstractSpectralIndex}, params::NamedTuple, online::Bool=false;
-        indices=create_indices(online))
+        indices=_default_indices(online))
     results_dict = Dict{Symbol, Any}()
     for idx in index
         result_nt = compute_index(idx, params; indices=indices)
-        # TODO @MartinuzziFrancesco: there has to be a better way
         results_dict[fieldnames(typeof(result_nt))[1]] = first(result_nt)
     end
 
-    # Convert the dictionary to a named tuple
     return (; results_dict...)
 end
 
-# TODO: return results in a matrix columnswise
-#multi_result = compute_index(["NDVI", "SAVI"], N = fill(0.643, 5), R = fill(0.175, 5), L = fill(0.5, 5))
 function compute_index(
         index::Vector{<:AbstractSpectralIndex}, params::Dict, online::Bool=false;
-        indices=create_indices(online))
-    results = []
-    for (nidx, idx) in enumerate(index)
+        indices=_default_indices(online))
+    results = Any[]
+    for idx in index
         result = compute_index(idx, params; indices=indices)
         push!(results, result)
     end
@@ -118,17 +120,19 @@ end
 ### strings
 
 function compute_index(index::String, params=nothing, online::Bool=false;
-        indices=create_indices(online), kwargs...)
+        indices=_default_indices(online), kwargs...)
     check_index_name(index, indices)
 
     return compute_index(indices[index], params; indices=indices, kwargs...)
 end
 
 function compute_index(index::Vector{String}, params=nothing, online::Bool=false;
-        indices=create_indices(online), kwargs...)
+        indices=_default_indices(online), kwargs...)
     names = keys(indices)
     for idx in index
-        @assert idx in names "$index is not a valid Spectral Index!"
+        if !(idx in names)
+            throw(ArgumentError("$idx is not a valid Spectral Index!"))
+        end
     end
     idxs = [indices[idx] for idx in index]
     results = compute_index(idxs, params; indices=indices, kwargs...)
@@ -185,8 +189,11 @@ function check_params(index::AbstractSpectralIndex, params::NamedTuple)
     end
 end
 
-function check_params(::AbstractSpectralIndex, params)
-    return
+function check_params(index::AbstractSpectralIndex, params)
+    throw(ArgumentError(
+        "Unsupported params type $(typeof(params)) for $(index.short_name) computation. " *
+        "Expected Dict, NamedTuple, DataFrame, or YAXArray."
+    ))
 end
 
 function order_params(index::AbstractSpectralIndex, params::Dict)
@@ -213,6 +220,7 @@ function _gen_eltype(params::Union{NamedTuple, Dict})
 end
 
 function check_index_name(index, indices)
-    names = keys(indices)
-    @assert index in names "$index is not a valid Spectral Index!"
+    if !(index in keys(indices))
+        throw(ArgumentError("$index is not a valid Spectral Index!"))
+    end
 end

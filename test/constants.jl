@@ -4,11 +4,8 @@ using SpectralIndices
     # Create a sample Constant instance
     sample_constant = Constant(
         "Sample Description",
-        "Sample Long Name",
         "Sample Short Name",
-        "Sample Standard",
-        "Sample Default",
-        "Sample Value"
+        "Sample Default"
     )
 
     # Test Machine-readable Output
@@ -16,13 +13,7 @@ using SpectralIndices
         io_buffer = IOBuffer()
         show(io_buffer, sample_constant)
         output = String(take!(io_buffer))
-        expected_output = """
-        Constant: Sample Short Name - Sample Long Name
-        Description: Sample Description
-        Standard: Sample Standard
-        Default value: Sample Default
-        Current value: Sample Value
-        """
+        expected_output = "Constant: Sample Short Name\nDescription: Sample Description\nDefault value: Sample Default"
         output == expected_output
     end
 
@@ -31,13 +22,7 @@ using SpectralIndices
         io_buffer = IOBuffer()
         show(io_buffer, MIME("text/plain"), sample_constant)
         output = String(take!(io_buffer))
-        expected_output = """
-        Sample Short Name: Sample Long Name
-        * Description: Sample Description
-        * Standard: Sample Standard
-        * Default value: Sample Default
-        * Current value: Sample Value
-        """
+        expected_output = "Sample Short Name: Sample Description\n* Description: Sample Description\n* Default value: Sample Default"
         output == expected_output
     end
 end
