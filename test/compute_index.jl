@@ -12,11 +12,11 @@ floats = [Float64, Float32, Float16]
 convert_to_kwargs(dict) = Dict(Symbol(k) => v for (k, v) in dict)
 
 @testset "Input Validation: Invalid Index" begin
-    @test_throws AssertionError compute_index("InvalidIndex", N=0.5, R=0.5)
+    @test_throws ArgumentError compute_index("InvalidIndex", N=0.5, R=0.5)
 end
 
 #@testset "Input Validation: Missing Band" begin
-#    @test_throws AssertionError compute_index("InvalidIndex", N=0.5, R=0.5)
+#    @test_throws ArgumentError compute_index("InvalidIndex", N=0.5, R=0.5)
 #end
 
 @testset "Built-in types compute_index $T single index tests: $idx_name" for (

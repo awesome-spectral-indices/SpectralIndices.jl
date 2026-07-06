@@ -58,10 +58,9 @@ NIRv: Near-Infrared Reflectance of Vegetation
 * Bands/Parameters: Any["N", "R"]
 * Formula: ((N-R)/(N+R))*N
 * Reference: https://doi.org/10.1126/sciadv.1602244
-
 ```
 
-Additioanlly, SpectralIndices.jl loads into memory all the short names
+Additionally, SpectralIndices.jl loads into memory all the short names
 of the indices, so you can easily access them on your REPL:
 
 ```jldoctest indices
@@ -71,7 +70,6 @@ NDVI: Normalized Difference Vegetation Index
 * Bands/Parameters: Any["N", "R"]
 * Formula: (N-R)/(N+R)
 * Reference: https://ntrs.nasa.gov/citations/19740022614
-
 ```
 """
 function SpectralIndex(index::Dict, func::Function)
@@ -114,7 +112,7 @@ function Base.show(io::IO, si::SpectralIndex)
     println(io, "bands: $(si.bands),")
     println(io, "formula: $(si.formula),")
     println(io, "reference: $(si.reference)")
-    return println(io, ")")
+    return print(io, ")")
 end
 
 # Human-readable output
@@ -123,7 +121,7 @@ function Base.show(io::IO, ::MIME"text/plain", si::SpectralIndex)
     println(io, "* Application Domain: $(si.application_domain)")
     println(io, "* Bands/Parameters: $(si.bands)")
     println(io, "* Formula: $(si.formula)")
-    return println(io, "* Reference: $(si.reference)")
+    return print(io, "* Reference: $(si.reference)")
 end
 
 """
@@ -160,9 +158,9 @@ julia> compute(NDVI; N=fill(0.643, (5, 5)), R=fill(0.175, (5, 5)))
 """
 function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
     if isempty(params)
-        return compute_index(si.short_name; kwargs...)
+        return compute_index(si; kwargs...)
     else
-        return compute_index(si.short_name, params; kwargs...)
+        return compute_index(si, params; kwargs...)
     end
 end
 

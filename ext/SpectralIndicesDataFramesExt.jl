@@ -16,10 +16,8 @@ import SpectralIndices:
 function create_params(kw_args::Pair{Symbol, DataFrame}...)
     combined_df = DataFrame()
 
-    for pair in kw_args
-        df = copy(pair.second)
-        rename!(df, names(df) .=> Symbol.(pair.first))
-        combined_df = hcat(combined_df, df; makeunique=true)
+    for (name, df) in kw_args
+        combined_df[!, name] = df[!, 1]
     end
     return combined_df
 end
@@ -101,7 +99,9 @@ function load_dataset(dataset::String, ::Type{T}) where {T <: DataFrame}
         first_non_missing = findfirst(x -> !ismissing(x), df[!, col_name])
         if !isnothing(first_non_missing)
             target_type = typeof(df[first_non_missing, col_name])
-            df[!, col_name] = convert(Vector{target_type}, df[!, col_name])
+            has_missing = any(ismissing, df[!, col_name])
+            col_type = has_missing ? Union{Missing, target_type} : target_type
+            df[!, col_name] = convert(Vector{col_type}, df[!, col_name])
         end
     end
 

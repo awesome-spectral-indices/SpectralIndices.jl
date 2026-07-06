@@ -49,7 +49,6 @@ Platform: Sentinel-2A, Band: Blue
 * Band: B2
 * Center Wavelength (nm): 492.4
 * Bandwidth (nm): 66.0
-
 ```
 
 Additionally, SpectralIndices.jl provides already computed platforms as a `Dict`:
@@ -60,7 +59,6 @@ Platform: Sentinel-2A, Band: Blue
 * Band: B2
 * Center Wavelength (nm): 492.4
 * Bandwidth (nm): 66.0
-
 ```
 """
 function PlatformBand(platform_band::Dict)
@@ -77,7 +75,7 @@ function Base.show(io::IO, pb::PlatformBand)
     println(io, "PlatformBand(Platform: $(pb.platform), Band: $(pb.name))")
     println(io, "* Band: $(pb.band)")
     println(io, "* Center Wavelength (nm): $(pb.wavelength)")
-    return println(io, "* Bandwidth (nm): $(pb.bandwidth)")
+    return print(io, "* Bandwidth (nm): $(pb.bandwidth)")
 end
 
 # Human-readable output
@@ -85,5 +83,5 @@ function Base.show(io::IO, ::MIME"text/plain", pb::PlatformBand)
     println(io, "Platform: $(pb.platform), Band: $(pb.name)")
     println(io, "* Band: $(pb.band)")
     println(io, "* Center Wavelength (nm): $(pb.wavelength)")
-    return println(io, "* Bandwidth (nm): $(pb.bandwidth)")
+    return print(io, "* Bandwidth (nm): $(pb.bandwidth)")
 end
