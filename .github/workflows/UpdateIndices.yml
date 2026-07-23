@@ -1,0 +1,69 @@
+name: Update spectral indices
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-spectral-indices
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: '1'
+
+      - uses: julia-actions/cache@v2
+
+      - name: Instantiate the package
+        run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
+
+      - name: Download and regenerate spectral indices
+        id: update
+        run: |
+          julia --project=. scripts/update_indices.jl
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Format generated Julia code
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          julia -e 'using Pkg; Pkg.add(PackageSpec(name="JuliaFormatter"))'
+          julia -e 'using JuliaFormatter; format("src/indices_funcs.jl")'
+
+      - name: Create pull request
+        if: steps.update.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: |
+            Project.toml
+            data/spectral-indices-dict.json
+            src/indices_funcs.jl
+          branch: automation/update-spectral-indices
+          delete-branch: true
+          commit-message: 'chore: update spectral indices catalogue'
+          title: 'chore: update spectral indices catalogue'
+          body: |
+            This automated PR:
+
+            - downloads the current official Awesome Spectral Indices catalogue;
+            - regenerates `src/indices_funcs.jl`;
+            - bumps the package patch version;
+            - formats the generated Julia code.
+
+            Source: https://github.com/awesome-spectral-indices/awesome-spectral-indices
+          labels: automated pr
