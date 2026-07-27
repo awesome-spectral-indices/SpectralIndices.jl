@@ -61,7 +61,8 @@ function create_indexfun(index_dict::Dict{String, Any}=get_indices();
     open(fileloc, "w") do file
         write(file, "indices_funcs = Dict()\n\n")
 
-        for (index_name, index_info) in index_dict
+        for index_name in sort!(collect(keys(index_dict)))
+            index_info = index_dict[index_name]
             short_name = index_info["short_name"]
             formula = index_info["formula"]
             formula = replace(formula, "**" => "^")
