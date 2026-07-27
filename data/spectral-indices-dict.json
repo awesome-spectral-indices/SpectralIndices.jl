@@ -209,6 +209,22 @@
             "reference": "https://doi.org/10.1016/j.rse.2013.08.029",
             "short_name": "AWEIsh"
         },
+        "AshburnVI": {
+            "application_domain": "vegetation",
+            "bands": [
+                "N2",
+                "R"
+            ],
+            "contributor": "https://github.com/MartinuzziFrancesco",
+            "date_of_addition": "2026-07-04",
+            "formula": "2.0 * N2 - R",
+            "long_name": "Ashburn Vegetation Index",
+            "platforms": [
+                "Sentinel-2"
+            ],
+            "reference": "https://ntrs.nasa.gov/citations/19800007243",
+            "short_name": "AshburnVI"
+        },
         "BAI": {
             "application_domain": "burn",
             "bands": [
@@ -1364,7 +1380,7 @@
             ],
             "contributor": "https://github.com/davemlz",
             "date_of_addition": "2021-04-07",
-            "formula": "(N - (G - (B - R))) / (N - (G + (B - R)))",
+            "formula": "(N - (G - (B - R))) / (N + (G - (B - R)))",
             "long_name": "Green Atmospherically Resistant Vegetation Index",
             "platforms": [
                 "Sentinel-2",
@@ -1559,6 +1575,31 @@
             ],
             "reference": "https://doi.org/10.2134/agronj2004.0314",
             "short_name": "GOSAVI"
+        },
+        "GRARI": {
+            "application_domain": "vegetation",
+            "bands": [
+                "N",
+                "eta",
+                "G",
+                "R",
+                "lmb",
+                "B"
+            ],
+            "contributor": "https://github.com/davemlz",
+            "date_of_addition": "2026-07-22",
+            "formula": "(N - (eta * G + (1.0 - eta) * R - lmb * (B - R)))/(N + (eta * G + (1.0 - eta) * R - lmb * (B - R)))",
+            "long_name": "Atmospheric Resistant Green-Red Index",
+            "platforms": [
+                "Sentinel-2",
+                "Landsat-OLI",
+                "Landsat-TM",
+                "Landsat-ETM+",
+                "MODIS",
+                "Planet-Fusion"
+            ],
+            "reference": "https://doi.org/10.1016/S0034-4257(96)00072-7",
+            "short_name": "GRARI"
         },
         "GRNDVI": {
             "application_domain": "vegetation",
