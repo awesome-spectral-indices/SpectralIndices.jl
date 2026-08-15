@@ -445,8 +445,8 @@ end
 
 indices_funcs["FWEI"] = FWEI_func
 
-function GARI_func(::Type{TFL}, N, G, B, R) where {TFL <: Number}
-    return (N - (G - (B - R))) / (N + (G - (B - R)))
+function GARI_func(::Type{TFL}, N, G, lmb, B, R) where {TFL <: Number}
+    return (N - (G - lmb * (B - R))) / (N + (G - lmb * (B - R)))
 end
 
 indices_funcs["GARI"] = GARI_func
@@ -1414,8 +1414,9 @@ end
 
 indices_funcs["S3"] = S3_func
 
-function SARVI_func(::Type{TFL}, L, N, R, B; const1::Number=TFL(1)) where {TFL <: Number}
-    return (const1 + L)*(N - (R - (R - B))) / (N + (R - (R - B)) + L)
+function SARVI_func(
+        ::Type{TFL}, L, N, R, gamma, B; const1::Number=TFL(1)) where {TFL <: Number}
+    return (const1 + L)*(N - (R - gamma * (R - B))) / (N + (R - gamma * (R - B)) + L)
 end
 
 indices_funcs["SARVI"] = SARVI_func
