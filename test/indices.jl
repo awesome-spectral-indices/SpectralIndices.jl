@@ -40,19 +40,13 @@ end
     io_buffer = IOBuffer()
     show(io_buffer, MIME("text/plain"), si)
     human_readable_output = String(take!(io_buffer))
-    expected_human_readable_output = """
-    CI: Custom Index
-    * Application Domain: Vegetation
-    * Bands/Parameters: ("C", "I")
-    * Formula: (C-I)/(C+I)
-    * Reference: Doe et al., 1984
-    """
+    expected_human_readable_output = "CI: Custom Index\n* Application Domain: Vegetation\n* Bands/Parameters: (\"C\", \"I\")\n* Formula: (C-I)/(C+I)\n* Reference: Doe et al., 1984"
     @test human_readable_output == expected_human_readable_output
 
     # Test Machine-readable Output
     io_buffer = IOBuffer()
     show(io_buffer, si)
     machine_readable_output = String(take!(io_buffer))
-    expected_machine_readable_output = "SpectralIndex(short_name: CI,\nlong_name: Custom Index,\napplication_domain: Vegetation,\nbands: (\"C\", \"I\"),\nformula: (C-I)/(C+I),\nreference: Doe et al., 1984\n)\n"
+    expected_machine_readable_output = "SpectralIndex(short_name: CI,\nlong_name: Custom Index,\napplication_domain: Vegetation,\nbands: (\"C\", \"I\"),\nformula: (C-I)/(C+I),\nreference: Doe et al., 1984\n)"
     @test machine_readable_output == expected_machine_readable_output
 end
