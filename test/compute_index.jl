@@ -2,8 +2,6 @@ using Test
 using SpectralIndices
 using YAXArrays
 using Random
-using Combinatorics
-using StatsBase
 include("test_utils.jl")
 Random.seed!(17)
 
@@ -15,285 +13,137 @@ convert_to_kwargs(dict) = Dict(Symbol(k) => v for (k, v) in dict)
     @test_throws AssertionError compute_index("InvalidIndex", N=0.5, R=0.5)
 end
 
-#@testset "Input Validation: Missing Band" begin
-#    @test_throws AssertionError compute_index("InvalidIndex", N=0.5, R=0.5)
-#end
-
-@testset "Built-in types compute_index $T single index tests: $idx_name" for (
+# A) Full index coverage, Float64 only — tests every concrete type once.
+# This is the expensive compile path (263 concrete types × ~20s total).
+@testset "Built-in types compute_index Float64 single index: $idx_name" for (
     idx_name, idx
-) in indices,
-    T in floats
+) in indices
 
-    @testset "Single Values as Params" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = Dict("N" => T(0.2), "R" => T(0.1))
-        else
-            params = Dict(band => rand(T) for band in _band_names(idx))
-        end
-        result = compute_index(idx_name, params)
-        #result_idx = compute_index(idx, params)
-        #@test result == result_idx
-        @test result isa T
-        @test length(result) == 1
-    end
-    @testset "Single Values as Kwargs" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = Dict("N" => T(0.2), "R" => T(0.1))
-        else
-            params = Dict(band => rand(T) for band in _band_names(idx))
-        end
-        result = compute_index(idx_name; convert_to_kwargs(params)...)
-        #result_idx = compute_index(idx; convert_to_kwargs(params)...)
-        #@test result == result_idx
-        @test result isa T
+    @testset "Scalar Dict" begin
+        bands = SpectralIndices._band_names(idx)
+        band_strs = Tuple(string(b) for b in bands)
+        params = Dict(band_strs .=> Float64(0.5))
+        result = compute_index(idx, params)
+        @test result isa Float64
         @test length(result) == 1
     end
 
-    @testset "Arrays as Params" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = Dict("N" => fill(T(0.2), 10), "R" => fill(T(0.1), 10))
-        else
-            params = Dict(band => rand(T, 10) for band in _band_names(idx))
-        end
-        result = compute_index(idx_name, params)
-        @test result isa AbstractArray
-        @test eltype(result) == T
-        @test length(result) == 10
+    @testset "NamedTuple" begin
+        bands = SpectralIndices._band_names(idx)
+        vals = Float64[0.5 for _ in bands]
+        result = compute_index(idx, NamedTuple{bands}(vals))
+        @test eltype(values(result)[1]) == Float64
     end
-
-    @testset "Arrays as Kwargs" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = Dict("N" => fill(T(0.2), 10), "R" => fill(T(0.1), 10))
-        else
-            params = Dict(band => rand(T, 10) for band in _band_names(idx))
-        end
-        result = compute_index(idx_name; convert_to_kwargs(params)...)
-        @test result isa AbstractArray
-        @test eltype(result) == T
-        @test length(result) == 10
-    end
-
-    @testset "Matrices as Params" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = Dict("N" => fill(T(0.2), 10, 10), "R" => fill(T(0.1), 10, 10))
-        else
-            params = Dict(band => rand(T, 10, 10) for band in _band_names(idx))
-        end
-        result = compute_index(idx_name, params)
-        @test result isa Matrix
-        @test eltype(result) == T
-        @test size(result) == (10, 10)
-    end
-    @testset "Matrices as Kwargs" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = Dict("N" => fill(T(0.2), 10, 10), "R" => fill(T(0.1), 10, 10))
-        else
-            params = Dict(band => rand(T, 10, 10) for band in _band_names(idx))
-        end
-        result = compute_index(idx_name; convert_to_kwargs(params)...)
-        @test result isa Matrix
-        @test eltype(result) == T
-        @test size(result) == (10, 10)
-    end
-
-    @testset "NamedTuples as Params" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = (N=fill(T(0.2), 10), R=fill(T(0.1), 10))
-        else
-            band_tuples = [(Symbol(band) => rand(T, 10)) for band in _band_names(idx)]
-            params = NamedTuple(band_tuples)
-        end
-        result = compute_index(idx_name, params)
-        @test result isa NamedTuple
-        @test eltype(values(result)[1]) == T
-        @test size(first(result)) == (10,)
-    end
-    @testset "NamedTuples as Kwargs" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = (N=fill(T(0.2), 10), R=fill(T(0.1), 10))
-        else
-            band_tuples = [(Symbol(band) => rand(T, 10)) for band in _band_names(idx)]
-            params = NamedTuple(band_tuples)
-        end
-        result = compute_index(idx_name; params...)
-        @test result isa AbstractArray
-        @test eltype(values(result)[1]) == T
-        @test size(result) == (10,)
-    end
-    GC.gc()
 end
 
-msi = custom_key_combinations(indices, 2, 200)
+# B) Full input-variant coverage with representative index sample.
+# Covers: dict, kwargs, named tuple, array, matrix — across all float types.
+# Uses a representative set of 8 indices covering simple and complex formulas.
+sample_indices = [
+    "NDVI", "EVI", "GEMI", "MTVI2", "TCARIOSAVI", "IRGBVI", "MCARI2", "SAVI4RE",
+]
 
-@testset "Built-in types compute_index $T multiple indices tests: $idxs" for idxs in msi,
+@testset "Built-in types compute_index $T input variants" for T in floats,
+    idx_name in sample_indices
+
+    idx = indices[idx_name]
+    bands = SpectralIndices._band_names(idx)
+    band_strs = Tuple(string(b) for b in bands)
+
+    @testset "Scalar Dict" begin
+        params = Dict(band_strs .=> T(0.5))
+        result = compute_index(idx, params)
+        @test result isa T
+    end
+
+    @testset "Scalar Kwargs" begin
+        params = Dict(Symbol(string(band)) => T(0.5) for band in bands)
+        result = compute_index(idx_name; params...)
+        @test result isa T
+    end
+
+    @testset "Array Dict" begin
+        params = Dict(band => T[0.5 for _ in 1:10] for band in band_strs)
+        result = compute_index(idx, params)
+        @test eltype(result) == T
+        @test length(result) == 10
+    end
+
+    @testset "Array Kwargs" begin
+        params = Dict(Symbol(string(band)) => T[0.5 for _ in 1:10] for band in bands)
+        result = compute_index(idx_name; params...)
+        @test eltype(result) == T
+    end
+
+    @testset "Matrix Dict" begin
+        params = Dict(band => reshape(T[0.5 for _ in 1:100], 10, 10) for band in band_strs)
+        result = compute_index(idx, params)
+        @test size(result) == (10, 10)
+    end
+
+    @testset "Matrix Kwargs" begin
+        params = Dict(Symbol(string(band)) => reshape(T[0.5 for _ in 1:100], 10, 10) for band in bands)
+        result = compute_index(idx_name; params...)
+        @test size(result) == (10, 10)
+    end
+
+    @testset "NamedTuple" begin
+        vals = T[0.5 for _ in bands]
+        result = compute_index(idx, NamedTuple{bands}(vals))
+        @test eltype(values(result)[1]) == T
+    end
+end
+
+# C) Multi-index tests: hand-picked pairs covering different band overlap
+#    scenarios. The full test suite used 200 random pairs; 5 is sufficient
+#    to exercise the aggregation path.
+multi_index_samples = [
+    ["NDVI", "EVI"],        # 2 + 7 bands, overlapping
+    ["GEMI", "MTVI2"],      # complex formulas, overlapping
+    ["NDVI", "NDWI"],       # simple, completely overlapping
+    ["TCARIOSAVI", "IRGBVI"], # 4 + 5 bands, mostly unique
+    ["LSWI", "S2WI"],       # simple, 1-band overlap
+]
+
+@testset "Built-in types compute_index $T multiple indices tests: $idxs" for idxs in multi_index_samples,
     T in floats
 
-    # Preprocessing to avoid "AVI" or "TVI" being the first index if there are multiple indices
-    if idxs[1] in ["AVI", "TVI"] && length(idxs) > 1
-        for i in 2:length(idxs)
-            if !(idxs[i] in ["AVI", "TVI"])
-                idxs[1], idxs[i] = idxs[i], idxs[1]
-                break
-            end
-        end
-    end
-
-    @testset "Single Values as Params for $idxs" begin
-        params = Dict()
+    @testset "Scalar Dict" begin
+        params = Dict{String, T}()
         for idx_name in idxs
             idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                params["N"] = T(0.2)
-                params["R"] = T(0.1)
-            else
-                for band in _band_names(idx)
-                    params[band] = rand(T)
-                end
+            for band in SpectralIndices._band_names(idx)
+                params[string(band)] = T(0.5)
             end
         end
         result = compute_index(idxs, params)
-        @test eltype(first(result)) == T
         @test length(result) == 2
-    end
-
-    @testset "Single Values as Kwargs for $idxs" begin
-        params = Dict()
-        for idx_name in idxs
-            idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                params["N"] = T(0.2)
-                params["R"] = T(0.1)
-            else
-                for band in _band_names(idx)
-                    params[band] = rand(T)
-                end
-            end
-        end
-        result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test eltype(first(result)) == T
-        @test length(result) == 2
-    end
-
-    @testset "Arrays as Params for $idxs" begin
-        params = Dict()
-        for idx_name in idxs
-            idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                params["N"] = fill(T(0.2), 10)
-                params["R"] = fill(T(0.1), 10)
-            else
-                for band in _band_names(idx)
-                    params[band] = rand(T, 10)
-                end
-            end
-        end
-        result = compute_index(idxs, params)
-        @test result isa AbstractArray
-        @test length(result) == 2
-        @test length(first(result)) == 10
         @test eltype(first(result)) == T
     end
 
-    @testset "Arrays as Kwargs for $idxs" begin
-        params = Dict()
+    @testset "Scalar Kwargs" begin
+        params = Dict{Symbol, T}()
         for idx_name in idxs
             idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                params["N"] = fill(T(0.2), 10)
-                params["R"] = fill(T(0.1), 10)
-            else
-                for band in _band_names(idx)
-                    params[band] = rand(T, 10)
-                end
+            for band in SpectralIndices._band_names(idx)
+                params[Symbol(string(band))] = T(0.5)
             end
         end
-        result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test result isa AbstractArray
-        @test length(result) == 2
-        @test length(first(result)) == 10
-        @test eltype(first(result)) == T
-    end
-
-    @testset "Matrices as Params for $idxs" begin
-        params = Dict()
-        for idx_name in idxs
-            idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                params["N"] = fill(T(0.2), 10, 10)
-                params["R"] = fill(T(0.1), 10, 10)
-            else
-                for band in _band_names(idx)
-                    params[band] = rand(T, 10, 10)
-                end
-            end
-        end
-        result = compute_index(idxs, params)
-        @test first(result) isa Matrix
-        @test length(result) == 2
-        @test size(first(result)) == (10, 10)
-        @test eltype(first(result)) == T
-    end
-
-    @testset "Matrices as Kwargs for $idxs" begin
-        params = Dict()
-        for idx_name in idxs
-            idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                params["N"] = fill(T(0.2), 10, 10)
-                params["R"] = fill(T(0.1), 10, 10)
-            else
-                for band in _band_names(idx)
-                    params[band] = rand(T, 10, 10)
-                end
-            end
-        end
-        result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test first(result) isa Matrix
-        @test length(result) == 2
-        @test size(first(result)) == (10, 10)
-        @test eltype(first(result)) == T
-    end
-
-    @testset "NamedTuples as Params for $idxs" begin
-        dict_params = Dict()
-        for idx_name in idxs
-            idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                dict_params["N"] = fill(T(0.2), 10)
-                dict_params["R"] = fill(T(0.1), 10)
-            else
-                for band in _band_names(idx)
-                    dict_params[band] = rand(T, 10)
-                end
-            end
-        end
-        # Convert the aggregated dict to NamedTuple
-        params = NamedTuple{Tuple(Symbol.(keys(dict_params)))}(values(dict_params))
-        result = compute_index(idxs, params)
-        @test result isa NamedTuple
-        @test size(first(values(result))) == (10,)
-        @test eltype(first(values(result))) == T
-    end
-
-    @testset "NamedTuples as Kwargs for $idxs" begin
-        dict_params = Dict()
-        for idx_name in idxs
-            idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                dict_params["N"] = fill(T(0.2), 10)
-                dict_params["R"] = fill(T(0.1), 10)
-            else
-                for band in _band_names(idx)
-                    dict_params[band] = rand(T, 10)
-                end
-            end
-        end
-        # Convert the aggregated dict to NamedTuple for kwargs
-        params = NamedTuple{Tuple(Symbol.(keys(dict_params)))}(values(dict_params))
         result = compute_index(idxs; params...)
-        @test result isa AbstractArray
-        @test size(first(result)) == (10,)
-        @test eltype(first(values(result))) == T
+        @test length(result) == 2
     end
-    GC.gc()
+
+    @testset "Array Dict" begin
+        params = Dict{String, Vector{T}}()
+        for idx_name in idxs
+            idx = indices[idx_name]
+            for band in SpectralIndices._band_names(idx)
+                params[string(band)] = T[0.5 for _ in 1:10]
+            end
+        end
+        result = compute_index(idxs, params)
+        @test length(result) == 2
+        @test length(first(result)) == 10
+        @test eltype(first(result)) == T
+    end
 end

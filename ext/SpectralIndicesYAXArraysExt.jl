@@ -19,7 +19,7 @@ import SpectralIndices:
 
 function check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in SpectralIndices._band_names(index)
-        if !(band in params.Variables)
+        if !(string(band) in params.Variables) && !(band in params.Variables)
             throw(
                 ArgumentError(
                 "'$band' is missing in the parameters for $index computation!"
@@ -34,7 +34,7 @@ _gen_eltype(params::YAXArray) = eltype.(first(params))
 function order_params(index::AbstractSpectralIndex, params::YAXArray)
     new_params = []
     for (bidx, band) in enumerate(SpectralIndices._band_names(index))
-        push!(new_params, params[Variable=At(band)])
+        push!(new_params, params[Variable = At(string(band))])
     end
 
     return new_params
@@ -55,7 +55,7 @@ end
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
 function compute_index(
-        index::AbstractSpectralIndex, params::YAXArray; indices=create_indices()
+        index::AbstractSpectralIndex, params::YAXArray; indices=nothing
 )
     check_params(index, params)
     params = order_params(index, params)
@@ -80,23 +80,22 @@ end
 function _compute_index(
         ::Type{T}, idx::AbstractSpectralIndex, prms::YAXArray...
 ) where {T <: Number}
-    f = (args...) -> idx(T, args...)
+    f = Base.Fix1(idx, T)
     return f.(prms...)
 end
 
 function linear(params::YAXArray)
-    return linear(params[Variable=At("a")], params[Variable=At("b")])
+    return linear(params[Variable = At("a")], params[Variable = At("b")])
 end
 
 linear(a::YAXArray, b::YAXArray) = a .* b
 
-
 function poly(params::YAXArray)
     return poly(
-        params[Variable=At("a")],
-        params[Variable=At("b")],
-        params[Variable=At("c")],
-        params[Variable=At("p")]
+        params[Variable = At("a")],
+        params[Variable = At("b")],
+        params[Variable = At("c")],
+        params[Variable = At("p")]
     )
 end
 
@@ -106,7 +105,7 @@ end
 
 function RBF(params::YAXArray)
     return RBF(
-        params[Variable=At("a")], params[Variable=At("b")], params[Variable=At("sigma")]
+        params[Variable = At("a")], params[Variable = At("b")], params[Variable = At("sigma")]
     )
 end
 

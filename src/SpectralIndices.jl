@@ -37,8 +37,7 @@ export PlatformBand, Band
 export Constant
 export compute_index
 export compute_kernel, linear, poly, RBF
-export bands
-export constants
+export bands, constants
 
 function export_index(si::SpectralIndex)
     @eval begin

@@ -163,7 +163,7 @@ Check if the parameters dictionary contains all required bands for spectral inde
 """
 function check_params(index::AbstractSpectralIndex, params::Dict)
     for band in _band_names(index)
-        if !(string(band) in keys(params))
+        if !(string(band) in keys(params)) && !(band in keys(params))
             throw(
                 ArgumentError(
                 "'$band' is missing in the parameters for $index computation!"
@@ -190,7 +190,9 @@ function check_params(::AbstractSpectralIndex, params)
 end
 
 function order_params(index::AbstractSpectralIndex, params::Dict)
-    return map(band -> params[band], _band_names(index))
+    return map(_band_names(index)) do band
+        haskey(params, band) ? params[band] : params[string(band)]
+    end
 end
 
 function order_params(index::AbstractSpectralIndex, params::NamedTuple)
@@ -213,7 +215,7 @@ end
 
 _gen_eltype(params) = eltype.(params)
 function _gen_eltype(params::Union{NamedTuple, Dict})
-    mapreduce(eltype, promote_type, values(params))
+    map(eltype, values(params))
 end
 
 function check_index_name(index, indices)

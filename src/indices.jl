@@ -167,7 +167,7 @@ function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
 end
 
 function compute(si::SpectralIndex{<:Any, B}, params::NamedTuple) where {B}
-    si.compute(Float64, params[B])
+    si.compute(Float64, params[B]...)
 end
 
 _band_names(::SpectralIndex{<:Any, B}) where {B} = B
