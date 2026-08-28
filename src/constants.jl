@@ -1,11 +1,8 @@
 
-struct Constant{S <: String, D, V}
+struct Constant{S <: String, V}
     description::S
-    long_name::S
     short_name::S
-    standard::S
-    default::D
-    value::V
+    default::V
 end
 
 """
@@ -43,10 +40,7 @@ Dict{String, Any} with 3 entries:
 julia> constant = Constant(constant_dict)
 c: Speed of light in vacuum
 * Description: Speed of light in vacuum
-* Standard: c
 * Default value: 299792458
-* Current value: 299792458
-
 ```
 """
 function Constant(constant::Dict{String, Any})
@@ -54,25 +48,21 @@ function Constant(constant::Dict{String, Any})
     short_name = constant["short_name"]
     default = constant["default"]
 
-    return Constant(description, description, short_name, short_name, default, default)
+    return Constant(description, short_name, default)
 end
 
 # Machine-readable output
 function Base.show(io::IO, c::Constant)
-    println(io, "Constant: $(c.short_name) - $(c.long_name)")
+    println(io, "Constant: $(c.short_name)")
     println(io, "Description: $(c.description)")
-    println(io, "Standard: $(c.standard)")
-    println(io, "Default value: $(c.default)")
-    return println(io, "Current value: $(c.value)")
+    return print(io, "Default value: $(c.default)")
 end
 
 # Human-readable output
 function Base.show(io::IO, ::MIME"text/plain", c::Constant)
-    println(io, "$(c.short_name): $(c.long_name)")
+    println(io, "$(c.short_name): $(c.description)")
     println(io, "* Description: $(c.description)")
-    println(io, "* Standard: $(c.standard)")
-    println(io, "* Default value: $(c.default)")
-    return println(io, "* Current value: $(c.value)")
+    return print(io, "* Default value: $(c.default)")
 end
 
 function create_constants()

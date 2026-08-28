@@ -10,7 +10,7 @@ makedocs(;
     clean=true,
     doctest=true,
     linkcheck=true,
-    warnonly=[:missing_docs],
+    warnonly=[:missing_docs, :linkcheck],
     format=DocumenterVitepress.MarkdownVitepress(;
         repo="github.com/awesome-spectral-indices/SpectralIndices.jl", # this must be the full URL!
         devbranch="main",

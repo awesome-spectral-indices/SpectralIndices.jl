@@ -1,5 +1,4 @@
 [deps]
-CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
@@ -9,7 +8,6 @@ SpectralIndices = "df0093a1-273d-40bc-819a-796ec3476907"
 YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 
 [compat]
-CairoMakie = "0.12"
 DataFrames = "1"
 DimensionalData = "0.29"
 Documenter = "1.8"

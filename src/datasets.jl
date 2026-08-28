@@ -1,3 +1,7 @@
+const DATASET_BASE_URL = "https://raw.githubusercontent.com/awesome-spectral-indices/spyndex/main/spyndex/data/"
+
+const DEFAULT_DATASETS = ["S2_10m.json", "spectral.json"]
+
 """
     get_datasets(; datasets=["S2_10m.json", "spectral.json"],
         data_loc=joinpath(dirname(@__FILE__), "..", "data"))
@@ -14,20 +18,30 @@ and save them to a local directory.
     located one level up from the script's directory.
 
 """
-function get_datasets(; datasets=["S2_10m.json", "spectral.json"],
-        data_loc=joinpath(dirname(@__FILE__), "..", "data"))
-    for ds in datasets
+function get_datasets(;
+        datasets::AbstractVector{<:AbstractString}=DEFAULT_DATASETS,
+        data_loc::AbstractString=joinpath(dirname(@__FILE__), "..", "data")
+)
+    return _get_datasets(String.(datasets), String(data_loc))
+end
+
+function _get_datasets(datasets::Vector{String}, data_loc::String)
+    mkpath(data_loc)
+
+    for ds::String in datasets
+        isempty(ds) && throw(ArgumentError("dataset names must be non-empty strings"))
+
         file_dest = joinpath(data_loc, ds)
+        url = string(DATASET_BASE_URL, ds)
+
         try
-            Downloads.download(
-                "https://raw.githubusercontent.com/awesome-spectral-indices/spyndex/main/spyndex/data/" *
-                ds,
-                file_dest
-            )
+            Downloads.download(url, file_dest)
         catch e
-            @warn "Failed to download dataset $ds: $e"
+            @warn "Failed to download dataset $ds" exception = (e, catch_backtrace())
         end
     end
+
+    return nothing
 end
 
 """

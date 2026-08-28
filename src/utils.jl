@@ -39,13 +39,14 @@ function get_indices(online::Bool=false; filename::String="spectral-indices-dict
     """
     final_file = joinpath(fileloc, filename)
     if online
-        println("Starting download to: ", final_file)
+        @info "Starting download" destination = final_file
         indices_loc = Downloads.download(
             "https://raw.githubusercontent.com/awesome-spectral-indices/awesome-spectral-indices/main/output/spectral-indices-dict.json",
             final_file
         )
         @assert indices_loc isa String&&!isempty(indices_loc) "Download did not return a valid file path."
-        indices = parsefile(indices_loc; null=missing, allownan=true)
+        indices = parsefile(indices_loc; null=missing, allownan=true, dicttype=Dict{
+            String, Any})
     else
         indices = load_json()
     end
@@ -61,7 +62,8 @@ function create_indexfun(index_dict::AbstractDict{String, Any}=get_indices();
     open(fileloc, "w") do file
         write(file, "indices_funcs = Dict()\n\n")
 
-        for (index_name, index_info) in index_dict
+        for index_name in sort!(collect(keys(index_dict)))
+            index_info = index_dict[index_name]
             short_name = index_info["short_name"]
             formula = index_info["formula"]
             formula = replace(formula, "**" => "^")
