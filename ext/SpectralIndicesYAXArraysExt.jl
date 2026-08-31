@@ -19,7 +19,7 @@ import SpectralIndices:
 
 function check_params(index::AbstractSpectralIndex, params::YAXArray)
     for band in SpectralIndices._band_names(index)
-        if !(string(band) in params.Variables) && !(band in params.Variables)
+        if !(string(band) in params.Variables)
             throw(
                 ArgumentError(
                 "'$band' is missing in the parameters for $index computation!"
