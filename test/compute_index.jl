@@ -92,6 +92,13 @@ sample_indices = [
         result = compute_index(idx, NamedTuple{bands}(vals))
         @test eltype(values(result)[1]) == T
     end
+
+    @testset "NamedTuple Matrix" begin
+        params = (;
+            (band => reshape(T[0.5 for _ in 1:100], 10, 10) for band in band_strs)...)
+        result = compute_index(idx, params)
+        @test size(result) == (10, 10)
+    end
 end
 
 # C) Multi-index tests: hand-picked pairs covering different band overlap
