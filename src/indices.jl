@@ -55,7 +55,7 @@ julia> using SpectralIndices
 julia> indices["NIRv"]
 NIRv: Near-Infrared Reflectance of Vegetation
 * Application Domain: vegetation
-* Bands/Parameters: Any["N", "R"]
+* Bands/Parameters: ("N", "R")
 * Formula: ((N-R)/(N+R))*N
 * Reference: https://doi.org/10.1126/sciadv.1602244
 ```
@@ -67,7 +67,7 @@ of the indices, so you can easily access them on your REPL:
 julia> NDVI
 NDVI: Normalized Difference Vegetation Index
 * Application Domain: vegetation
-* Bands/Parameters: Any["N", "R"]
+* Bands/Parameters: ("N", "R")
 * Formula: (N-R)/(N+R)
 * Reference: https://ntrs.nasa.gov/citations/19740022614
 ```
