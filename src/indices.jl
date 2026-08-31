@@ -9,7 +9,7 @@ abstract type AbstractSpectralIndex end
 struct SpectralIndex{S <: String, B, D <: Date, P, F} <: AbstractSpectralIndex
     short_name::S
     long_name::S
-    bands::B
+    bands::Val{B}
     application_domain::S
     reference::S
     formula::S
@@ -55,7 +55,7 @@ julia> using SpectralIndices
 julia> indices["NIRv"]
 NIRv: Near-Infrared Reflectance of Vegetation
 * Application Domain: vegetation
-* Bands/Parameters: Any["N", "R"]
+* Bands/Parameters: ("N", "R")
 * Formula: ((N-R)/(N+R))*N
 * Reference: https://doi.org/10.1126/sciadv.1602244
 ```
@@ -67,15 +67,15 @@ of the indices, so you can easily access them on your REPL:
 julia> NDVI
 NDVI: Normalized Difference Vegetation Index
 * Application Domain: vegetation
-* Bands/Parameters: Any["N", "R"]
+* Bands/Parameters: ("N", "R")
 * Formula: (N-R)/(N+R)
 * Reference: https://ntrs.nasa.gov/citations/19740022614
 ```
 """
-function SpectralIndex(index::Dict, func::Function)
+function SpectralIndex(index::AbstractDict, func::Function)
     short_name = index["short_name"]
     long_name = index["long_name"]
-    bands = index["bands"]
+    bands = (Symbol.(index["bands"])...,)
     application_domain = index["application_domain"]
     reference = index["reference"]
 
@@ -88,7 +88,7 @@ function SpectralIndex(index::Dict, func::Function)
     return SpectralIndex(
         short_name,
         long_name,
-        bands,
+        Val(bands),
         application_domain,
         reference,
         formula,
@@ -109,7 +109,7 @@ function Base.show(io::IO, si::SpectralIndex)
     println(io, "short_name: $(si.short_name),")
     println(io, "long_name: $(si.long_name),")
     println(io, "application_domain: $(si.application_domain),")
-    println(io, "bands: $(si.bands),")
+    println(io, "bands: $(string.(_band_names(si))),")
     println(io, "formula: $(si.formula),")
     println(io, "reference: $(si.reference)")
     return print(io, ")")
@@ -119,7 +119,7 @@ end
 function Base.show(io::IO, ::MIME"text/plain", si::SpectralIndex)
     println(io, "$(si.short_name): $(si.long_name)")
     println(io, "* Application Domain: $(si.application_domain)")
-    println(io, "* Bands/Parameters: $(si.bands)")
+    println(io, "* Bands/Parameters: $(string.(_band_names(si)))")
     println(io, "* Formula: $(si.formula)")
     return print(io, "* Reference: $(si.reference)")
 end
@@ -164,11 +164,20 @@ function compute(si::SpectralIndex, params::Dict=Dict(); kwargs...)
     end
 end
 
-function _spectral_indices(indices_dict::Dict{String, Any}, indices_funcs=indices_funcs;
+function compute(si::SpectralIndex{<:Any, B}, params::NamedTuple) where {B}
+    compute_index(si, params[B])
+end
+
+_band_names(::SpectralIndex{<:Any, B}) where {B} = B
+
+function _spectral_indices(
+        indices_dict::AbstractDict{String, Any}, indices_funcs=indices_funcs;
         origin="SpectralIndices")
     indices = Dict{String, AbstractSpectralIndex}()
     for (key, value) in indices_dict
-        indices[key] = SpectralIndex(value, indices_funcs[key])
+        if haskey(indices_funcs, key)
+            indices[key] = SpectralIndex(value, indices_funcs[key])
+        end
     end
     return indices
 end

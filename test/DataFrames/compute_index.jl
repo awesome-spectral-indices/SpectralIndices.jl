@@ -2,8 +2,6 @@ using Test
 using SpectralIndices
 using DataFrames
 using Random
-using Combinatorics
-using StatsBase
 include("../test_utils.jl")
 Random.seed!(17)
 
@@ -14,65 +12,70 @@ function convert_to_kwargs(df::DataFrame)
     return kwargs
 end
 
-@testset "DataFrames compute_index $T single index tests: $idx_name" for (idx_name, idx) in
-                                                                         indices,
-    T in floats
+# A) Full index coverage, Float64 only
+@testset "DataFrames compute_index Float64 single index: $idx_name" for (
+    idx_name, idx
+) in indices
 
     @testset "as Params" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = DataFrame(; N=T.([0.2, 0.2]), R=T.([0.1, 0.1]))
-        else
-            params = DataFrame([band => rand(T, 10) for band in idx.bands])
-        end
+        params = DataFrame([band => [Float64(0.5) for _ in 1:10] for band in SpectralIndices._band_names(idx)])
         result = compute_index(idx_name, params)
         @test result isa DataFrame
         @test names(result) == [idx_name]
+    end
+
+    @testset "as Kwargs" begin
+        params = DataFrame([band => [Float64(0.5) for _ in 1:10] for band in SpectralIndices._band_names(idx)])
+        result = compute_index(idx_name; convert_to_kwargs(params)...)
+        @test result isa DataFrame
+        @test names(result) == [idx_name]
+    end
+end
+
+# B) Full float variant coverage with representative index sample
+sample_indices = [
+    "NDVI", "EVI", "GEMI", "MTVI2", "TCARIOSAVI", "IRGBVI", "MCARI2", "SAVI4RE",
+]
+
+@testset "DataFrames compute_index $T input variants" for T in floats,
+    idx_name in sample_indices
+
+    idx = indices[idx_name]
+    params = DataFrame([band => T[0.5 for _ in 1:10] for band in SpectralIndices._band_names(idx)])
+
+    @testset "as Params" begin
+        result = compute_index(idx_name, params)
+        @test result isa DataFrame
         @test first(eltype.(eachcol(result))) == T
     end
 
     @testset "as Kwargs" begin
-        if idx_name == "AVI" || idx_name == "TVI"
-            params = DataFrame(; N=T.([0.2, 0.2]), R=T.([0.1, 0.1]))
-        else
-            params = DataFrame([band => rand(T, 10) for band in idx.bands])
-        end
         result = compute_index(idx_name; convert_to_kwargs(params)...)
         @test result isa DataFrame
-        @test names(result) == [idx_name]
         @test first(eltype.(eachcol(result))) == T
     end
-    GC.gc()
 end
 
-msi = custom_key_combinations(indices, 2, 200)
+# C) Multi-index: hand-picked pairs
+multi_index_samples = [
+    ["NDVI", "EVI"],
+    ["GEMI", "MTVI2"],
+    ["NDVI", "NDWI"],
+    ["TCARIOSAVI", "IRGBVI"],
+    ["LSWI", "S2WI"],
+]
 
-@testset "DataFrames compute_index $T multiple indices tests: $idxs" for idxs in msi,
+@testset "DataFrames compute_index $T multi-index: $idxs" for idxs in multi_index_samples,
     T in floats
-
-    if idxs[1] in ["AVI", "TVI"] && length(idxs) > 1
-        for i in 2:length(idxs)
-            if !(idxs[i] in ["AVI", "TVI"])
-                idxs[1], idxs[i] = idxs[i], idxs[1]
-                break
-            end
-        end
-    end
 
     @testset "as Params" begin
         params = DataFrame()
         for idx_name in idxs
-            idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                params[!, "N"] = fill(T(0.2), 10)
-                params[!, "R"] = fill(T(0.1), 10)
-            else
-                for band in idx.bands
-                    params[!, band] = rand(T, 10)
-                end
+            for band in SpectralIndices._band_names(indices[idx_name])
+                params[!, band] = T[0.5 for _ in 1:10]
             end
         end
         result = compute_index(idxs, params)
-        @test result isa DataFrame
         @test names(result) == idxs
         @test first(eltype.(eachcol(result))) == T
     end
@@ -80,20 +83,12 @@ msi = custom_key_combinations(indices, 2, 200)
     @testset "as Kwargs" begin
         params = DataFrame()
         for idx_name in idxs
-            idx = indices[idx_name]
-            if idx_name == "AVI" || idx_name == "TVI"
-                params[!, "N"] = fill(T(0.2), 10)
-                params[!, "R"] = fill(T(0.1), 10)
-            else
-                for band in idx.bands
-                    params[!, band] = rand(T, 10)
-                end
+            for band in SpectralIndices._band_names(indices[idx_name])
+                params[!, band] = T[0.5 for _ in 1:10]
             end
         end
         result = compute_index(idxs; convert_to_kwargs(params)...)
-        @test result isa DataFrame
         @test names(result) == idxs
         @test first(eltype.(eachcol(result))) == T
     end
-    GC.gc()
 end

@@ -50,12 +50,13 @@ function get_indices(online::Bool=false; filename::String="spectral-indices-dict
     else
         indices = load_json()
     end
-    @assert indices isa Dict{String, Any}
+
+    @assert indices isa AbstractDict{String, Any}
 
     return indices["SpectralIndices"]
 end
 
-function create_indexfun(index_dict::Dict{String, Any}=get_indices();
+function create_indexfun(index_dict::AbstractDict{String, Any}=get_indices();
         filename::String="indices_funcs.jl",
         fileloc::String=joinpath(dirname(@__FILE__), filename))
     open(fileloc, "w") do file

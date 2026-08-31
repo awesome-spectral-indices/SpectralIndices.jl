@@ -15,12 +15,11 @@ import SpectralIndices:
                         RBF,
                         load_dataset,
                         load_json,
-                        _infer_type,
-                        _gen_eltype
+                        _infer_type
 
 function check_params(index::AbstractSpectralIndex, params::YAXArray)
-    for band in index.bands
-        if !(band in params.Variables)
+    for band in SpectralIndices._band_names(index)
+        if !(string(band) in params.Variables)
             throw(
                 ArgumentError(
                 "'$band' is missing in the parameters for $index computation!"
@@ -33,9 +32,9 @@ end
 _gen_eltype(params::YAXArray) = eltype.(first(params))
 
 function order_params(index::AbstractSpectralIndex, params::YAXArray)
-    new_params = YAXArray[]
-    for band in index.bands
-        push!(new_params, params[Variable = At(band)])
+    new_params = []
+    for (bidx, band) in enumerate(SpectralIndices._band_names(index))
+        push!(new_params, params[Variable = At(string(band))])
     end
 
     return new_params
@@ -56,7 +55,7 @@ end
 ## TODO: simplify even further
 # this is same function contente as dispatch on Dict
 function compute_index(
-        index::AbstractSpectralIndex, params::YAXArray; indices=create_indices()
+        index::AbstractSpectralIndex, params::YAXArray; indices=nothing
 )
     check_params(index, params)
     params = order_params(index, params)
@@ -68,8 +67,8 @@ end
 function compute_index(
         index::Vector{<:AbstractSpectralIndex}, params::YAXArray; indices=create_indices()
 )
-    results = YAXArray[]
-    for idx in index
+    results = []
+    for (nidx, idx) in enumerate(index)
         res_tmp = compute_index(idx, params; indices=indices)
         push!(results, res_tmp)
     end
@@ -81,7 +80,11 @@ end
 function _compute_index(
         ::Type{T}, idx::AbstractSpectralIndex, prms::YAXArray...
 ) where {T <: Number}
-    f = (args...) -> idx(T, args...)
+    f = @static if VERSION < v"1.11"
+        (T, prms...) -> idx(T, prms...)
+    else
+        Base.Fix1(idx, T)
+    end
     return f.(prms...)
 end
 
@@ -111,7 +114,7 @@ function RBF(params::YAXArray)
 end
 
 function RBF(a::YAXArray, b::YAXArray, sigma::YAXArray)
-    T = float(promote_type(eltype(a), eltype(b), eltype(sigma)))
+    T = eltype(a)
     return exp.((T(-1.0) .* (a .- b) .^ T(2.0)) ./ (T(2.0) .* sigma .^ T(2.0)))
 end
 
