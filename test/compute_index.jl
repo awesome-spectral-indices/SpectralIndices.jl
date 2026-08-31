@@ -95,9 +95,9 @@ sample_indices = [
 
     @testset "NamedTuple Matrix" begin
         params = (;
-            (band => reshape(T[0.5 for _ in 1:100], 10, 10) for band in band_strs)...)
+            (band => reshape(T[0.5 for _ in 1:100], 10, 10) for band in bands)...)
         result = compute_index(idx, params)
-        @test size(result) == (10, 10)
+        @test size(result[Symbol(idx_name)]) == (10, 10)
     end
 end
 

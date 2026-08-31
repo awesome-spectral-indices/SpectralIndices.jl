@@ -80,7 +80,11 @@ end
 function _compute_index(
         ::Type{T}, idx::AbstractSpectralIndex, prms::YAXArray...
 ) where {T <: Number}
-    f = Base.Fix1(idx, T)
+    f = @static if VERSION < v"1.11"
+        (T, prms...) -> idx(T, prms...)
+    else
+        Base.Fix1(idx, T)
+    end
     return f.(prms...)
 end
 
