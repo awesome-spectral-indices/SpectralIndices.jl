@@ -9,7 +9,7 @@ YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 
 [compat]
 DataFrames = "1"
-DimensionalData = "0.29"
+DimensionalData = "0.29, 0.30"
 Documenter = "1.8"
 DocumenterVitepress = "0.1"
 PartialFunctions = "1.2"
