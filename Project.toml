@@ -1,7 +1,7 @@
 name = "SpectralIndices"
 uuid = "df0093a1-273d-40bc-819a-796ec3476907"
 authors = ["MartinuzziFrancesco <martinuzzi.francesco@gmail.com>"]
-version = "0.2.20"
+version = "0.2.21"
 
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
@@ -22,7 +22,7 @@ SpectralIndicesYAXArraysExt = ["YAXArrays", "DimensionalData"]
 Compat = "4.16.0"
 DataFrames = "1"
 Dates = "1"
-DimensionalData = "0.29"
+DimensionalData = "0.29, 0.30"
 Documenter = "1.8.0"
 Downloads = "1.6.0"
 JET = "0.9.18, 0.11"
